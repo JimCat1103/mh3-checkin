@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MH3 Check-in</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .fade-in { animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 flex items-center justify-center">
+
+<div class="w-full max-w-md bg-white rounded-lg shadow-xl p-6 relative min-h-[300px]">
+
+    <div id="initLoader" class="absolute inset-0 bg-white z-50 flex flex-col items-center justify-center rounded-lg">
+        <div class="loader mb-4"></div>
+        <p class="text-gray-500 font-medium">系統連線中...</p>
+    </div>
+
+    <div class="text-center mb-6 border-b pb-4">
+        <h1 class="text-2xl font-extrabold text-blue-700 tracking-wider">MH3 Check-in</h1>
+        <div id="runInfoDisplay" class="hidden mt-2">
+            <h2 id="runTitle" class="text-xl font-bold text-gray-800"></h2>
+            <p id="runDate" class="text-sm text-gray-500"></p>
+            <p id="runHare" class="text-sm text-gray-500"></p>
+        </div>
+    </div>
+
+    <div id="waitingSection" class="hidden text-center py-8 fade-in">
+        <div class="text-5xl mb-4">⏳</div>
+        <h3 class="text-xl font-bold text-gray-700 mb-2">活動尚未開始</h3>
+        <p class="text-gray-500 mb-4">報名表將於活動當日 19:00 開放</p>
+        <p class="text-sm bg-gray-100 p-2 rounded">下一次活動：<span id="waitDate" class="font-bold"></span></p>
+    </div>
+
+    <div id="thankYouSection" class="hidden text-center py-8 fade-in">
+        <div class="text-5xl mb-4">🎉</div>
+        <h3 class="text-xl font-bold text-green-700 mb-2">活動已完成</h3>
+        <p class="text-gray-600 mb-6">感謝您的參加！請期待下一次的 Hash。</p>
+        <div class="p-4 bg-blue-50 rounded-lg text-sm text-blue-800">
+            記得讓自己保持水分，下週見！<br>
+            On On!
+        </div>
+        <button onclick="debugReset()" class="mt-8 text-xs text-gray-300 hover:text-gray-500">重置狀態 (Debug)</button>
+    </div>
+
+    <div id="backSection" class="hidden p-2 fade-in">
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center shadow-sm">
+            <div class="text-3xl mb-2">🏃‍♂️</div>
+            <p class="font-bold text-lg text-green-800">報到成功！Enjoy the Run!</p>
+            <div class="mt-2 text-sm text-gray-600">
+                <p>跑次: <span id="statusRunNum" class="font-bold"></span></p>
+                <p>姓名: <span id="savedName"></span></p>
+            </div>
+        </div>
+
+        <button onclick="doBack()" class="mt-6 w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-xl hover:bg-blue-700 shadow-lg transform transition active:scale-95">
+            🏠 我回來了 (I'm Back)
+        </button>
+
+        <button onclick="resetForm()" class="mt-4 w-full text-center text-gray-400 text-sm underline hover:text-gray-600">
+            幫別人報到 / 重新輸入
+        </button>
+    </div>
+
+    <div id="formSection" class="hidden fade-in">
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">您的資料 (Main)</label>
+            <input type="text" id="mainName" placeholder="姓名 / Name (必填)" class="w-full p-3 border rounded-lg mb-3 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition">
+            <input type="tel" id="mainPhone" placeholder="電話 / Phone (必填)" class="w-full p-3 border rounded-lg mb-3 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition">
+            <div class="flex items-center p-3 bg-gray-50 rounded cursor-pointer" onclick="document.getElementById('mainBash').click()">
+                <input type="checkbox" id="mainBash" class="mr-3 h-5 w-5 text-blue-600 cursor-pointer">
+                <label for="mainBash" class="text-gray-700 select-none cursor-pointer">參加聚餐 (Bash)?</label>
+            </div>
+        </div>
+
+        <div id="buddyList" class="space-y-3 mb-6"></div>
+
+        <button onclick="addBuddy()" class="w-full border-2 border-dashed border-gray-300 text-gray-500 py-2 rounded-lg mb-6 hover:border-blue-400 hover:text-blue-500 transition">
+            + 新增同伴 (Add Buddy)
+        </button>
+
+        <button onclick="submitForm()" id="submitBtn" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold text-xl hover:bg-green-700 shadow-md transition transform active:scale-95">
+            送出報到 (Check In)
+        </button>
+    </div>
+
+    <div id="loading" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 backdrop-blur-sm">
+        <div class="bg-white p-6 rounded-xl shadow-2xl flex flex-col items-center">
+            <div class="loader mb-3"></div>
+            <span class="font-bold text-gray-700">資料處理中...</span>
+        </div>
+    </div>
+</div>
+
+<script>
+  // ================= 設定區 =================
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxmkQakubfwGK2ZRoEL1_Z3BXixcFLuGQDMZcp2Fml8a9uvxBV-L4e5KOTx-8K5uIm5Sw/exec';
+  // =========================================
+
+  let currentRunInfo = {};
+
+  window.onload = async function() {
+    try {
+      // 1. 取得跑次與狀態
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({action: 'getInfo'})
+      });
+      const data = await response.json();
+      currentRunInfo = data.info; // {number, hare, dateStr}
+      const status = data.status; // 'waiting', 'open'
+
+      // 顯示標題資訊
+      document.getElementById('runTitle').innerText = `Run #${currentRunInfo.number}`;
+      document.getElementById('runDate').innerText = currentRunInfo.dateStr;
+      document.getElementById('runHare').innerText = `Hare: ${currentRunInfo.hare}`;
+      document.getElementById('waitDate').innerText = currentRunInfo.dateStr;
+
+      document.getElementById('initLoader').classList.add('hidden');
+
+      // 2. 依照狀態分流
+      if (status === 'waiting') {
+        showSection('waitingSection');
+      } else {
+        // 活動開放中，顯示標題並檢查本地儲存
+        document.getElementById('runInfoDisplay').classList.remove('hidden');
+        checkLocalStorage(currentRunInfo.number);
+      }
+
+    } catch (e) {
+      alert('系統連線失敗，請稍後再試');
+      console.error(e);
+      document.getElementById('initLoader').classList.add('hidden');
+    }
+  };
+
+  function checkLocalStorage(serverRunNumber) {
+    const savedData = localStorage.getItem('mh3_user');
+
+    if (savedData) {
+      const user = JSON.parse(savedData);
+
+      // 檢查是否過期
+      if (user.lastRunNumber != serverRunNumber) {
+        // 過期了 -> 清除狀態，進入報名模式 (貼心保留姓名電話)
+        console.log('新活動，重置狀態');
+        document.getElementById('mainName').value = user.name;
+        document.getElementById('mainPhone').value = user.phone;
+        showSection('formSection');
+      } else {
+        // 是同一場活動，檢查是否已經 Back 過
+        if (user.status === 'completed') {
+          showSection('thankYouSection');
+        } else {
+          // 還沒 Back -> 顯示 Back 畫面
+          document.getElementById('savedName').innerText = user.name;
+          document.getElementById('statusRunNum').innerText = `#${user.lastRunNumber}`;
+          showSection('backSection');
+        }
+      }
+    } else {
+      showSection('formSection');
+    }
+  }
+
+  // 顯示特定區塊，隱藏其他
+  function showSection(id) {
+    ['waitingSection', 'thankYouSection', 'backSection', 'formSection'].forEach(sec => {
+      document.getElementById(sec).classList.add('hidden');
+    });
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  function addBuddy() {
+    const div = document.createElement('div');
+    div.className = "mb-2 border-l-4 border-blue-300 pl-3 bg-gray-50 p-3 rounded relative fade-in";
+    div.innerHTML = `
+            <button onclick="this.parentElement.remove()" class="absolute top-1 right-2 text-red-400 hover:text-red-600 font-bold">✕</button>
+            <input type="text" class="buddy-name w-full p-2 border rounded mb-2" placeholder="同伴姓名">
+            <div class="flex items-center cursor-pointer">
+                <input type="checkbox" class="buddy-bash mr-2 h-5 w-5 cursor-pointer">
+                <label class="text-sm text-gray-600 cursor-pointer">參加聚餐?</label>
+            </div>
+        `;
+    document.getElementById('buddyList').appendChild(div);
+  }
+
+  function submitForm() {
+    const mainName = document.getElementById('mainName').value.trim();
+    const mainPhone = document.getElementById('mainPhone').value.trim();
+    const mainBash = document.getElementById('mainBash').checked;
+
+    if (!mainName || !mainPhone) { alert('請填寫必填欄位'); return; }
+
+    const users = [];
+    users.push({name: mainName, phone: mainPhone, bash: mainBash, coverBy: 'Self'});
+
+    document.querySelectorAll('#buddyList > div').forEach(div => {
+      const bName = div.querySelector('.buddy-name').value.trim();
+      const bBash = div.querySelector('.buddy-bash').checked;
+      if(bName) users.push({name: bName, phone: mainPhone, bash: bBash, coverBy: mainName});
+    });
+
+    const payload = {
+      action: 'checkin',
+      runNumber: currentRunInfo.number,
+      users: users
+    };
+
+    sendData(payload, () => {
+      // 儲存狀態
+      localStorage.setItem('mh3_user', JSON.stringify({
+        name: mainName,
+        phone: mainPhone,
+        bash: mainBash, // 記住 Bash 選擇，方便 Back 時判斷
+        lastRunNumber: currentRunInfo.number,
+        status: 'checked_in'
+      }));
+
+      alert('報到成功！');
+      checkLocalStorage(currentRunInfo.number); // 會自動跳到 Back 畫面
+    });
+  }
+
+  function doBack() {
+    const savedData = JSON.parse(localStorage.getItem('mh3_user'));
+    if(!savedData) return;
+
+    // --- Feedback 3: 詢問是否補 Bash ---
+    let wantJoinBash = false;
+
+    // 只有當初沒勾 Bash 的人才問
+    if (savedData.bash === false) {
+      wantJoinBash = confirm(`辛苦了！\n您當初報到時「沒有」登記聚餐 (Bash)。\n\n請問現在要加入 Bash 嗎？`);
+    } else {
+      // 原本有勾的，再次確認安全回來即可
+      if(!confirm(`確認 ${savedData.name} 與其同伴都已安全返回？`)) return;
+    }
+
+    const payload = {
+      action: 'back',
+      runNumber: currentRunInfo.number,
+      phone: savedData.phone,
+      joinBash: wantJoinBash // 傳送補登意願
+    };
+
+    sendData(payload, () => {
+      // 更新本地狀態為已完成
+      savedData.status = 'completed';
+      localStorage.setItem('mh3_user', JSON.stringify(savedData));
+
+      // --- Feedback 4: 顯示感謝畫面 ---
+      showSection('thankYouSection');
+    });
+  }
+
+  // 重新報到 (保留資料但不鎖定)
+  function resetForm() {
+    const savedData = JSON.parse(localStorage.getItem('mh3_user') || '{}');
+    // 清除狀態，保留姓名電話方便重填
+    localStorage.setItem('mh3_user', JSON.stringify({
+      name: savedData.name || '',
+      phone: savedData.phone || '',
+      lastRunNumber: 'reset'
+    }));
+    location.reload();
+  }
+
+  function debugReset() {
+    localStorage.removeItem('mh3_user');
+    location.reload();
+  }
+
+  function sendData(payload, onSuccess) {
+    document.getElementById('loading').classList.remove('hidden');
+    fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('loading').classList.add('hidden');
+        if(data.result === 'success') {
+          onSuccess();
+        } else {
+          alert('錯誤：' + (data.msg || '未知錯誤'));
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('連線失敗');
+        document.getElementById('loading').classList.add('hidden');
+      });
+  }
+</script>
+</body>
+</html>
