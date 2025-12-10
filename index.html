@@ -1,100 +1,135 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MH3 Check-in</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        /* Dark Mode Loader */
+        .loader { border: 4px solid #334155; border-top: 4px solid #3b82f6; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .fade-in { animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-enter { animation: modalIn 0.3s ease-out; }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        /* 自定義 Checkbox 樣式優化 */
+        input[type="checkbox"] { accent-color: #2563eb; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-4 flex items-center justify-center">
+<body class="bg-slate-900 min-h-screen p-4 flex items-center justify-center font-sans text-slate-200">
 
-<div class="w-full max-w-md bg-white rounded-lg shadow-xl p-6 relative min-h-[300px]">
+<div class="w-full max-w-md bg-slate-800 rounded-xl shadow-2xl p-6 relative min-h-[300px] border border-slate-700">
 
-    <div id="initLoader" class="absolute inset-0 bg-white z-50 flex flex-col items-center justify-center rounded-lg">
+    <div id="initLoader" class="absolute inset-0 bg-slate-800 z-40 flex flex-col items-center justify-center rounded-xl">
         <div class="loader mb-4"></div>
-        <p class="text-gray-500 font-medium">系統連線中...</p>
+        <p class="text-slate-400 font-medium tracking-wide">系統連線中...</p>
     </div>
 
-    <div class="text-center mb-6 border-b pb-4">
-        <h1 class="text-2xl font-extrabold text-blue-700 tracking-wider">MH3 Check-in</h1>
-        <div id="runInfoDisplay" class="hidden mt-2">
-            <h2 id="runTitle" class="text-xl font-bold text-gray-800"></h2>
-            <p id="runDate" class="text-sm text-gray-500"></p>
-            <p id="runHare" class="text-sm text-gray-500"></p>
+    <div class="text-center mb-6 border-b border-slate-700 pb-4">
+        <h1 class="text-3xl font-extrabold text-blue-500 tracking-wider drop-shadow-lg">MH3 Check-in</h1>
+        <div id="runInfoDisplay" class="hidden mt-2 fade-in">
+            <h2 id="runTitle" class="text-xl font-bold text-slate-100"></h2>
+            <div class="flex justify-center space-x-3 mt-1 text-sm text-slate-400">
+                <p id="runDate"></p>
+                <span>|</span>
+                <p id="runHare"></p>
+            </div>
         </div>
     </div>
 
-    <div id="waitingSection" class="hidden text-center py-8 fade-in">
-        <div class="text-5xl mb-4">⏳</div>
-        <h3 class="text-xl font-bold text-gray-700 mb-2">活動尚未開始</h3>
-        <p class="text-gray-500 mb-4">報名表將於活動當日 19:00 開放</p>
-        <p class="text-sm bg-gray-100 p-2 rounded">下一次活動：<span id="waitDate" class="font-bold"></span></p>
+    <div id="waitingSection" class="hidden text-center py-10 fade-in">
+        <div class="text-6xl mb-6 opacity-80">⏳</div>
+        <h3 class="text-2xl font-bold text-slate-300 mb-2">活動尚未開始</h3>
+        <p class="text-slate-500 mb-6">報名表將於活動當日 19:00 開放</p>
+        <div class="inline-block bg-slate-700 px-4 py-2 rounded-full text-sm font-medium text-slate-300 border border-slate-600">
+            下一次活動：<span id="waitDate" class="text-blue-400 font-bold"></span>
+        </div>
     </div>
 
-    <div id="thankYouSection" class="hidden text-center py-8 fade-in">
-        <div class="text-5xl mb-4">🎉</div>
-        <h3 class="text-xl font-bold text-green-700 mb-2">活動已完成</h3>
-        <p class="text-gray-600 mb-6">感謝您的參加！請期待下一次的 Hash。</p>
-        <div class="p-4 bg-blue-50 rounded-lg text-sm text-blue-800">
-            記得讓自己保持水分，下週見！<br>
-            On On!
+    <div id="thankYouSection" class="hidden text-center py-10 fade-in">
+        <div class="text-6xl mb-6 opacity-90">🎉</div>
+        <h3 class="text-2xl font-bold text-green-400 mb-3">活動已完成</h3>
+        <p class="text-slate-400 mb-8 px-4">感謝您的參加！請期待下一次的 Hash。</p>
+        <div class="bg-slate-700/50 rounded-lg p-4 text-sm text-blue-300 leading-relaxed mx-2 border border-slate-600">
+            <strong>On On!</strong><br>
+            記得讓自己保持水分，下週見！
         </div>
-        <button onclick="debugReset()" class="mt-8 text-xs text-gray-300 hover:text-gray-500">重置狀態 (Debug)</button>
+        <button onclick="debugReset()" class="mt-8 text-xs text-slate-600 hover:text-slate-400 underline transition">重置狀態 (Debug)</button>
     </div>
 
     <div id="backSection" class="hidden p-2 fade-in">
-        <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center shadow-sm">
-            <div class="text-3xl mb-2">🏃‍♂️</div>
-            <p class="font-bold text-lg text-green-800">報到成功！Enjoy the Run!</p>
-            <div class="mt-2 text-sm text-gray-600">
-                <p>跑次: <span id="statusRunNum" class="font-bold"></span></p>
-                <p>姓名: <span id="savedName"></span></p>
+        <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 text-center shadow-inner">
+            <div class="text-4xl mb-3">🏃‍♂️</div>
+            <p class="font-bold text-xl text-green-400">報到成功！</p>
+            <p class="text-green-600 text-sm mb-4">Enjoy the Run!</p>
+            <div class="border-t border-green-800/50 pt-3 mt-2 text-sm text-slate-400 space-y-1">
+                <p>跑次: <span id="statusRunNum" class="font-bold text-slate-200"></span></p>
+                <p>主要聯絡人: <span id="savedName" class="font-bold text-slate-200"></span></p>
+                <p id="buddyCountDisplay" class="text-slate-500 text-xs hidden"></p>
             </div>
         </div>
 
-        <button onclick="doBack()" class="mt-6 w-full bg-blue-600 text-white py-4 rounded-lg font-bold text-xl hover:bg-blue-700 shadow-lg transform transition active:scale-95">
-            🏠 我回來了 (I'm Back)
+        <button onclick="preBackCheck()" class="mt-6 w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-xl hover:bg-blue-500 hover:shadow-blue-900/50 shadow-lg transform transition active:scale-95 flex items-center justify-center">
+            <span>🏠 我回來了 (I'm Back)</span>
         </button>
 
-        <button onclick="resetForm()" class="mt-4 w-full text-center text-gray-400 text-sm underline hover:text-gray-600">
+        <button onclick="resetForm()" class="mt-4 w-full text-center text-slate-500 text-sm hover:text-slate-300 transition">
             幫別人報到 / 重新輸入
         </button>
     </div>
 
     <div id="formSection" class="hidden fade-in">
-        <div class="mb-4">
-            <label class="block text-gray-700 font-bold mb-2">您的資料 (Main)</label>
-            <input type="text" id="mainName" placeholder="姓名 / Name (必填)" class="w-full p-3 border rounded-lg mb-3 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition">
-            <input type="tel" id="mainPhone" placeholder="電話 / Phone (必填)" class="w-full p-3 border rounded-lg mb-3 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition">
-            <div class="flex items-center p-3 bg-gray-50 rounded cursor-pointer" onclick="document.getElementById('mainBash').click()">
-                <input type="checkbox" id="mainBash" class="mr-3 h-5 w-5 text-blue-600 cursor-pointer">
-                <label for="mainBash" class="text-gray-700 select-none cursor-pointer">參加聚餐 (Bash)?</label>
-            </div>
+        <div class="bg-slate-700/40 p-4 rounded-xl mb-6 border border-slate-700">
+            <h3 class="text-blue-400 font-bold mb-3 flex items-center">
+                <span class="mr-2">👤</span> 您的資料 (Main)
+            </h3>
+            <input type="text" id="mainName" placeholder="姓名 / Name (必填)" class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            <input type="tel" id="mainPhone" placeholder="電話 / Phone (必填)" class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+
+            <label class="flex items-center p-3 bg-slate-800 rounded-lg border border-slate-600 cursor-pointer hover:border-blue-500 hover:shadow-md transition select-none group">
+                <input type="checkbox" id="mainBash" class="mr-3 h-5 w-5 rounded focus:ring-blue-500 cursor-pointer bg-slate-700 border-slate-500">
+                <span class="text-slate-300 font-medium flex-1 group-hover:text-blue-300 transition">參加聚餐 (Bash)?</span>
+            </label>
         </div>
 
         <div id="buddyList" class="space-y-3 mb-6"></div>
 
-        <button onclick="addBuddy()" class="w-full border-2 border-dashed border-gray-300 text-gray-500 py-2 rounded-lg mb-6 hover:border-blue-400 hover:text-blue-500 transition">
-            + 新增同伴 (Add Buddy)
+        <button onclick="addBuddy()" class="w-full border-2 border-dashed border-slate-600 text-slate-400 py-3 rounded-xl mb-6 hover:border-blue-500 hover:text-blue-400 hover:bg-slate-700/50 transition font-medium flex items-center justify-center">
+            <span class="mr-1">+</span> 新增同伴 (Add Buddy)
         </button>
 
-        <button onclick="submitForm()" id="submitBtn" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold text-xl hover:bg-green-700 shadow-md transition transform active:scale-95">
+        <button onclick="submitForm()" id="submitBtn" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold text-xl hover:bg-green-500 hover:shadow-green-900/50 shadow-lg transition transform active:scale-95 flex items-center justify-center">
             送出報到 (Check In)
         </button>
     </div>
 
-    <div id="loading" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 backdrop-blur-sm">
-        <div class="bg-white p-6 rounded-xl shadow-2xl flex flex-col items-center">
+    <div id="loading" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 flex justify-center items-center z-50 backdrop-blur-sm fade-in">
+        <div class="bg-slate-800 p-6 rounded-2xl shadow-2xl flex flex-col items-center transform scale-110 border border-slate-700">
             <div class="loader mb-3"></div>
-            <span class="font-bold text-gray-700">資料處理中...</span>
+            <span class="font-bold text-slate-300">資料處理中...</span>
         </div>
     </div>
+
+    <div id="customModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+        <div class="bg-slate-800 rounded-2xl shadow-2xl w-full max-w-sm relative z-10 overflow-hidden modal-enter border border-slate-700">
+            <div class="p-6 text-center">
+                <div id="modalIcon" class="text-4xl mb-4">ℹ️</div>
+                <h3 id="modalTitle" class="text-xl font-bold text-white mb-2">提示</h3>
+
+                <div id="modalContentContainer" class="text-left mb-6">
+                    <p id="modalMessage" class="text-slate-400 text-sm leading-relaxed text-center">內容...</p>
+                    <div id="modalDynamicContent" class="mt-4 space-y-2"></div>
+                </div>
+
+                <div id="modalButtons" class="flex space-x-3 justify-center">
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -103,63 +138,126 @@
   // =========================================
 
   let currentRunInfo = {};
+  let currentGroup = [];
+
+  function showModal({title, msg, type = 'alert', confirmCallback = null, cancelCallback = null, dynamicContent = null}) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalMessage').innerText = msg || '';
+
+    const dynamicContainer = document.getElementById('modalDynamicContent');
+    dynamicContainer.innerHTML = '';
+    if (dynamicContent) {
+      dynamicContainer.appendChild(dynamicContent);
+    }
+
+    const btnContainer = document.getElementById('modalButtons');
+    btnContainer.innerHTML = '';
+
+    const icon = document.getElementById('modalIcon');
+
+    if (type === 'confirm') {
+      icon.innerText = '🤔';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = "flex-1 bg-slate-700 text-slate-300 py-2 rounded-lg font-bold hover:bg-slate-600 transition border border-slate-600";
+      cancelBtn.innerText = "取消";
+      cancelBtn.onclick = () => {
+        closeModal();
+        if (cancelCallback) cancelCallback();
+      };
+
+      const okBtn = document.createElement('button');
+      okBtn.className = "flex-1 bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-900/30";
+      okBtn.innerText = "確定";
+      okBtn.onclick = () => {
+        closeModal();
+        if (confirmCallback) confirmCallback();
+      };
+
+      btnContainer.appendChild(cancelBtn);
+      btnContainer.appendChild(okBtn);
+    } else {
+      icon.innerText = (title.includes('錯誤') || title.includes('失敗') || title.includes('不完整')) ? '❌' : '✅';
+      const okBtn = document.createElement('button');
+      okBtn.className = "w-full bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-900/30";
+      okBtn.innerText = "好，我知道了";
+      okBtn.onclick = () => {
+        closeModal();
+        if (confirmCallback) confirmCallback();
+      };
+      btnContainer.appendChild(okBtn);
+    }
+
+    document.getElementById('customModal').classList.remove('hidden');
+  }
+
+  function closeModal() {
+    document.getElementById('customModal').classList.add('hidden');
+  }
 
   window.onload = async function() {
     try {
-      // 1. 取得跑次與狀態
       const response = await fetch(API_URL, {
         method: 'POST',
         body: JSON.stringify({action: 'getInfo'})
       });
       const data = await response.json();
-      currentRunInfo = data.info; // {number, hare, dateStr}
-      const status = data.status; // 'waiting', 'open'
+      currentRunInfo = data.info;
+      const status = data.status;
 
-      // 顯示標題資訊
-      document.getElementById('runTitle').innerText = `Run #${currentRunInfo.number}`;
+      document.getElementById('runTitle').innerText = `Run ${currentRunInfo.number}`;
       document.getElementById('runDate').innerText = currentRunInfo.dateStr;
       document.getElementById('runHare').innerText = `Hare: ${currentRunInfo.hare}`;
       document.getElementById('waitDate').innerText = currentRunInfo.dateStr;
 
       document.getElementById('initLoader').classList.add('hidden');
 
-      // 2. 依照狀態分流
       if (status === 'waiting') {
         showSection('waitingSection');
       } else {
-        // 活動開放中，顯示標題並檢查本地儲存
         document.getElementById('runInfoDisplay').classList.remove('hidden');
         checkLocalStorage(currentRunInfo.number);
       }
 
     } catch (e) {
-      alert('系統連線失敗，請稍後再試');
+      showModal({title: '連線錯誤', msg: '無法連接到伺服器，請檢查網路或稍後再試。'});
       console.error(e);
       document.getElementById('initLoader').classList.add('hidden');
     }
   };
 
   function checkLocalStorage(serverRunNumber) {
-    const savedData = localStorage.getItem('mh3_user');
+    const savedGroupJson = localStorage.getItem('mh3_group');
+    if (!savedGroupJson && localStorage.getItem('mh3_user')) {
+      localStorage.removeItem('mh3_user');
+    }
 
-    if (savedData) {
-      const user = JSON.parse(savedData);
-
-      // 檢查是否過期
-      if (user.lastRunNumber != serverRunNumber) {
-        // 過期了 -> 清除狀態，進入報名模式 (貼心保留姓名電話)
-        console.log('新活動，重置狀態');
-        document.getElementById('mainName').value = user.name;
-        document.getElementById('mainPhone').value = user.phone;
+    if (savedGroupJson) {
+      const groupData = JSON.parse(savedGroupJson);
+      if (groupData.runNumber != serverRunNumber) {
+        console.log('新活動，自動帶入上次資料');
+        const mainUser = groupData.users[0];
+        document.getElementById('mainName').value = mainUser.name || '';
+        document.getElementById('mainPhone').value = mainUser.phone || '';
+        document.getElementById('buddyList').innerHTML = '';
+        for (let i = 1; i < groupData.users.length; i++) {
+          const buddy = groupData.users[i];
+          addBuddy(buddy.name, buddy.phone);
+        }
         showSection('formSection');
       } else {
-        // 是同一場活動，檢查是否已經 Back 過
-        if (user.status === 'completed') {
+        currentGroup = groupData.users;
+        if (groupData.status === 'completed') {
           showSection('thankYouSection');
         } else {
-          // 還沒 Back -> 顯示 Back 畫面
-          document.getElementById('savedName').innerText = user.name;
-          document.getElementById('statusRunNum').innerText = `#${user.lastRunNumber}`;
+          const mainUser = currentGroup[0];
+          document.getElementById('savedName').innerText = mainUser.name;
+          document.getElementById('statusRunNum').innerText = `#${groupData.runNumber}`;
+
+          if (currentGroup.length > 1) {
+            const display = document.getElementById('buddyCountDisplay');
+            display.innerText = `(+ ${currentGroup.length - 1} 位同伴)`;
+            display.classList.remove('hidden');
+          }
           showSection('backSection');
         }
       }
@@ -168,7 +266,6 @@
     }
   }
 
-  // 顯示特定區塊，隱藏其他
   function showSection(id) {
     ['waitingSection', 'thankYouSection', 'backSection', 'formSection'].forEach(sec => {
       document.getElementById(sec).classList.add('hidden');
@@ -176,16 +273,18 @@
     document.getElementById(id).classList.remove('hidden');
   }
 
-  function addBuddy() {
+  function addBuddy(name = '', phone = '') {
     const div = document.createElement('div');
-    div.className = "mb-2 border-l-4 border-blue-300 pl-3 bg-gray-50 p-3 rounded relative fade-in";
+    div.className = "mb-3 bg-slate-800 p-3 rounded-xl border border-slate-700 relative fade-in shadow-sm";
     div.innerHTML = `
-            <button onclick="this.parentElement.remove()" class="absolute top-1 right-2 text-red-400 hover:text-red-600 font-bold">✕</button>
-            <input type="text" class="buddy-name w-full p-2 border rounded mb-2" placeholder="同伴姓名">
-            <div class="flex items-center cursor-pointer">
-                <input type="checkbox" class="buddy-bash mr-2 h-5 w-5 cursor-pointer">
-                <label class="text-sm text-gray-600 cursor-pointer">參加聚餐?</label>
-            </div>
+            <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-slate-500 hover:text-red-400 font-bold p-1 transition">✕</button>
+            <h4 class="text-xs font-bold text-slate-500 mb-2 uppercase">Buddy</h4>
+            <input type="text" class="buddy-name w-full p-2 border border-slate-600 rounded-lg mb-2 bg-slate-900 text-white placeholder-slate-500 focus:ring-1 focus:ring-blue-500 outline-none" placeholder="同伴姓名" value="${name}">
+            <input type="tel" class="buddy-phone w-full p-2 border border-slate-600 rounded-lg mb-2 bg-slate-900 text-white placeholder-slate-500 focus:ring-1 focus:ring-blue-500 outline-none" placeholder="同伴電話 (選填)" value="${phone}">
+            <label class="flex items-center p-2 bg-slate-900 rounded-lg border border-slate-600 cursor-pointer hover:border-blue-500 transition select-none group">
+                <input type="checkbox" class="buddy-bash mr-2 h-4 w-4 rounded cursor-pointer bg-slate-800 border-slate-500">
+                <span class="text-sm text-slate-400 cursor-pointer flex-1 group-hover:text-blue-300 transition">參加聚餐?</span>
+            </label>
         `;
     document.getElementById('buddyList').appendChild(div);
   }
@@ -195,15 +294,23 @@
     const mainPhone = document.getElementById('mainPhone').value.trim();
     const mainBash = document.getElementById('mainBash').checked;
 
-    if (!mainName || !mainPhone) { alert('請填寫必填欄位'); return; }
+    if (!mainName || !mainPhone) {
+      showModal({title: '資料不完整', msg: '請填寫 Main 的「姓名」與「電話」'});
+      return;
+    }
 
     const users = [];
     users.push({name: mainName, phone: mainPhone, bash: mainBash, coverBy: 'Self'});
 
     document.querySelectorAll('#buddyList > div').forEach(div => {
       const bName = div.querySelector('.buddy-name').value.trim();
+      const bPhoneInput = div.querySelector('.buddy-phone').value.trim();
+      const bPhone = bPhoneInput || mainPhone;
+
       const bBash = div.querySelector('.buddy-bash').checked;
-      if(bName) users.push({name: bName, phone: mainPhone, bash: bBash, coverBy: mainName});
+      if(bName) {
+        users.push({name: bName, phone: bPhone, bash: bBash, coverBy: mainName});
+      }
     });
 
     const payload = {
@@ -213,66 +320,97 @@
     };
 
     sendData(payload, () => {
-      // 儲存狀態
-      localStorage.setItem('mh3_user', JSON.stringify({
-        name: mainName,
-        phone: mainPhone,
-        bash: mainBash, // 記住 Bash 選擇，方便 Back 時判斷
-        lastRunNumber: currentRunInfo.number,
-        status: 'checked_in'
-      }));
+      const storageData = {
+        runNumber: currentRunInfo.number,
+        status: 'checked_in',
+        users: users
+      };
+      localStorage.setItem('mh3_group', JSON.stringify(storageData));
 
-      alert('報到成功！');
-      checkLocalStorage(currentRunInfo.number); // 會自動跳到 Back 畫面
+      showModal({title: '報到成功', msg: '祝您跑步愉快！On On!', type: 'success', confirmCallback: () => {
+          checkLocalStorage(currentRunInfo.number);
+        }});
     });
   }
 
-  function doBack() {
-    const savedData = JSON.parse(localStorage.getItem('mh3_user'));
-    if(!savedData) return;
+  function preBackCheck() {
+    const nonBashers = currentGroup.filter(u => u.bash === false);
 
-    // --- Feedback 3: 詢問是否補 Bash ---
-    let wantJoinBash = false;
+    if (nonBashers.length > 0) {
+      const container = document.createElement('div');
+      container.className = "flex flex-col space-y-2 max-h-40 overflow-y-auto border-t border-b border-slate-600 py-2";
 
-    // 只有當初沒勾 Bash 的人才問
-    if (savedData.bash === false) {
-      wantJoinBash = confirm(`辛苦了！\n您當初報到時「沒有」登記聚餐 (Bash)。\n\n請問現在要加入 Bash 嗎？`);
+      nonBashers.forEach((u, index) => {
+        const label = document.createElement('label');
+        label.className = "flex items-center space-x-2 cursor-pointer p-2 hover:bg-slate-700 rounded transition";
+        label.innerHTML = `
+                  <input type="checkbox" data-idx="${index}" class="bash-补-check h-4 w-4 rounded bg-slate-900 border-slate-500">
+                  <span class="text-sm text-slate-300">${u.name}</span>
+              `;
+        container.appendChild(label);
+      });
+
+      showModal({
+        title: '補登記聚餐確認',
+        msg: '以下人員未登記聚餐，請問現在要加入嗎？(若無則直接按確定)',
+        type: 'confirm',
+        dynamicContent: container,
+        confirmCallback: () => {
+          const checks = container.querySelectorAll('.bash-补-check');
+          const targets = [];
+
+          currentGroup.filter(u => u.bash === true).forEach(u => {
+            targets.push({phone: u.phone, joinBash: true});
+          });
+
+          nonBashers.forEach((u, idx) => {
+            const isChecked = checks[idx].checked;
+            targets.push({phone: u.phone, joinBash: isChecked});
+          });
+
+          executeBack(targets);
+        }
+      });
     } else {
-      // 原本有勾的，再次確認安全回來即可
-      if(!confirm(`確認 ${savedData.name} 與其同伴都已安全返回？`)) return;
+      showModal({
+        title: '安全回報確認',
+        msg: `確認共 ${currentGroup.length} 人皆已安全返回？`,
+        type: 'confirm',
+        confirmCallback: () => {
+          const targets = currentGroup.map(u => ({phone: u.phone, joinBash: true}));
+          executeBack(targets);
+        }
+      });
     }
+  }
 
+  function executeBack(targets) {
     const payload = {
       action: 'back',
       runNumber: currentRunInfo.number,
-      phone: savedData.phone,
-      joinBash: wantJoinBash // 傳送補登意願
+      targets: targets
     };
 
     sendData(payload, () => {
-      // 更新本地狀態為已完成
-      savedData.status = 'completed';
-      localStorage.setItem('mh3_user', JSON.stringify(savedData));
-
-      // --- Feedback 4: 顯示感謝畫面 ---
+      const storageData = JSON.parse(localStorage.getItem('mh3_group'));
+      storageData.status = 'completed';
+      localStorage.setItem('mh3_group', JSON.stringify(storageData));
       showSection('thankYouSection');
     });
   }
 
-  // 重新報到 (保留資料但不鎖定)
   function resetForm() {
-    const savedData = JSON.parse(localStorage.getItem('mh3_user') || '{}');
-    // 清除狀態，保留姓名電話方便重填
-    localStorage.setItem('mh3_user', JSON.stringify({
-      name: savedData.name || '',
-      phone: savedData.phone || '',
-      lastRunNumber: 'reset'
-    }));
+    const savedData = localStorage.getItem('mh3_group');
+    if (savedData) {
+      const data = JSON.parse(savedData);
+      data.runNumber = 'reset';
+      localStorage.setItem('mh3_group', JSON.stringify(data));
+    }
     location.reload();
   }
 
   function debugReset() {
-    localStorage.removeItem('mh3_user');
+    localStorage.removeItem('mh3_group');
     location.reload();
   }
 
@@ -288,12 +426,12 @@
         if(data.result === 'success') {
           onSuccess();
         } else {
-          alert('錯誤：' + (data.msg || '未知錯誤'));
+          showModal({title: '錯誤', msg: data.msg || '未知錯誤'});
         }
       })
       .catch(err => {
         console.error(err);
-        alert('連線失敗');
+        showModal({title: '連線失敗', msg: '網路連線異常，請重試'});
         document.getElementById('loading').classList.add('hidden');
       });
   }
