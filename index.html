@@ -85,7 +85,7 @@
             <h3 class="text-blue-400 font-bold mb-3 flex items-center">
                 <span class="mr-2">👤</span> 您的資料 (Main)
             </h3>
-            <input type="text" id="mainName" placeholder="姓名 / Name (必填)" class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            <input type="text" id="mainName" placeholder="兔名 / Name (必填)" class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
             <input type="tel" id="mainPhone" placeholder="電話 / Phone (必填)" class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
 
             <label class="flex items-center p-3 bg-slate-800 rounded-lg border border-slate-600 cursor-pointer hover:border-blue-500 hover:shadow-md transition select-none group">
@@ -295,7 +295,7 @@
     const mainBash = document.getElementById('mainBash').checked;
 
     if (!mainName || !mainPhone) {
-      showModal({title: '資料不完整', msg: '請填寫 Main 的「姓名」與「電話」'});
+      showModal({title: '資料不完整', msg: '請填寫 Main 的「兔名」與「電話」'});
       return;
     }
 
