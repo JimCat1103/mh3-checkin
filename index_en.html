@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MH3 Check-in - Taipei MRT Hash House Harriers Weekly Run Registration</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="description"
+          content="MH3 (Taipei MRT Hash) is a Hash House Harriers running group in Taipei, Taiwan. Combining running and beer drinking, we organize weekly Hash runs with online check-in system for participants.">
+    <meta name="keywords"
+          content="MH3, Taipei Hash, Hash House Harriers, Taipei running, beer run, social running, Hashing, Hash run, Taiwan running club">
+    <meta name="author" content="MH3 Taipei MRT Hash">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <link rel="canonical" href="https://jimcat.github.io/mh3-checkin/index_en.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://jimcat.github.io/mh3-checkin/index.html">
+    <link rel="alternate" hreflang="en" href="https://jimcat.github.io/mh3-checkin/index_en.html">
+    <link rel="alternate" hreflang="x-default" href="https://jimcat.github.io/mh3-checkin/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jimcat.github.io/mh3-checkin/index_en.html">
+    <meta property="og:title" content="MH3 - Taipei MRT Hash House Harriers Check-in System">
+    <meta property="og:description"
+          content="MH3 is Taipei's Hash House Harriers running club. Weekly runs combining trail running and social events. Online check-in system for participant management.">
+    <meta property="og:image" content="https://jimcat.github.io/mh3-checkin/logo.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:alt" content="MH3 Taipei MRT Hash Logo">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="zh_TW">
+    <meta property="og:site_name" content="MH3 Taipei Hash Check-in">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://jimcat.github.io/mh3-checkin/index_en.html">
+    <meta name="twitter:title" content="MH3 Taipei Hash House Harriers Check-in">
+    <meta name="twitter:description" content="Taipei Hash House Harriers weekly run check-in system">
+    <meta name="twitter:image" content="https://jimcat.github.io/mh3-checkin/logo.png">
+    <meta name="twitter:image:alt" content="MH3 Taipei MRT Hash Logo">
+
+    <!-- Additional SEO -->
+    <meta name="theme-color" content="#1e293b">
+    <meta name="geo.region" content="TW-TPE">
+    <meta name="geo.placename" content="Taipei">
+    <meta name="geo.position" content="25.033;121.565">
+    <meta name="ICBM" content="25.033, 121.565">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SportsOrganization",
+            "name": "MH3 - Taipei MRT Hash House Harriers",
+            "alternateName": [
+                "MH3",
+                "Taipei MRT Hash"
+            ],
+            "description": "MH3 (Taipei MRT Hash) is a Hash House Harriers chapter in Taipei, Taiwan. Hash House Harriers (HHH or H3) is an international group of non-competitive running social clubs. Members follow a trail marked by the 'Hare', do trail running, and gather for social activities (Bash) afterwards.",
+            "sport": "Running (Hash House Harriers)",
+            "url": "https://jimcat.github.io/mh3-checkin/",
+            "logo": "https://jimcat.github.io/mh3-checkin/logo.png",
+            "location": {
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "Taipei",
+                    "addressCountry": "TW"
+                }
+            },
+            "event": {
+                "@type": "SportsEvent",
+                "name": "MH3 Weekly Hash Run",
+                "description": "Weekly Hash running event including trail running and post-run social gathering (Bash)",
+                "eventSchedule": {
+                    "@type": "Schedule",
+                    "repeatFrequency": "Weekly",
+                    "byDay": "Saturday"
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loader {
+            border: 4px solid #334155;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-enter {
+            animation: modalIn 0.3s ease-out;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        input[type="checkbox"] {
+            accent-color: #2563eb;
+        }
+
+        .input-invalid {
+            border-color: #ef4444 !important;
+        }
+
+        .error-text {
+            color: #f87171;
+        }
+
+        .btn-disabled {
+            opacity: 0.6;
+            cursor: not-allowed !important;
+            background-color: #334155 !important;
+            color: #cbd5e1 !important;
+            border-color: #475569 !important;
+            box-shadow: none !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 min-h-screen p-4 flex items-center justify-center font-sans text-slate-200">
+
+<div class="w-full max-w-md bg-slate-800 rounded-xl shadow-2xl p-6 relative min-h-[300px] border border-slate-700">
+
+    <div class="text-center mb-6 border-b border-slate-700 pb-4 relative">
+        <div class="absolute left-0 top-0 z-10">
+            <a href="index.html"
+               class="text-slate-400 hover:text-blue-400 text-xs font-bold border border-slate-500 hover:border-blue-400 rounded px-2 py-1 transition bg-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">中文</a>
+        </div>
+        <a id="qaLink" href="qa_en.html"
+           class="absolute right-0 top-0 z-10 text-slate-400 hover:text-slate-900 text-sm font-bold border border-slate-500 hover:border-blue-400 rounded-full w-7 h-7 flex items-center justify-center transition bg-slate-800 hover:bg-blue-400 shadow-sm hover:shadow-blue-900/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
+           title="FAQ / Q&A">?</a>
+        <div class="flex justify-center mb-3">
+            <img src="logo.png" alt="MH3 Logo" class="h-16 w-auto sm:h-20 md:h-24 object-contain">
+        </div>
+        <h1 class="text-3xl font-extrabold text-blue-500 tracking-wider drop-shadow-lg">MH3 Check-in</h1>
+        <p class="sr-only">Taipei MRT Hash House Harriers Weekly Run Online Check-in System</p>
+        <div id="runInfoDisplay" class="hidden mt-2 fade-in">
+            <h2 id="runTitle" class="text-xl font-bold text-slate-100"></h2>
+            <div class="mt-1 text-sm text-slate-400 flex flex-col md:flex-row md:justify-center md:space-x-3 space-y-1 md:space-y-0">
+                <p id="runDate" class="leading-tight"></p>
+                <span class="hidden md:inline">|</span>
+                <p id="runHare" class="leading-tight"></p>
+                <span class="hidden md:inline">|</span>
+                <p id="runCoHare" class="leading-tight"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="initLoader"
+         class="absolute inset-0 bg-slate-800 z-40 flex flex-col items-center justify-center rounded-xl">
+        <div class="loader mb-4"></div>
+        <p class="text-slate-400 font-medium tracking-wide">Connecting...</p>
+    </div>
+
+    <div id="waitingSection" class="hidden text-center py-10 fade-in">
+        <div class="text-6xl mb-6 opacity-80">⏳</div>
+        <h3 class="text-2xl font-bold text-slate-300 mb-2">Event Not Started</h3>
+        <p class="text-slate-500 mb-6">Registration opens at 19:00 on the event day</p>
+        <div class="inline-block bg-slate-700 px-4 py-2 rounded-full text-sm font-medium text-slate-300 border border-slate-600">
+            Next Event: <span id="waitDate" class="text-blue-400 font-bold"></span>
+        </div>
+    </div>
+
+    <div id="thankYouSection" class="hidden text-center py-10 fade-in">
+        <div class="text-6xl mb-6 opacity-90">🎉</div>
+        <h3 class="text-2xl font-bold text-green-400 mb-3">Event Completed</h3>
+        <p class="text-slate-400 mb-8 px-4">Thank you for joining! See you at the next Hash.</p>
+        <div class="bg-slate-700/50 rounded-lg p-4 text-sm text-blue-300 leading-relaxed mx-2 border border-slate-600">
+            Stay hydrated, see you next week!<br>
+            <strong>On On!</strong>
+        </div>
+        <a href="checklist_en.html"
+           class="mt-6 block w-full text-center bg-slate-700 text-blue-100 py-3 rounded-xl font-semibold text-base hover:bg-slate-600 hover:text-white border border-slate-600 transition">View
+            Check-in Status</a>
+        <button id="debugResetBtn" onclick="debugReset()"
+                class="hidden mt-8 text-xs text-slate-600 hover:text-slate-400 underline transition">Reset Status
+            (Debug)
+        </button>
+    </div>
+
+    <div id="backSection" class="hidden p-2 fade-in">
+        <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 text-center shadow-inner">
+            <div class="text-4xl mb-3">🏃‍♂️</div>
+            <p id="statusTitle" class="font-bold text-xl text-green-400">Check-in Successful!</p>
+            <p id="statusSubtitle" class="text-green-600 text-sm mb-4">Enjoy the Run!</p>
+            <div class="border-t border-green-800/50 pt-3 mt-2 text-sm text-slate-400 space-y-1">
+                <p>Run: <span id="statusRunNum" class="font-bold text-slate-200"></span></p>
+                <p>Primary Contact: <span id="savedName" class="font-bold text-slate-200"></span></p>
+                <p id="buddyCountDisplay" class="text-slate-500 text-xs hidden"></p>
+            </div>
+        </div>
+        <button onclick="preBackCheck()"
+                class="mt-6 w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-xl hover:bg-blue-500 hover:shadow-blue-900/50 shadow-lg transform transition active:scale-95 flex items-center justify-center">
+            <span>🏠 I'm Back</span>
+        </button>
+        <a href="checklist_en.html"
+           class="mt-3 block w-full text-center bg-slate-700 text-blue-100 py-3 rounded-xl font-semibold text-base hover:bg-slate-600 hover:text-white border border-slate-600 transition">View
+            Check-in Status</a>
+        <button onclick="resetForm()"
+                class="mt-4 w-full text-center text-slate-500 text-sm hover:text-slate-300 transition">
+            Check-in for Others / Re-enter
+        </button>
+    </div>
+
+    <div id="formSection" class="hidden fade-in">
+        <div class="bg-slate-700/40 p-4 rounded-xl mb-6 border border-slate-700">
+            <h3 class="text-blue-400 font-bold mb-3 flex items-center">
+                <span class="mr-2">🐰</span> Check-in Info
+            </h3>
+            <input type="text" id="mainName" placeholder="Hash Name (Required)"
+                   class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            <p id="mainNameError" class="text-xs error-text mb-2 ml-1 hidden"></p>
+            <input type="tel" id="mainPhone" placeholder="Phone (Required)" inputmode="numeric" pattern="[0-9]*"
+                   class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            <p id="mainPhoneError" class="text-xs error-text mb-2 ml-1 hidden"></p>
+            <p class="text-xs text-slate-500 mb-3 ml-1">* If you've registered before, enter the same phone to retrieve
+                your data</p>
+
+            <label class="flex items-center p-3 bg-slate-800 rounded-lg border border-slate-600 cursor-pointer hover:border-blue-500 hover:shadow-md transition select-none group">
+                <input type="checkbox" id="mainBash"
+                       class="mr-3 h-5 w-5 rounded focus:ring-blue-500 cursor-pointer bg-slate-700 border-slate-500">
+                <span class="text-slate-300 font-medium flex-1 group-hover:text-blue-300 transition">Joining Bash?</span>
+            </label>
+        </div>
+
+        <div id="buddyList" class="space-y-3 mb-6"></div>
+
+        <button onclick="addBuddy()"
+                class="w-full border-2 border-dashed border-slate-600 text-slate-400 py-3 rounded-xl mb-6 hover:border-blue-500 hover:text-blue-400 hover:bg-slate-700/50 transition font-medium flex items-center justify-center">
+            <span class="mr-1">+</span> Add Buddy
+        </button>
+
+        <button onclick="submitForm()" id="submitBtn"
+                class="w-full bg-green-600 text-white py-3 rounded-xl font-bold text-xl hover:bg-green-500 hover:shadow-green-900/50 shadow-lg transition transform active:scale-95 flex items-center justify-center">
+            Check In
+        </button>
+
+        <a href="checklist_en.html"
+           class="mt-6 w-full border-2 border-dashed border-slate-600 text-slate-400 py-3 rounded-xl mb-3 hover:border-blue-500 hover:text-blue-400 hover:bg-slate-700/50 transition font-medium flex items-center justify-center">
+            <span class="mr-1">🔍</span> View Check-in Status
+        </a>
+    </div>
+
+    <div id="loading"
+         class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 flex justify-center items-center z-50 backdrop-blur-sm fade-in">
+        <div class="bg-slate-800 p-6 rounded-2xl shadow-2xl flex flex-col items-center transform scale-110 border border-slate-700">
+            <div class="loader mb-3"></div>
+            <span class="font-bold text-slate-300">Processing...</span>
+        </div>
+    </div>
+
+    <div id="customModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm transition-opacity"
+             onclick="closeModal()"></div>
+        <div class="bg-slate-800 rounded-2xl shadow-2xl w-full max-w-sm relative z-10 overflow-hidden modal-enter border border-slate-700">
+            <div class="p-6 text-center">
+                <div id="modalIcon" class="text-4xl mb-4">ℹ️</div>
+                <h3 id="modalTitle" class="text-xl font-bold text-white mb-2">Notice</h3>
+                <div id="modalContentContainer" class="text-left mb-6">
+                    <p id="modalMessage" class="text-slate-400 text-sm leading-relaxed text-center">Content...</p>
+                    <div id="modalDynamicContent" class="mt-4 space-y-2"></div>
+                </div>
+                <div id="modalButtons" class="flex space-x-3 justify-center"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxmkQakubfwGK2ZRoEL1_Z3BXixcFLuGQDMZcp2Fml8a9uvxBV-L4e5KOTx-8K5uIm5Sw/exec';
+  let currentRunInfo = {};
+  let currentGroup = [];
+  let isTestMode = false;
+
+  function showModal({
+                       title,
+                       msg,
+                       type = 'alert',
+                       confirmCallback = null,
+                       cancelCallback = null,
+                       dynamicContent = null
+                     }) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalMessage').innerText = msg || '';
+    const dynamicContainer = document.getElementById('modalDynamicContent');
+    dynamicContainer.innerHTML = '';
+    if (dynamicContent) dynamicContainer.appendChild(dynamicContent);
+    const btnContainer = document.getElementById('modalButtons');
+    btnContainer.innerHTML = '';
+    const icon = document.getElementById('modalIcon');
+    if (type === 'confirm') {
+      icon.innerText = '🤔';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = "flex-1 bg-slate-700 text-slate-300 py-2 rounded-lg font-bold hover:bg-slate-600 transition border border-slate-600";
+      cancelBtn.innerText = "Cancel";
+      cancelBtn.onclick = () => {
+        closeModal();
+        if (cancelCallback) cancelCallback();
+      };
+      const okBtn = document.createElement('button');
+      okBtn.className = "flex-1 bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-900/30";
+      okBtn.innerText = "Confirm";
+      okBtn.onclick = () => {
+        closeModal();
+        if (confirmCallback) confirmCallback();
+      };
+      btnContainer.appendChild(cancelBtn);
+      btnContainer.appendChild(okBtn);
+    } else {
+      icon.innerText = (title.includes('Error') || title.includes('Failed') || title.includes('Incomplete')) ? '❌' : '✅';
+      const okBtn = document.createElement('button');
+      okBtn.className = "w-full bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-900/30";
+      okBtn.innerText = "OK";
+      okBtn.onclick = () => {
+        closeModal();
+        if (confirmCallback) confirmCallback();
+      };
+      btnContainer.appendChild(okBtn);
+    }
+    document.getElementById('customModal').classList.remove('hidden');
+  }
+
+  function closeModal() {
+    document.getElementById('customModal').classList.add('hidden');
+  }
+
+  window.onload = async function () {
+    try {
+      const response = await fetch(API_URL, {method: 'POST', body: JSON.stringify({action: 'getInfo'})});
+      const data = await response.json();
+      currentRunInfo = data.info;
+      isTestMode = data.isTestMode === true;
+      const status = data.status;
+      document.getElementById('runTitle').innerText = `Run #${currentRunInfo.number}`;
+      document.getElementById('runDate').innerText = currentRunInfo.dateStr;
+      document.getElementById('runHare').innerText = `Hare: ${currentRunInfo.hare || 'TBA'}`;
+      document.getElementById('runCoHare').innerText = `Co-Hare: ${currentRunInfo.coHare || 'TBA'}`;
+      document.getElementById('waitDate').innerText = currentRunInfo.dateStr;
+      document.getElementById('initLoader').classList.add('hidden');
+      // Show/hide Debug button
+      const debugBtn = document.getElementById('debugResetBtn');
+      if (debugBtn) {
+        if (isTestMode) {
+          debugBtn.classList.remove('hidden');
+        } else {
+          debugBtn.classList.add('hidden');
+        }
+      }
+      if (status === 'waiting') {
+        showSection('waitingSection');
+      } else {
+        document.getElementById('runInfoDisplay').classList.remove('hidden');
+        checkLocalStorage(currentRunInfo.number);
+      }
+    } catch (e) {
+      showModal({title: 'Connection Error', msg: 'Unable to connect to the server.'});
+      document.getElementById('initLoader').classList.add('hidden');
+    }
+  };
+
+  function checkLocalStorage(serverRunNumber) {
+    const savedGroupJson = localStorage.getItem('mh3_group');
+    if (!savedGroupJson && localStorage.getItem('mh3_user')) localStorage.removeItem('mh3_user');
+    if (savedGroupJson) {
+      const groupData = JSON.parse(savedGroupJson);
+      if (`${groupData.runNumber}` !== `${serverRunNumber}`) {
+        const mainUser = groupData.users[0];
+        document.getElementById('mainName').value = mainUser.name || '';
+        document.getElementById('mainPhone').value = mainUser.phone || '';
+        document.getElementById('buddyList').innerHTML = '';
+        showSection('formSection');
+      } else {
+        currentGroup = groupData.users;
+        if (groupData.status === 'completed') {
+          showSection('thankYouSection');
+        } else {
+          const mainUser = currentGroup[0];
+          let displayContact = mainUser.name;
+          if (mainUser.coverBy && mainUser.coverBy !== 'Self') {
+            displayContact = mainUser.coverBy;
+          }
+          document.getElementById('savedName').innerText = displayContact;
+          document.getElementById('statusRunNum').innerText = `#${groupData.runNumber}`;
+          if (currentGroup.length > 1) {
+            const display = document.getElementById('buddyCountDisplay');
+            display.innerText = `(+ ${currentGroup.length - 1} buddy/buddies)`;
+            display.classList.remove('hidden');
+          } else {
+            document.getElementById('buddyCountDisplay').classList.add('hidden');
+          }
+
+          const statusTitle = document.getElementById('statusTitle');
+          const statusSubtitle = document.getElementById('statusSubtitle');
+          if (statusTitle && statusSubtitle) {
+            const isRepeat = !!groupData.isRepeat;
+            statusTitle.innerText = isRepeat ? 'Already Checked In' : 'Check-in Successful!';
+            statusSubtitle.innerText = isRepeat ? 'Found your check-in record' : 'Enjoy the Run!';
+          }
+          showSection('backSection');
+        }
+      }
+    } else {
+      showSection('formSection');
+    }
+  }
+
+  function showSection(id) {
+    ['waitingSection', 'thankYouSection', 'backSection', 'formSection'].forEach(sec => document.getElementById(sec).classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    if (id === 'formSection') {
+      validateForm(false);
+    } else {
+      setSubmitDisabled(false);
+    }
+  }
+
+  // --- Form Validation ---
+  function normalizeDigits(val) {
+    return (val || '').toString().replace(/\D/g, '');
+  }
+
+  function formatPhone(val) {
+    let d = normalizeDigits(val);
+    if (!d) return '';
+    if (d.startsWith('886')) {
+      if (d.length === 12 && d[3] === '9') d = '0' + d.slice(3);
+    } else if (d.startsWith('9') && d.length === 9) {
+      d = '0' + d;
+    }
+    if (d.startsWith('09') && d.length === 10) return d;
+    return d;
+  }
+
+  function isValidPhone(val) {
+    const d = normalizeDigits(val);
+    if (!d) return false;
+    if (d.startsWith('886')) return d.length === 12 && d[3] === '9';
+    if (d.startsWith('09')) return d.length === 10;
+    return false;
+  }
+
+  const nameRegex = /^[\p{L}\p{M}0-9][\p{L}\p{M}0-9\s''.\-]*$/u;
+
+  function setInputError(inputEl, errorEl, msg) {
+    if (!inputEl || !errorEl) return;
+    if (msg) {
+      inputEl.classList.add('input-invalid');
+      inputEl.classList.remove('focus:ring-2', 'focus:ring-blue-500', 'focus:border-blue-500');
+      inputEl.classList.add('focus:ring-0', 'focus:border-slate-500');
+      errorEl.innerText = msg;
+      errorEl.classList.remove('hidden');
+    } else {
+      inputEl.classList.remove('input-invalid');
+      inputEl.classList.remove('focus:ring-0', 'focus:border-slate-500');
+      inputEl.classList.add('focus:ring-2', 'focus:ring-blue-500', 'focus:border-blue-500');
+      errorEl.innerText = '';
+      errorEl.classList.add('hidden');
+    }
+  }
+
+  function setSubmitDisabled(disabled) {
+    const btn = document.getElementById('submitBtn');
+    if (!btn) return;
+    if (disabled) {
+      btn.classList.add('btn-disabled', 'bg-green-700', 'hover:bg-green-700', 'shadow-none', 'hover:shadow-none');
+      btn.classList.remove('bg-green-600', 'hover:bg-green-500', 'hover:shadow-green-900/50', 'shadow-lg');
+      btn.disabled = true;
+    } else {
+      btn.classList.remove('btn-disabled', 'bg-green-700', 'hover:bg-green-700', 'shadow-none', 'hover:shadow-none');
+      btn.classList.add('bg-green-600', 'hover:bg-green-500', 'hover:shadow-green-900/50', 'shadow-lg');
+      btn.disabled = false;
+    }
+  }
+
+  function validateForm(showScroll = true) {
+    let hasError = false;
+    const mainNameEl = document.getElementById('mainName');
+    const mainPhoneEl = document.getElementById('mainPhone');
+    const mainNameError = document.getElementById('mainNameError');
+    const mainPhoneError = document.getElementById('mainPhoneError');
+
+    const mainName = mainNameEl.value.trim();
+    const mainPhone = mainPhoneEl.value.trim();
+
+    if (!mainName) {
+      setInputError(mainNameEl, mainNameError, 'Please enter your name');
+      hasError = true;
+    } else if (!nameRegex.test(mainName) || /[<>]/.test(mainName)) {
+      setInputError(mainNameEl, mainNameError, 'Invalid name format');
+      hasError = true;
+    } else {
+      setInputError(mainNameEl, mainNameError, '');
+    }
+
+    if (!mainPhone) {
+      setInputError(mainPhoneEl, mainPhoneError, 'Please enter your phone');
+      hasError = true;
+    } else if (!isValidPhone(mainPhone)) {
+      setInputError(mainPhoneEl, mainPhoneError, 'Invalid phone format');
+      hasError = true;
+    } else {
+      setInputError(mainPhoneEl, mainPhoneError, '');
+    }
+
+    document.querySelectorAll('#buddyList > div').forEach(div => {
+      const nEl = div.querySelector('.buddy-name');
+      const pEl = div.querySelector('.buddy-phone');
+      const nErr = div.querySelector('.buddy-name-error');
+      const pErr = div.querySelector('.buddy-phone-error');
+      const nVal = nEl.value.trim();
+      const pVal = pEl.value.trim();
+
+      if (pVal && !nVal) {
+        setInputError(nEl, nErr, 'Please enter name');
+        hasError = true;
+      } else if (nVal && (!nameRegex.test(nVal) || /[<>]/.test(nVal))) {
+        setInputError(nEl, nErr, 'Invalid name format');
+        hasError = true;
+      } else {
+        setInputError(nEl, nErr, '');
+      }
+
+      if (pVal && !isValidPhone(pVal)) {
+        setInputError(pEl, pErr, 'Invalid phone format');
+        hasError = true;
+      } else {
+        setInputError(pEl, pErr, '');
+      }
+    });
+
+    setSubmitDisabled(hasError);
+    if (hasError && showScroll) {
+      const firstErr = document.querySelector('.input-invalid');
+      if (firstErr) firstErr.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+    return !hasError;
+  }
+
+  function addBuddy(name = '', phone = '') {
+    const div = document.createElement('div');
+    div.className = "mb-3 bg-slate-800 p-3 rounded-xl border border-slate-700 relative fade-in shadow-sm";
+    div.innerHTML = `
+            <button onclick="removeBuddy(this)" class="absolute top-1 right-2 text-slate-500 hover:text-red-400 font-bold p-1 transition">✕</button>
+            <h4 class="text-xs font-bold text-slate-500 mb-2 uppercase">Buddy</h4>
+            <input type="text" class="buddy-name w-full p-2 border border-slate-600 rounded-lg mb-2 bg-slate-900 text-white placeholder-slate-500 focus:ring-1 focus:ring-blue-500 outline-none" placeholder="Buddy Name" value="${name}">
+            <p class="text-xs error-text mb-1 hidden buddy-name-error"></p>
+            <input type="tel" class="buddy-phone w-full p-2 border border-slate-600 rounded-lg mb-2 bg-slate-900 text-white placeholder-slate-500 focus:ring-1 focus:ring-blue-500 outline-none" placeholder="Buddy Phone (Optional)" inputmode="numeric" pattern="[0-9]*" value="${phone}">
+            <p class="text-xs error-text mb-1 hidden buddy-phone-error"></p>
+            <label class="flex items-center p-2 bg-slate-900 rounded-lg border border-slate-600 cursor-pointer hover:border-blue-500 transition select-none group">
+                <input type="checkbox" class="buddy-bash mr-2 h-4 w-4 rounded cursor-pointer bg-slate-800 border-slate-500">
+                <span class="text-sm text-slate-400 cursor-pointer flex-1 group-hover:text-blue-300 transition">Joining Bash?</span>
+            </label>
+        `;
+    document.getElementById('buddyList').appendChild(div);
+    validateForm(false);
+  }
+
+  function removeBuddy(btn) {
+    const parent = btn.parentElement;
+    if (parent) parent.remove();
+    validateForm(false);
+  }
+
+  function submitForm() {
+    if (!validateForm()) return;
+
+    const mainName = document.getElementById('mainName').value.trim();
+    const mainPhone = formatPhone(document.getElementById('mainPhone').value.trim());
+    const mainBash = document.getElementById('mainBash').checked;
+
+    const users = [];
+    users.push({name: mainName, phone: mainPhone, bash: mainBash, coverBy: 'Self'});
+    document.querySelectorAll('#buddyList > div').forEach(div => {
+      const bName = div.querySelector('.buddy-name').value.trim();
+      const bPhoneInput = div.querySelector('.buddy-phone').value.trim();
+      const bPhone = bPhoneInput ? formatPhone(bPhoneInput) : mainPhone;
+      const bBash = div.querySelector('.buddy-bash').checked;
+      if (bName) {
+        users.push({name: bName, phone: bPhone, bash: bBash, coverBy: mainName});
+      }
+    });
+
+    const payload = {action: 'checkin', runNumber: currentRunInfo.number, users: users};
+
+    sendData(payload, (data) => {
+      const returnedUsers = data.processedUsers;
+      const currentUser = returnedUsers[0];
+
+      const storageData = {
+        runNumber: currentRunInfo.number,
+        status: 'checked_in',
+        users: returnedUsers,
+        isRepeat: false
+      };
+
+      if (returnedUsers.length === 1) {
+        if (currentUser.back === true) {
+          storageData.status = 'completed';
+          localStorage.setItem('mh3_group', JSON.stringify(storageData));
+          showSection('thankYouSection');
+          return;
+        } else if (currentUser.isNew === false) {
+          storageData.isRepeat = true;
+          localStorage.setItem('mh3_group', JSON.stringify(storageData));
+          checkLocalStorage(currentRunInfo.number);
+          return;
+        }
+      }
+
+      localStorage.setItem('mh3_group', JSON.stringify(storageData));
+      showModal({
+        title: 'Check-in Successful', msg: 'Have a great run! On On!', type: 'success', confirmCallback: () => {
+          checkLocalStorage(currentRunInfo.number);
+        }
+      });
+    });
+  }
+
+  function preBackCheck() {
+    syncGroupFromServer(() => {
+      const nonBashers = currentGroup.filter(u => u.bash === false);
+      if (nonBashers.length > 0) {
+        const container = document.createElement('div');
+        container.className = "flex flex-col space-y-2 max-h-40 overflow-y-auto border-t border-b border-slate-600 py-2";
+        nonBashers.forEach((u, index) => {
+          const label = document.createElement('label');
+          label.className = "flex items-center space-x-2 cursor-pointer p-2 hover:bg-slate-700 rounded transition";
+          label.innerHTML = `<input type="checkbox" data-idx="${index}" class="bash-补-check h-4 w-4 rounded bg-slate-900 border-slate-500"><span class="text-sm text-slate-300">${u.name}</span>`;
+          container.appendChild(label);
+        });
+        showModal({
+          title: 'Add Bash Registration',
+          msg: 'The following people are not registered for Bash. Would you like to add them now? (Press Confirm if none)',
+          type: 'confirm',
+          dynamicContent: container,
+          confirmCallback: () => {
+            const checks = container.querySelectorAll('.bash-补-check');
+            const targets = [];
+            currentGroup.filter(u => u.bash === true).forEach(u => {
+              targets.push({phone: u.phone, joinBash: true});
+            });
+            nonBashers.forEach((u, idx) => {
+              const isChecked = checks[idx].checked;
+              targets.push({phone: u.phone, joinBash: isChecked});
+            });
+            executeBack(targets);
+          }
+        });
+      } else {
+        showModal({
+          title: 'Safety Check Confirmation',
+          msg: `Confirm all ${currentGroup.length} person(s) have returned safely?`,
+          type: 'confirm',
+          confirmCallback: () => {
+            const targets = currentGroup.map(u => ({phone: u.phone, joinBash: true}));
+            executeBack(targets);
+          }
+        });
+      }
+    });
+  }
+
+  function executeBack(targets) {
+    const payload = {action: 'back', runNumber: currentRunInfo.number, targets: targets};
+    sendData(payload, () => {
+      const storageData = JSON.parse(localStorage.getItem('mh3_group'));
+      storageData.status = 'completed';
+      localStorage.setItem('mh3_group', JSON.stringify(storageData));
+      showSection('thankYouSection');
+    });
+  }
+
+  function resetForm() {
+    const savedData = localStorage.getItem('mh3_group');
+    if (savedData) {
+      const data = JSON.parse(savedData);
+      data.runNumber = 'reset';
+      localStorage.setItem('mh3_group', JSON.stringify(data));
+    }
+    location.reload();
+  }
+
+  function debugReset() {
+    localStorage.removeItem('mh3_group');
+    location.reload();
+  }
+
+  function syncGroupFromServer(callback) {
+    const storage = localStorage.getItem('mh3_group');
+    if (!storage) {
+      if (callback) callback();
+      return;
+    }
+    const parsed = JSON.parse(storage);
+    const users = parsed.users || [];
+    const payload = {action: 'syncGroup', runNumber: currentRunInfo.number, users: users};
+    document.getElementById('loading').classList.remove('hidden');
+    fetch(API_URL, {method: 'POST', body: JSON.stringify(payload)})
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('loading').classList.add('hidden');
+        if (data.result !== 'success') {
+          showModal({title: 'Sync Failed', msg: data.msg || 'Please try again later'});
+          return;
+        }
+        const syncedUsers = data.users || [];
+        currentGroup = syncedUsers;
+        const updatedStorage = {
+          runNumber: parsed.runNumber,
+          status: parsed.status,
+          users: syncedUsers,
+          isRepeat: parsed.isRepeat
+        };
+        if (syncedUsers.length > 0 && syncedUsers.every(u => u.back === true)) {
+          updatedStorage.status = 'completed';
+        }
+        localStorage.setItem('mh3_group', JSON.stringify(updatedStorage));
+        const mainUser = syncedUsers[0];
+        if (mainUser) {
+          const displayContact = mainUser.coverBy && mainUser.coverBy !== 'Self' ? mainUser.coverBy : mainUser.name;
+          document.getElementById('savedName').innerText = displayContact;
+          if (syncedUsers.length > 1) {
+            const display = document.getElementById('buddyCountDisplay');
+            display.innerText = `(+ ${syncedUsers.length - 1} buddy/buddies)`;
+            display.classList.remove('hidden');
+          }
+        }
+        if (callback) callback();
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('loading').classList.add('hidden');
+        showModal({title: 'Sync Failed', msg: 'Network error, please try again later'});
+      });
+  }
+
+  function sendData(payload, onSuccess) {
+    document.getElementById('loading').classList.remove('hidden');
+    fetch(API_URL, {method: 'POST', body: JSON.stringify(payload)})
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('loading').classList.add('hidden');
+        if (data.result === 'success') {
+          onSuccess(data);
+        } else {
+          showModal({title: 'Error', msg: data.msg || 'Unknown error'});
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        showModal({title: 'Connection Failed', msg: 'Network connection error, please retry'});
+        document.getElementById('loading').classList.add('hidden');
+      });
+  }
+
+  document.getElementById('formSection').addEventListener('input', () => validateForm(false));
+
+  const qaLink = document.getElementById('qaLink');
+  if (qaLink) {
+    qaLink.addEventListener('click', function (e) {
+      if (e.metaKey || e.ctrlKey) return;
+      e.preventDefault();
+      window.location.href = this.getAttribute('href');
+    });
+  }
+</script>
+</body>
+</html>
+
