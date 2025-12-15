@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MH3 常見問題 Q&A - 台北捷運兔簽到系統使用說明</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="description" content="台北捷運兔 MH3 簽到系統常見問題：如何簽到簽回、幫別人報到、修改 Bash 聚餐登記等使用說明。">
+    <meta name="keywords" content="MH3, 台北捷運兔, Hash 簽到, FAQ, 常見問題, 使用說明">
+    <meta name="author" content="MH3 台北捷運兔">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://jimcat.github.io/mh3-checkin/qa.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://jimcat.github.io/mh3-checkin/qa.html">
+    <link rel="alternate" hreflang="en" href="https://jimcat.github.io/mh3-checkin/qa_en.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jimcat.github.io/mh3-checkin/qa.html">
+    <meta property="og:title" content="MH3 常見問題 Q&A - 台北捷運兔">
+    <meta property="og:description" content="台北捷運兔 MH3 簽到系統常見問題與使用說明">
+    <meta property="og:image" content="https://jimcat.github.io/mh3-checkin/logo.png">
+    <meta property="og:image:alt" content="MH3 台北捷運兔 Logo">
+    <meta property="og:locale" content="zh_TW">
+    <meta property="og:site_name" content="MH3 台北捷運兔 Check-in">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="MH3 常見問題 Q&A">
+    <meta name="twitter:description" content="台北捷運兔簽到系統使用說明">
+    <meta name="twitter:image" content="https://jimcat.github.io/mh3-checkin/logo.png">
+
+    <meta name="theme-color" content="#1e293b">
+
+    <!-- FAQ Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "怎麼完成簽到與簽回？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "填兔名與電話送出即可簽到，簽到成功後會看到「我回來了」按鈕，跑完請點此按鈕完成簽回。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "可以幫別人簽到嗎？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "可以，在簽到頁面可以選擇新增同伴，同伴電話可留空會沿用主聯絡人的電話；若填入同伴電話，之後同伴用自己的手機輸入自己的電話號碼即可載入資料並自行完成簽回。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Bash 想修改怎麼做？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "尚未簽回前：使用同一支電話重新簽到即可更新 Bash。已簽回：請在點擊簽回完成時藉由通知勾選是否參加 Bash；若已簽回完成，改由現場告知負責人。"
+                }
+            }
+        ]
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 min-h-screen p-4 flex items-center justify-center font-sans text-slate-200">
+
+<div class="w-full max-w-md bg-slate-800 rounded-xl shadow-2xl p-6 border border-slate-700 fade-in">
+
+    <div class="text-center mb-6 border-b border-slate-700 pb-4 relative">
+        <a href="index.html"
+           class="absolute left-0 top-0 text-blue-400 hover:text-blue-300 text-sm font-bold flex items-center transition">
+            ← 返回
+        </a>
+        <a href="qa_en.html"
+           class="absolute right-0 top-0 text-slate-400 hover:text-blue-400 text-xs font-bold border border-slate-500 hover:border-blue-400 rounded px-2 py-1 transition bg-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">EN</a>
+        <div class="flex justify-center mb-3">
+            <img src="logo.png" alt="MH3 Logo" class="h-16 w-auto sm:h-20 object-contain">
+        </div>
+        <h1 class="text-2xl font-extrabold text-blue-500 tracking-wider">常見問題 Q&A</h1>
+    </div>
+
+    <div class="space-y-4 h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+
+        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+            <h3 class="text-blue-300 font-bold mb-2 flex items-start">
+                <span class="mr-2">Q1.</span> 怎麼完成簽到與簽回？
+            </h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+                填兔名與電話送出即可簽到，簽到成功後會看到「我回來了」按鈕，跑完請點此按鈕完成簽回。
+            </p>
+        </div>
+
+        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+            <h3 class="text-blue-300 font-bold mb-2 flex items-start">
+                <span class="mr-2">Q2.</span> 可以幫別人簽到嗎？
+            </h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+                可以，在簽到頁面可以選擇新增同伴，同伴電話可留空會沿用主聯絡人的電話；若填入同伴電話，之後同伴用自己的手機輸入自己的電話號碼即可載入資料並自行完成簽回。<br>
+                - 若已簽回：系統會直接顯示完成頁，不再改動資料。<br>
+                - 若未簽回：會顯示「已報到」畫面，主要負責人仍會標示主聯絡人以利辨識。
+            </p>
+        </div>
+
+        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+            <h3 class="text-blue-300 font-bold mb-2 flex items-start">
+                <span class="mr-2">Q3.</span> Bash 想修改怎麼做？
+            </h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+                尚未簽回前：使用同一支電話重新簽到即可更新 Bash。<br>
+                已簽回：請在點擊簽回完成時藉由通知勾選是否參加 Bash；若已簽回完成，改由現場告知負責人。
+            </p>
+        </div>
+
+        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+            <h3 class="text-blue-300 font-bold mb-2 flex items-start">
+                <span class="mr-2">Q4.</span> 重新填寫或幫別人報到？
+            </h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+                若尚未簽回完成，在簽到成功頁點「幫別人報到 / 重新輸入」，即可重新填寫，您的舊資料仍會留在系統，可用原電話再次簽到或查詢。
+            </p>
+        </div>
+
+        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+            <h3 class="text-blue-300 font-bold mb-2 flex items-start">
+                <span class="mr-2">Q5.</span> 活動開放時間與結束？
+            </h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+                報到會依當週跑次自動開放，未開放時會顯示下一次跑次資訊。簽回完成後仍可查看名單，但不會再改動已簽回資料。
+            </p>
+        </div>
+
+        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+            <h3 class="text-blue-300 font-bold mb-2 flex items-start">
+                <span class="mr-2">Q6.</span> 如何查看當次報到名單？
+            </h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+                在首頁、簽到成功頁或簽回完成頁面點擊「查看報到狀況」即可，若有簽到或，會優先把您或您的團隊資料置頂方便查看。
+            </p>
+        </div>
+
+    </div>
+
+    <div class="mt-6 text-center">
+        <a href="index.html"
+           class="inline-block w-full bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold py-3 rounded-xl transition">
+            返回首頁
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>
