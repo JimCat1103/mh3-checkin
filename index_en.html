@@ -170,12 +170,10 @@
         <p class="sr-only">Taipei MRT Hash House Harriers Weekly Run Online Check-in System</p>
         <div id="runInfoDisplay" class="hidden mt-2 fade-in">
             <h2 id="runTitle" class="text-xl font-bold text-slate-100"></h2>
-            <div class="mt-1 text-sm text-slate-400 flex flex-col md:flex-row md:justify-center md:space-x-3 space-y-1 md:space-y-0">
-                <p id="runDate" class="leading-tight"></p>
-                <span class="hidden md:inline">|</span>
-                <p id="runHare" class="leading-tight"></p>
-                <span class="hidden md:inline">|</span>
-                <p id="runCoHare" class="leading-tight"></p>
+            <div class="mt-1 text-sm text-slate-400 flex flex-col space-y-1">
+                <p id="runDate" class="leading-tight text-center"></p>
+                <p id="runHare" class="leading-tight text-center"></p>
+                <p id="runCoHare" class="leading-tight text-center"></p>
             </div>
         </div>
     </div>
@@ -407,7 +405,19 @@
       } else {
         currentGroup = groupData.users;
         if (groupData.status === 'completed') {
-          showSection('thankYouSection');
+          // When status is completed, verify if the sheet exists
+          verifySheetExists(serverRunNumber, () => {
+            // Sheet exists, show completion page
+            showSection('thankYouSection');
+          }, () => {
+            // Sheet doesn't exist, clear state and reopen check-in
+            localStorage.removeItem('mh3_group');
+            const mainUser = groupData.users[0];
+            document.getElementById('mainName').value = mainUser.name || '';
+            document.getElementById('mainPhone').value = mainUser.phone || '';
+            document.getElementById('buddyList').innerHTML = '';
+            showSection('formSection');
+          });
         } else {
           const mainUser = currentGroup[0];
           let displayContact = mainUser.name;
@@ -718,6 +728,28 @@
   function debugReset() {
     localStorage.removeItem('mh3_group');
     location.reload();
+  }
+
+  // Verify if the specified run sheet exists
+  function verifySheetExists(runNumber, onExists, onNotExists) {
+    document.getElementById('initLoader').classList.remove('hidden');
+    const payload = {action: 'checkSheet', runNumber: runNumber};
+    fetch(API_URL, {method: 'POST', body: JSON.stringify(payload)})
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('initLoader').classList.add('hidden');
+        if (data.result === 'success' && data.exists === true) {
+          if (onExists) onExists();
+        } else {
+          if (onNotExists) onNotExists();
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('initLoader').classList.add('hidden');
+        // In case of network error, conservatively assume sheet exists
+        if (onExists) onExists();
+      });
   }
 
   function syncGroupFromServer(callback) {
