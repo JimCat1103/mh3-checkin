@@ -1,0 +1,47 @@
+# MH3 - Taipei MRT Hash House Harriers Check-in System
+
+> 台北捷運兔 (MH3) 是台北地區的 Hash House Harriers 跑步團體，每週舉辦結合跑步與社交飲酒的活動。本網站提供線上簽到系統，方便參加者報名與安全回報。
+
+## About MH3 (台北捷運兔)
+
+MH3 stands for "MRT Hash House Harriers" - a Hash running club based in Taipei, Taiwan. Hash House Harriers (HHH or H3) is an international group of non-competitive running social clubs, often described as "a drinking club with a running problem."
+
+### What is Hash House Harriers?
+
+Hash House Harriers was founded in 1938 in Kuala Lumpur, Malaysia. The concept is simple:
+- A "Hare" sets a trail using chalk, flour, or paper markers
+- "Hounds" (runners) follow the trail
+- After the run, participants gather for social activities (called "Bash" or "On-After")
+- Beer and camaraderie are essential parts of the tradition
+
+### MH3 Weekly Activities
+
+- **Schedule**: Weekly runs, typically on Saturdays
+- **Location**: Various locations around Taipei, Taiwan
+- **Format**: Trail running followed by social gathering (Bash)
+- **Participants**: Mix of locals and expats, all fitness levels welcome
+
+## This Website
+
+This is the official check-in system for MH3 weekly runs:
+
+- **Check-in**: Participants register for the weekly run with their Hash name and phone number
+- **Sign-back**: After completing the run, participants confirm their safe return
+- **Bash Registration**: Option to join the post-run social gathering
+- **Buddy System**: Register companions under one primary contact
+
+## Pages
+
+- [Home (Chinese)](https://jimcat.github.io/mh3-checkin/index.html) - 簽到首頁（中文）
+- [Home (English)](https://jimcat.github.io/mh3-checkin/index_en.html) - Check-in home page
+- [FAQ (Chinese)](https://jimcat.github.io/mh3-checkin/qa.html) - 常見問題
+- [FAQ (English)](https://jimcat.github.io/mh3-checkin/qa_en.html) - Frequently Asked Questions
+
+## Contact & Community
+
+MH3 is part of the global Hash House Harriers network. For more information about Hash House Harriers worldwide, search for "Hash House Harriers" or visit regional Hash websites.
+
+## Keywords
+
+台北捷運兔, MH3, Hash House Harriers, Taipei Hash, 台北跑步, beer running, social running, hashing, trail running Taiwan, 跑步團體, 喝酒跑步
+

@@ -1,0 +1,22 @@
+# MH3 Check-in - Taipei MRT Hash House Harriers
+# See: https://llmstxt.org/
+# LLMs.txt for AI/LLM crawlers
+
+Sitemap: https://jimcat.github.io/mh3-checkin/sitemap.xml
+# Sitemap
+
+Disallow: /checklist_en.html
+Disallow: /checklist.html
+# Disallow internal lists (dynamic content)
+
+Allow: /qa_en.html
+Allow: /qa.html
+Allow: /index_en.html
+Allow: /index.html
+# Main pages
+
+Allow: /
+User-agent: *
+
+# https://jimcat.github.io/mh3-checkin/
+
