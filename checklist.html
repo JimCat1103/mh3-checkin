@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MH3 報到狀況 - 台北捷運兔本週跑次簽到名單</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <meta name="description"
+          content="查看台北捷運兔 MH3 本週 Hash 跑次的即時簽到狀況，包含參加者名單、Bash 聚餐登記、安全回報狀態。">
+    <meta name="keywords" content="MH3 簽到, Hash 參加名單, 台北捷運兔報到, MH3 跑次狀況">
+    <link rel="canonical" href="https://jimcat.github.io/mh3-checkin/checklist.html">
+    <meta property="og:title" content="MH3 本週跑次簽到狀況">
+    <meta property="og:description" content="台北捷運兔 Hash 跑次即時簽到名單與狀態">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jimcat.github.io/mh3-checkin/checklist.html">
+    <meta property="og:image" content="https://jimcat.github.io/mh3-checkin/logo.png">
+    <meta property="og:image:alt" content="MH3 台北捷運兔 Logo">
+    <meta property="og:site_name" content="MH3 台北捷運兔 Check-in">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="MH3 本週跑次簽到狀況">
+    <meta name="twitter:description" content="台北捷運兔 Hash 跑次即時簽到名單與狀態">
+    <meta name="twitter:image" content="https://jimcat.github.io/mh3-checkin/logo.png">
+    <meta name="robots" content="noindex">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.35s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loader {
+            border: 4px solid #334155;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 min-h-screen text-slate-200 overflow-x-hidden">
+
+<div class="max-w-6xl w-full mx-auto px-4 py-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+        <div class="min-w-[200px] text-center md:text-left">
+            <div class="flex justify-center md:justify-start items-center gap-2 mb-3">
+                <img src="logo.png" alt="MH3 Logo" class="h-12 w-auto sm:h-14 object-contain">
+            </div>
+            <div class="flex justify-center md:justify-start items-center gap-2 mb-1">
+                <p class="text-sm text-slate-500">MH3 Check-in</p>
+                <a href="checklist_en.html"
+                   class="text-slate-400 hover:text-blue-400 text-xs font-bold border border-slate-500 hover:border-blue-400 rounded px-2 py-0.5 transition bg-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">EN</a>
+            </div>
+            <h1 class="text-2xl font-extrabold text-blue-400 tracking-wide">報到狀況</h1>
+            <div id="runInfo" class="text-sm text-slate-500 mt-1 leading-relaxed whitespace-pre-line"></div>
+        </div>
+        <div class="flex flex-col md:flex-row w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2">
+            <button id="refreshBtn"
+                    class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 border border-slate-600 text-sm font-semibold transition flex items-center justify-center min-h-[40px] text-center whitespace-nowrap w-full md:w-auto">
+                重新整理
+            </button>
+            <a href="index.html"
+               class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition shadow-lg shadow-blue-900/40 flex items-center justify-center min-h-[40px] text-center whitespace-nowrap w-full md:w-auto">返回首頁</a>
+        </div>
+    </div>
+
+    <div id="statusBar" class="flex flex-wrap items-center text-xs text-slate-500 mb-3 gap-2">
+        <span id="lastUpdated">尚未更新</span>
+        <span class="hidden md:inline">|</span>
+        <span id="highlightHint" class="text-blue-300 hidden">已優先顯示您或您的團隊資訊</span>
+    </div>
+
+    <div id="listContainer" class="space-y-3"></div>
+
+    <div id="emptyState" class="hidden mt-12 text-center text-slate-500">
+        <div class="text-5xl mb-3">📋</div>
+        <p class="font-semibold">尚無簽到資料</p>
+    </div>
+</div>
+
+<div id="loading" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="bg-slate-800 border border-slate-700 px-6 py-5 rounded-2xl shadow-xl flex flex-col items-center space-y-3">
+        <div class="loader"></div>
+        <p class="text-sm text-slate-300 font-semibold">資料更新中...</p>
+    </div>
+</div>
+
+<script>
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxmkQakubfwGK2ZRoEL1_Z3BXixcFLuGQDMZcp2Fml8a9uvxBV-L4e5KOTx-8K5uIm5Sw/exec';
+  let currentRunNumber = null;
+
+  const maskLocalPhone = (phone) => {
+    const norm = phone.toString().replace(/\\D/g, '').replace(/^0+/, '');
+    if (!norm) return '';
+    if (norm.length <= 5) return norm;
+    return norm.slice(0, 2) + 'XXXXX' + norm.slice(-3);
+  };
+
+  window.onload = async function () {
+    await initPage();
+    document.getElementById('refreshBtn').addEventListener('click', fetchList);
+  };
+
+  async function initPage() {
+    toggleLoading(true);
+    try {
+      const res = await fetch(API_URL, {method: 'POST', body: JSON.stringify({action: 'getInfo'})});
+      const data = await res.json();
+      currentRunNumber = data.info.number;
+      const hareText = data.info.hare || '尚未提供';
+      const coHareText = data.info.coHare || '尚未提供';
+      document.getElementById('runInfo').innerText = `Run #${data.info.number}\n${data.info.dateStr}\nHare: ${hareText}\nCo-Hare: ${coHareText}`;
+      await fetchList();
+    } catch (err) {
+      console.error(err);
+      alert('載入活動資訊失敗，請稍後再試');
+      toggleLoading(false);
+    }
+  }
+
+  function getMyPhones() {
+    const storage = localStorage.getItem('mh3_group');
+    if (!storage) return [];
+    try {
+      const parsed = JSON.parse(storage);
+      const phones = (parsed.users || []).map(u => u.phone).filter(Boolean);
+      return phones;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async function fetchList() {
+    if (!currentRunNumber) return;
+    toggleLoading(true);
+    const myPhones = getMyPhones();
+    const payload = {action: 'listCheckin', runNumber: currentRunNumber, myPhones: myPhones};
+    try {
+      const res = await fetch(API_URL, {method: 'POST', body: JSON.stringify(payload)});
+      const data = await res.json();
+      toggleLoading(false);
+      if (data.result !== 'success' || !data.rows) {
+        renderEmptyWithStatus('尚未更新，可能尚未建立工作表或尚無資料');
+        return;
+      }
+      renderList(data.rows || [], myPhones);
+      const ts = new Date();
+      document.getElementById('lastUpdated').innerText = `更新時間：${ts.toLocaleTimeString('zh-TW')}`;
+    } catch (err) {
+      console.error(err);
+      toggleLoading(false);
+      renderEmptyWithStatus('尚未更新，請稍後再試');
+    }
+  }
+
+  function renderList(rows, myPhones) {
+    const container = document.getElementById('listContainer');
+    container.innerHTML = '';
+    if (!rows || rows.length === 0) {
+      document.getElementById('emptyState').classList.remove('hidden');
+      return;
+    }
+    document.getElementById('emptyState').classList.add('hidden');
+
+    const myMaskedSet = new Set(myPhones.map(maskLocalPhone).filter(Boolean));
+    const coverHit = new Set();
+    rows.forEach(r => {
+      if (r.isMine) {
+        if (r.coverBy && r.coverBy !== 'Self') coverHit.add(r.coverBy);
+        if (r.coverBy === 'Self' || !r.coverBy) coverHit.add(r.name);
+      }
+    });
+
+    const parsedRows = rows.map(r => {
+      const isMine = r.isMine || coverHit.has(r.coverBy) || (r.coverBy === 'Self' && coverHit.has(r.name)) || myMaskedSet.has(r.phone);
+      return Object.assign({}, r, {
+        isMine,
+        timeValue: toSeconds(r.signInTime)
+      });
+    });
+
+    parsedRows.sort((a, b) => {
+      if (a.isMine !== b.isMine) return a.isMine ? -1 : 1;
+      return a.timeValue - b.timeValue;
+    });
+
+    const highlight = parsedRows.some(r => r.isMine);
+    document.getElementById('highlightHint').classList.toggle('hidden', !highlight);
+
+    // 桌機版表格
+    const tableWrapper = document.createElement('div');
+    tableWrapper.className = 'hidden md:block';
+    tableWrapper.innerHTML = `
+      <div class="w-full overflow-x-auto">
+        <table class="w-full border border-slate-700 text-sm text-slate-200">
+          <thead class="bg-slate-800/80">
+            <tr>
+              <th class="px-4 py-3 text-left border-b border-slate-700">簽到時間</th>
+              <th class="px-4 py-3 text-left border-b border-slate-700">姓名</th>
+              <th class="px-4 py-3 text-left border-b border-slate-700">電話</th>
+              <th class="px-4 py-3 text-left border-b border-slate-700">Bash</th>
+              <th class="px-4 py-3 text-left border-b border-slate-700">Back</th>
+              <th class="px-4 py-3 text-left border-b border-slate-700">簽回時間</th>
+              <th class="px-4 py-3 text-left border-b border-slate-700">備註</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="divide-y divide-slate-800"></tbody>
+        </table>
+      </div>
+    `;
+    container.appendChild(tableWrapper);
+
+    const tbody = tableWrapper.querySelector('#tableBody');
+    parsedRows.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.className = `fade-in ${r.isMine ? 'bg-slate-800/70' : 'bg-slate-900/30'}`;
+      tr.innerHTML = `
+        <td class="px-4 py-3 text-slate-300">${r.signInTime || '—'}</td>
+        <td class="px-4 py-3 font-semibold text-slate-100 whitespace-nowrap">${r.name}</td>
+        <td class="px-4 py-3 text-slate-300 whitespace-nowrap">${r.phone || '—'}</td>
+        <td class="px-4 py-3">${renderPill('Bash', r.bash)}</td>
+        <td class="px-4 py-3">${renderPill('Back', r.back, true)}</td>
+        <td class="px-4 py-3 text-slate-400 whitespace-nowrap">${r.signOutTime || '—'}</td>
+        <td class="px-4 py-3 text-slate-500">${r.note || '—'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // 行動版卡片
+    const cardsWrapper = document.createElement('div');
+    cardsWrapper.className = 'space-y-3 md:hidden';
+    parsedRows.forEach(r => {
+      const card = document.createElement('div');
+      card.className = `p-4 rounded-xl border ${r.isMine ? 'border-blue-500/70 bg-slate-800/80' : 'border-slate-700 bg-slate-800/60'} shadow-sm fade-in`;
+      card.innerHTML = `
+        <div class="flex items-center justify-between mb-2">
+          <div class="text-lg font-bold text-slate-100">${r.name}</div>
+          <div class="text-xs text-slate-500">${r.signInTime || '—'}</div>
+        </div>
+        <div class="text-sm text-slate-300 mb-2">電話：${r.phone || '—'}</div>
+        <div class="flex items-center space-x-2 text-xs mb-2">
+          ${renderPill('Bash', r.bash)}
+          ${renderPill('Back', r.back, true)}
+          <span class="px-2 py-1 rounded-full border border-slate-600 text-slate-400">簽回：${r.signOutTime || '—'}</span>
+        </div>
+        <div class="text-xs text-slate-500">備註：${r.note || '—'}</div>
+      `;
+      cardsWrapper.appendChild(card);
+    });
+    container.appendChild(cardsWrapper);
+  }
+
+  function toSeconds(hms) {
+    if (!hms) return Number.POSITIVE_INFINITY;
+    const parts = hms.split(':').map(Number);
+    if (parts.length !== 3 || parts.some(isNaN)) return Number.POSITIVE_INFINITY;
+    return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  }
+
+  function toggleLoading(state) {
+    document.getElementById('loading').classList.toggle('hidden', !state);
+  }
+
+  function renderEmptyWithStatus(msg) {
+    document.getElementById('listContainer').innerHTML = '';
+    document.getElementById('emptyState').classList.remove('hidden');
+    document.getElementById('lastUpdated').innerText = msg;
+    document.getElementById('highlightHint').classList.add('hidden');
+  }
+
+  function renderPill(label, isTrue, isBack = false) {
+    if (isTrue) {
+      return `<span class="px-2 py-1 rounded-full border border-green-500 text-green-300 text-xs">${label}</span>`;
+    }
+    // 未 Back 時顏色與簽回時間一致
+    const baseColor = isBack ? 'text-slate-400 border-slate-600' : 'text-slate-400 border-slate-600';
+    return `<span class="px-2 py-1 rounded-full border ${baseColor} text-xs">${label}</span>`;
+  }
+</script>
+</body>
+</html>
