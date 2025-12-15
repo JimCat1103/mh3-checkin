@@ -402,7 +402,19 @@
       } else {
         currentGroup = groupData.users;
         if (groupData.status === 'completed') {
-          showSection('thankYouSection');
+          // 當狀態是 completed 時，驗證該跑次的表是否存在
+          verifySheetExists(serverRunNumber, () => {
+            // 表存在，正常顯示完成頁面
+            showSection('thankYouSection');
+          }, () => {
+            // 表不存在，清除狀態並重新開放簽到
+            localStorage.removeItem('mh3_group');
+            const mainUser = groupData.users[0];
+            document.getElementById('mainName').value = mainUser.name || '';
+            document.getElementById('mainPhone').value = mainUser.phone || '';
+            document.getElementById('buddyList').innerHTML = '';
+            showSection('formSection');
+          });
         } else {
           // 顯示主要聯絡人邏輯
           const mainUser = currentGroup[0];
@@ -722,6 +734,25 @@
   function debugReset() {
     localStorage.removeItem('mh3_group');
     location.reload();
+  }
+
+  // 驗證指定跑次的表是否存在
+  function verifySheetExists(runNumber, onExists, onNotExists) {
+    const payload = {action: 'checkSheet', runNumber: runNumber};
+    fetch(API_URL, {method: 'POST', body: JSON.stringify(payload)})
+      .then(res => res.json())
+      .then(data => {
+        if (data.result === 'success' && data.exists === true) {
+          if (onExists) onExists();
+        } else {
+          if (onNotExists) onNotExists();
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        // 網路錯誤時保守處理，假設表存在
+        if (onExists) onExists();
+      });
   }
 
   // 於簽回前同步一次最新狀態，避免 Bash/Back 舊資料
