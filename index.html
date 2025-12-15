@@ -3,40 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MH3 Check-in</title>
+    <title>台北捷運兔 MH3 Check-in - Taipei Hash House Harriers 每週跑次簽到</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="description"
+          content="台北捷運兔（MH3）是台北地區的 Hash House Harriers 跑步團體，結合喝酒與跑步的社交活動。每週定期舉辦跑次，提供線上簽到系統，方便參加者報名與回報安全。">
+    <meta name="keywords"
+          content="MH3, 台北捷運兔, Hash House Harriers, 台北跑步, 喝酒跑步, 社交跑步, Hashing, Hash run, Taipei running, beer running">
+    <meta name="author" content="MH3 台北捷運兔">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <link rel="canonical" href="https://jimcat.github.io/mh3-checkin/">
+    <link rel="alternate" hreflang="zh-TW" href="https://jimcat.github.io/mh3-checkin/index.html">
+    <link rel="alternate" hreflang="en" href="https://jimcat.github.io/mh3-checkin/index_en.html">
+    <link rel="alternate" hreflang="x-default" href="https://jimcat.github.io/mh3-checkin/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jimcat.github.io/mh3-checkin/">
+    <meta property="og:title" content="台北捷運兔 MH3 - Taipei Hash House Harriers 簽到系統">
+    <meta property="og:description"
+          content="MH3 是台北的 Hash House Harriers 跑步社團，每週舉辦結合跑步與社交的活動。線上簽到系統方便管理參加者與安全回報。">
+    <meta property="og:image" content="https://jimcat.github.io/mh3-checkin/logo.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:alt" content="MH3 台北捷運兔 Logo">
+    <meta property="og:locale" content="zh_TW">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:site_name" content="MH3 台北捷運兔 Check-in">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://jimcat.github.io/mh3-checkin/">
+    <meta name="twitter:title" content="台北捷運兔 MH3 Check-in">
+    <meta name="twitter:description" content="台北 Hash House Harriers 跑步團體每週活動簽到系統">
+    <meta name="twitter:image" content="https://jimcat.github.io/mh3-checkin/logo.png">
+    <meta name="twitter:image:alt" content="MH3 台北捷運兔 Logo">
+
+    <!-- Additional SEO -->
+    <meta name="theme-color" content="#1e293b">
+    <meta name="geo.region" content="TW-TPE">
+    <meta name="geo.placename" content="Taipei">
+    <meta name="geo.position" content="25.033;121.565">
+    <meta name="ICBM" content="25.033, 121.565">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SportsOrganization",
+            "name": "台北捷運兔 MH3 (Taipei MRT Hash House Harriers)",
+            "alternateName": "MH3",
+            "description": "台北捷運兔（MH3）是位於台灣台北的 Hash House Harriers 分會，Hash 是一種結合跑步與社交飲酒的國際性團體運動。每週定期舉辦跑次活動，參加者跟隨 Hare 設置的路線標記進行越野跑步，最後聚餐交流。",
+            "sport": "Running (Hash House Harriers)",
+            "url": "https://jimcat.github.io/mh3-checkin/",
+            "logo": "https://jimcat.github.io/mh3-checkin/logo.png",
+            "location": {
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "台北市",
+                    "addressCountry": "TW"
+                }
+            },
+            "event": {
+                "@type": "SportsEvent",
+                "name": "MH3 週跑",
+                "description": "每週定期舉辦的 Hash 跑步活動，包含越野跑步與餐後聚餐（Bash）",
+                "eventSchedule": {
+                    "@type": "Schedule",
+                    "repeatFrequency": "Weekly",
+                    "byDay": "Saturday"
+                }
+            }
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Dark Mode Loader */
-        .loader { border: 4px solid #334155; border-top: 4px solid #3b82f6; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .modal-enter { animation: modalIn 0.3s ease-out; }
-        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .loader {
+            border: 4px solid #334155;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
 
-        /* 自定義 Checkbox 樣式優化 */
-        input[type="checkbox"] { accent-color: #2563eb; }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-enter {
+            animation: modalIn 0.3s ease-out;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        input[type="checkbox"] {
+            accent-color: #2563eb;
+        }
+
+        .input-invalid {
+            border-color: #ef4444 !important;
+        }
+
+        .error-text {
+            color: #f87171;
+        }
+
+        .btn-disabled {
+            opacity: 0.6;
+            cursor: not-allowed !important;
+            background-color: #334155 !important;
+            color: #cbd5e1 !important;
+            border-color: #475569 !important;
+            box-shadow: none !important;
+        }
     </style>
 </head>
 <body class="bg-slate-900 min-h-screen p-4 flex items-center justify-center font-sans text-slate-200">
 
 <div class="w-full max-w-md bg-slate-800 rounded-xl shadow-2xl p-6 relative min-h-[300px] border border-slate-700">
 
-    <div id="initLoader" class="absolute inset-0 bg-slate-800 z-40 flex flex-col items-center justify-center rounded-xl">
-        <div class="loader mb-4"></div>
-        <p class="text-slate-400 font-medium tracking-wide">系統連線中...</p>
-    </div>
-
-    <div class="text-center mb-6 border-b border-slate-700 pb-4">
-        <h1 class="text-3xl font-extrabold text-blue-500 tracking-wider drop-shadow-lg">MH3 Check-in</h1>
+    <div class="text-center mb-6 border-b border-slate-700 pb-4 relative">
+        <div class="absolute left-0 top-0 z-10">
+            <a href="index_en.html"
+               class="text-slate-400 hover:text-blue-400 text-xs font-bold border border-slate-500 hover:border-blue-400 rounded px-2 py-1 transition bg-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">EN</a>
+        </div>
+        <a id="qaLink" href="qa.html"
+           class="absolute right-0 top-0 z-10 text-slate-400 hover:text-slate-900 text-sm font-bold border border-slate-500 hover:border-blue-400 rounded-full w-7 h-7 flex items-center justify-center transition bg-slate-800 hover:bg-blue-400 shadow-sm hover:shadow-blue-900/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
+           title="常見問題 / Q&A">?</a>
+        <div class="flex justify-center mb-3">
+            <img src="logo.png" alt="MH3 Logo" class="h-16 w-auto sm:h-20 md:h-24 object-contain">
+        </div>
+        <h1 class="text-3xl font-extrabold text-blue-500 tracking-wider drop-shadow-lg">
+            <span class="sr-only">台北捷運兔 </span>MH3 Check-in
+        </h1>
+        <p class="sr-only">Taipei MRT Hash House Harriers 每週跑次線上簽到系統</p>
         <div id="runInfoDisplay" class="hidden mt-2 fade-in">
             <h2 id="runTitle" class="text-xl font-bold text-slate-100"></h2>
-            <div class="flex justify-center space-x-3 mt-1 text-sm text-slate-400">
-                <p id="runDate"></p>
-                <span>|</span>
-                <p id="runHare"></p>
+            <div class="mt-1 text-sm text-slate-400 flex flex-col md:flex-row md:justify-center md:space-x-3 space-y-1 md:space-y-0">
+                <p id="runDate" class="leading-tight"></p>
+                <span class="hidden md:inline">|</span>
+                <p id="runHare" class="leading-tight"></p>
+                <span class="hidden md:inline">|</span>
+                <p id="runCoHare" class="leading-tight"></p>
             </div>
         </div>
+    </div>
+
+    <div id="initLoader"
+         class="absolute inset-0 bg-slate-800 z-40 flex flex-col items-center justify-center rounded-xl">
+        <div class="loader mb-4"></div>
+        <p class="text-slate-400 font-medium tracking-wide">系統連線中...</p>
     </div>
 
     <div id="waitingSection" class="hidden text-center py-10 fade-in">
@@ -53,29 +199,35 @@
         <h3 class="text-2xl font-bold text-green-400 mb-3">活動已完成</h3>
         <p class="text-slate-400 mb-8 px-4">感謝您的參加！請期待下一次的 Hash。</p>
         <div class="bg-slate-700/50 rounded-lg p-4 text-sm text-blue-300 leading-relaxed mx-2 border border-slate-600">
-            <strong>On On!</strong><br>
-            記得讓自己保持水分，下週見！
+            記得讓自己保持水分，下週見！<br>
+            <strong>On On!</strong>
         </div>
-        <button onclick="debugReset()" class="mt-8 text-xs text-slate-600 hover:text-slate-400 underline transition">重置狀態 (Debug)</button>
+        <a href="checklist.html"
+           class="mt-6 block w-full text-center bg-slate-700 text-blue-100 py-3 rounded-xl font-semibold text-base hover:bg-slate-600 hover:text-white border border-slate-600 transition">查看報到狀況</a>
+        <button id="debugResetBtn" onclick="debugReset()"
+                class="hidden mt-8 text-xs text-slate-600 hover:text-slate-400 underline transition">重置狀態 (Debug)
+        </button>
     </div>
 
     <div id="backSection" class="hidden p-2 fade-in">
         <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 text-center shadow-inner">
             <div class="text-4xl mb-3">🏃‍♂️</div>
-            <p class="font-bold text-xl text-green-400">報到成功！</p>
-            <p class="text-green-600 text-sm mb-4">Enjoy the Run!</p>
+            <p id="statusTitle" class="font-bold text-xl text-green-400">報到成功！</p>
+            <p id="statusSubtitle" class="text-green-600 text-sm mb-4">Enjoy the Run!</p>
             <div class="border-t border-green-800/50 pt-3 mt-2 text-sm text-slate-400 space-y-1">
                 <p>跑次: <span id="statusRunNum" class="font-bold text-slate-200"></span></p>
                 <p>主要聯絡人: <span id="savedName" class="font-bold text-slate-200"></span></p>
                 <p id="buddyCountDisplay" class="text-slate-500 text-xs hidden"></p>
             </div>
         </div>
-
-        <button onclick="preBackCheck()" class="mt-6 w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-xl hover:bg-blue-500 hover:shadow-blue-900/50 shadow-lg transform transition active:scale-95 flex items-center justify-center">
+        <button onclick="preBackCheck()"
+                class="mt-6 w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-xl hover:bg-blue-500 hover:shadow-blue-900/50 shadow-lg transform transition active:scale-95 flex items-center justify-center">
             <span>🏠 我回來了 (I'm Back)</span>
         </button>
-
-        <button onclick="resetForm()" class="mt-4 w-full text-center text-slate-500 text-sm hover:text-slate-300 transition">
+        <a href="checklist.html"
+           class="mt-3 block w-full text-center bg-slate-700 text-blue-100 py-3 rounded-xl font-semibold text-base hover:bg-slate-600 hover:text-white border border-slate-600 transition">查看報到狀況</a>
+        <button onclick="resetForm()"
+                class="mt-4 w-full text-center text-slate-500 text-sm hover:text-slate-300 transition">
             幫別人報到 / 重新輸入
         </button>
     </div>
@@ -83,29 +235,43 @@
     <div id="formSection" class="hidden fade-in">
         <div class="bg-slate-700/40 p-4 rounded-xl mb-6 border border-slate-700">
             <h3 class="text-blue-400 font-bold mb-3 flex items-center">
-                <span class="mr-2">👤</span> 您的資料 (Main)
+                <span class="mr-2">🐰</span> 報到資料
             </h3>
-            <input type="text" id="mainName" placeholder="兔名 / Name (必填)" class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
-            <input type="tel" id="mainPhone" placeholder="電話 / Phone (必填)" class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            <input type="text" id="mainName" placeholder="兔名 / Name (必填)"
+                   class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            <p id="mainNameError" class="text-xs error-text mb-2 ml-1 hidden"></p>
+            <input type="tel" id="mainPhone" placeholder="電話 / Phone (必填)" inputmode="numeric" pattern="[0-9]*"
+                   class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+            <p id="mainPhoneError" class="text-xs error-text mb-2 ml-1 hidden"></p>
+            <p class="text-xs text-slate-500 mb-3 ml-1">* 若已報名過，輸入相同電話即可找回資料</p>
 
             <label class="flex items-center p-3 bg-slate-800 rounded-lg border border-slate-600 cursor-pointer hover:border-blue-500 hover:shadow-md transition select-none group">
-                <input type="checkbox" id="mainBash" class="mr-3 h-5 w-5 rounded focus:ring-blue-500 cursor-pointer bg-slate-700 border-slate-500">
-                <span class="text-slate-300 font-medium flex-1 group-hover:text-blue-300 transition">參加聚餐 (Bash)?</span>
+                <input type="checkbox" id="mainBash"
+                       class="mr-3 h-5 w-5 rounded focus:ring-blue-500 cursor-pointer bg-slate-700 border-slate-500">
+                <span class="text-slate-300 font-medium flex-1 group-hover:text-blue-300 transition">參加聚餐 (Bash)？</span>
             </label>
         </div>
 
         <div id="buddyList" class="space-y-3 mb-6"></div>
 
-        <button onclick="addBuddy()" class="w-full border-2 border-dashed border-slate-600 text-slate-400 py-3 rounded-xl mb-6 hover:border-blue-500 hover:text-blue-400 hover:bg-slate-700/50 transition font-medium flex items-center justify-center">
+        <button onclick="addBuddy()"
+                class="w-full border-2 border-dashed border-slate-600 text-slate-400 py-3 rounded-xl mb-6 hover:border-blue-500 hover:text-blue-400 hover:bg-slate-700/50 transition font-medium flex items-center justify-center">
             <span class="mr-1">+</span> 新增同伴 (Add Buddy)
         </button>
 
-        <button onclick="submitForm()" id="submitBtn" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold text-xl hover:bg-green-500 hover:shadow-green-900/50 shadow-lg transition transform active:scale-95 flex items-center justify-center">
+        <button onclick="submitForm()" id="submitBtn"
+                class="w-full bg-green-600 text-white py-3 rounded-xl font-bold text-xl hover:bg-green-500 hover:shadow-green-900/50 shadow-lg transition transform active:scale-95 flex items-center justify-center">
             送出報到 (Check In)
         </button>
+
+        <a href="checklist.html"
+           class="mt-6 w-full border-2 border-dashed border-slate-600 text-slate-400 py-3 rounded-xl mb-3 hover:border-blue-500 hover:text-blue-400 hover:bg-slate-700/50 transition font-medium flex items-center justify-center">
+            <span class="mr-1">🔍</span> 查看報到狀況
+        </a>
     </div>
 
-    <div id="loading" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 flex justify-center items-center z-50 backdrop-blur-sm fade-in">
+    <div id="loading"
+         class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 flex justify-center items-center z-50 backdrop-blur-sm fade-in">
         <div class="bg-slate-800 p-6 rounded-2xl shadow-2xl flex flex-col items-center transform scale-110 border border-slate-700">
             <div class="loader mb-3"></div>
             <span class="font-bold text-slate-300">資料處理中...</span>
@@ -113,19 +279,17 @@
     </div>
 
     <div id="customModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+        <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm transition-opacity"
+             onclick="closeModal()"></div>
         <div class="bg-slate-800 rounded-2xl shadow-2xl w-full max-w-sm relative z-10 overflow-hidden modal-enter border border-slate-700">
             <div class="p-6 text-center">
                 <div id="modalIcon" class="text-4xl mb-4">ℹ️</div>
                 <h3 id="modalTitle" class="text-xl font-bold text-white mb-2">提示</h3>
-
                 <div id="modalContentContainer" class="text-left mb-6">
                     <p id="modalMessage" class="text-slate-400 text-sm leading-relaxed text-center">內容...</p>
                     <div id="modalDynamicContent" class="mt-4 space-y-2"></div>
                 </div>
-
-                <div id="modalButtons" class="flex space-x-3 justify-center">
-                </div>
+                <div id="modalButtons" class="flex space-x-3 justify-center"></div>
             </div>
         </div>
     </div>
@@ -133,28 +297,27 @@
 </div>
 
 <script>
-  // ================= 設定區 =================
   const API_URL = 'https://script.google.com/macros/s/AKfycbxmkQakubfwGK2ZRoEL1_Z3BXixcFLuGQDMZcp2Fml8a9uvxBV-L4e5KOTx-8K5uIm5Sw/exec';
-  // =========================================
-
   let currentRunInfo = {};
   let currentGroup = [];
+  let isTestMode = false;
 
-  function showModal({title, msg, type = 'alert', confirmCallback = null, cancelCallback = null, dynamicContent = null}) {
+  function showModal({
+                       title,
+                       msg,
+                       type = 'alert',
+                       confirmCallback = null,
+                       cancelCallback = null,
+                       dynamicContent = null
+                     }) {
     document.getElementById('modalTitle').innerText = title;
     document.getElementById('modalMessage').innerText = msg || '';
-
     const dynamicContainer = document.getElementById('modalDynamicContent');
     dynamicContainer.innerHTML = '';
-    if (dynamicContent) {
-      dynamicContainer.appendChild(dynamicContent);
-    }
-
+    if (dynamicContent) dynamicContainer.appendChild(dynamicContent);
     const btnContainer = document.getElementById('modalButtons');
     btnContainer.innerHTML = '';
-
     const icon = document.getElementById('modalIcon');
-
     if (type === 'confirm') {
       icon.innerText = '🤔';
       const cancelBtn = document.createElement('button');
@@ -164,7 +327,6 @@
         closeModal();
         if (cancelCallback) cancelCallback();
       };
-
       const okBtn = document.createElement('button');
       okBtn.className = "flex-1 bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-900/30";
       okBtn.innerText = "確定";
@@ -172,7 +334,6 @@
         closeModal();
         if (confirmCallback) confirmCallback();
       };
-
       btnContainer.appendChild(cancelBtn);
       btnContainer.appendChild(okBtn);
     } else {
@@ -186,7 +347,6 @@
       };
       btnContainer.appendChild(okBtn);
     }
-
     document.getElementById('customModal').classList.remove('hidden');
   }
 
@@ -194,69 +354,79 @@
     document.getElementById('customModal').classList.add('hidden');
   }
 
-  window.onload = async function() {
+  window.onload = async function () {
     try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({action: 'getInfo'})
-      });
+      const response = await fetch(API_URL, {method: 'POST', body: JSON.stringify({action: 'getInfo'})});
       const data = await response.json();
       currentRunInfo = data.info;
+      isTestMode = data.isTestMode === true;
       const status = data.status;
-
-      document.getElementById('runTitle').innerText = `Run ${currentRunInfo.number}`;
+      document.getElementById('runTitle').innerText = `Run #${currentRunInfo.number}`;
       document.getElementById('runDate').innerText = currentRunInfo.dateStr;
-      document.getElementById('runHare').innerText = `Hare: ${currentRunInfo.hare}`;
+      document.getElementById('runHare').innerText = `Hare: ${currentRunInfo.hare || '尚未提供'}`;
+      document.getElementById('runCoHare').innerText = `Co-Hare: ${currentRunInfo.coHare || '尚未提供'}`;
       document.getElementById('waitDate').innerText = currentRunInfo.dateStr;
-
       document.getElementById('initLoader').classList.add('hidden');
-
+      // 顯示/隱藏 Debug 按鈕
+      const debugBtn = document.getElementById('debugResetBtn');
+      if (debugBtn) {
+        if (isTestMode) {
+          debugBtn.classList.remove('hidden');
+        } else {
+          debugBtn.classList.add('hidden');
+        }
+      }
       if (status === 'waiting') {
         showSection('waitingSection');
       } else {
         document.getElementById('runInfoDisplay').classList.remove('hidden');
         checkLocalStorage(currentRunInfo.number);
       }
-
     } catch (e) {
-      showModal({title: '連線錯誤', msg: '無法連接到伺服器，請檢查網路或稍後再試。'});
-      console.error(e);
+      showModal({title: '連線錯誤', msg: '無法連接到伺服器。'});
       document.getElementById('initLoader').classList.add('hidden');
     }
   };
 
   function checkLocalStorage(serverRunNumber) {
     const savedGroupJson = localStorage.getItem('mh3_group');
-    if (!savedGroupJson && localStorage.getItem('mh3_user')) {
-      localStorage.removeItem('mh3_user');
-    }
-
+    if (!savedGroupJson && localStorage.getItem('mh3_user')) localStorage.removeItem('mh3_user');
     if (savedGroupJson) {
       const groupData = JSON.parse(savedGroupJson);
-      if (groupData.runNumber != serverRunNumber) {
-        console.log('新活動，自動帶入上次資料');
+      if (`${groupData.runNumber}` !== `${serverRunNumber}`) {
         const mainUser = groupData.users[0];
         document.getElementById('mainName').value = mainUser.name || '';
         document.getElementById('mainPhone').value = mainUser.phone || '';
         document.getElementById('buddyList').innerHTML = '';
-        for (let i = 1; i < groupData.users.length; i++) {
-          const buddy = groupData.users[i];
-          addBuddy(buddy.name, buddy.phone);
-        }
         showSection('formSection');
       } else {
         currentGroup = groupData.users;
         if (groupData.status === 'completed') {
           showSection('thankYouSection');
         } else {
+          // 顯示主要聯絡人邏輯
           const mainUser = currentGroup[0];
-          document.getElementById('savedName').innerText = mainUser.name;
+          let displayContact = mainUser.name;
+          if (mainUser.coverBy && mainUser.coverBy !== 'Self') {
+            displayContact = mainUser.coverBy;
+          }
+          document.getElementById('savedName').innerText = displayContact;
           document.getElementById('statusRunNum').innerText = `#${groupData.runNumber}`;
-
           if (currentGroup.length > 1) {
             const display = document.getElementById('buddyCountDisplay');
             display.innerText = `(+ ${currentGroup.length - 1} 位同伴)`;
             display.classList.remove('hidden');
+          } else {
+            document.getElementById('buddyCountDisplay').classList.add('hidden');
+          }
+
+          // 動態顯示首次/重複報到提示
+          const statusTitle = document.getElementById('statusTitle');
+          const statusSubtitle = document.getElementById('statusSubtitle');
+          if (statusTitle && statusSubtitle) {
+            const isRepeat = !!groupData.isRepeat;
+            statusTitle.innerText = isRepeat ? '您已報到成功過' : '報到成功！';
+            statusSubtitle.innerText = isRepeat ? '已找到您的報到紀錄' : 'Enjoy the Run!';
           }
           showSection('backSection');
         }
@@ -267,130 +437,270 @@
   }
 
   function showSection(id) {
-    ['waitingSection', 'thankYouSection', 'backSection', 'formSection'].forEach(sec => {
-      document.getElementById(sec).classList.add('hidden');
-    });
+    ['waitingSection', 'thankYouSection', 'backSection', 'formSection'].forEach(sec => document.getElementById(sec).classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
+    if (id === 'formSection') {
+      validateForm(false);
+    } else {
+      setSubmitDisabled(false);
+    }
+  }
+
+  // --- 表單驗證 ---
+  function normalizeDigits(val) {
+    return (val || '').toString().replace(/\D/g, '');
+  }
+
+  function formatPhone(val) {
+    let d = normalizeDigits(val);
+    if (!d) return '';
+    if (d.startsWith('886')) {
+      // 886 + 9 + 8 digits => 12 位，轉回 0 開頭
+      if (d.length === 12 && d[3] === '9') d = '0' + d.slice(3);
+    } else if (d.startsWith('9') && d.length === 9) {
+      d = '0' + d;
+    }
+    // 僅允許 09xxxxxxxx
+    if (d.startsWith('09') && d.length === 10) return d;
+    return d;
+  }
+
+  function isValidPhone(val) {
+    const d = normalizeDigits(val);
+    if (!d) return false;
+    if (d.startsWith('886')) return d.length === 12 && d[3] === '9';
+    if (d.startsWith('09')) return d.length === 10;
+    return false;
+  }
+
+  const nameRegex = /^[\p{L}\p{M}0-9][\p{L}\p{M}0-9\s'’.\-]*$/u;
+
+  function setInputError(inputEl, errorEl, msg) {
+    if (!inputEl || !errorEl) return;
+    if (msg) {
+      inputEl.classList.add('input-invalid');
+      inputEl.classList.remove('focus:ring-2', 'focus:ring-blue-500', 'focus:border-blue-500');
+      inputEl.classList.add('focus:ring-0', 'focus:border-slate-500');
+      errorEl.innerText = msg;
+      errorEl.classList.remove('hidden');
+    } else {
+      inputEl.classList.remove('input-invalid');
+      inputEl.classList.remove('focus:ring-0', 'focus:border-slate-500');
+      inputEl.classList.add('focus:ring-2', 'focus:ring-blue-500', 'focus:border-blue-500');
+      errorEl.innerText = '';
+      errorEl.classList.add('hidden');
+    }
+  }
+
+  function setSubmitDisabled(disabled) {
+    const btn = document.getElementById('submitBtn');
+    if (!btn) return;
+    if (disabled) {
+      btn.classList.add('btn-disabled', 'bg-green-700', 'hover:bg-green-700', 'shadow-none', 'hover:shadow-none');
+      btn.classList.remove('bg-green-600', 'hover:bg-green-500', 'hover:shadow-green-900/50', 'shadow-lg');
+      btn.disabled = true;
+    } else {
+      btn.classList.remove('btn-disabled', 'bg-green-700', 'hover:bg-green-700', 'shadow-none', 'hover:shadow-none');
+      btn.classList.add('bg-green-600', 'hover:bg-green-500', 'hover:shadow-green-900/50', 'shadow-lg');
+      btn.disabled = false;
+    }
+  }
+
+  function validateForm(showScroll = true) {
+    let hasError = false;
+    const mainNameEl = document.getElementById('mainName');
+    const mainPhoneEl = document.getElementById('mainPhone');
+    const mainNameError = document.getElementById('mainNameError');
+    const mainPhoneError = document.getElementById('mainPhoneError');
+
+    const mainName = mainNameEl.value.trim();
+    const mainPhone = mainPhoneEl.value.trim();
+
+    if (!mainName) {
+      setInputError(mainNameEl, mainNameError, '請填寫姓名');
+      hasError = true;
+    } else if (!nameRegex.test(mainName) || /[<>]/.test(mainName)) {
+      setInputError(mainNameEl, mainNameError, '姓名格式不正確');
+      hasError = true;
+    } else {
+      setInputError(mainNameEl, mainNameError, '');
+    }
+
+    if (!mainPhone) {
+      setInputError(mainPhoneEl, mainPhoneError, '請填寫電話');
+      hasError = true;
+    } else if (!isValidPhone(mainPhone)) {
+      setInputError(mainPhoneEl, mainPhoneError, '電話格式不正確');
+      hasError = true;
+    } else {
+      setInputError(mainPhoneEl, mainPhoneError, '');
+    }
+
+    document.querySelectorAll('#buddyList > div').forEach(div => {
+      const nEl = div.querySelector('.buddy-name');
+      const pEl = div.querySelector('.buddy-phone');
+      const nErr = div.querySelector('.buddy-name-error');
+      const pErr = div.querySelector('.buddy-phone-error');
+      const nVal = nEl.value.trim();
+      const pVal = pEl.value.trim();
+
+      if (pVal && !nVal) {
+        setInputError(nEl, nErr, '請填寫姓名');
+        hasError = true;
+      } else if (nVal && (!nameRegex.test(nVal) || /[<>]/.test(nVal))) {
+        setInputError(nEl, nErr, '姓名格式不正確');
+        hasError = true;
+      } else {
+        setInputError(nEl, nErr, '');
+      }
+
+      if (pVal && !isValidPhone(pVal)) {
+        setInputError(pEl, pErr, '電話格式不正確');
+        hasError = true;
+      } else {
+        setInputError(pEl, pErr, '');
+      }
+    });
+
+    setSubmitDisabled(hasError);
+    if (hasError && showScroll) {
+      const firstErr = document.querySelector('.input-invalid');
+      if (firstErr) firstErr.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+    return !hasError;
   }
 
   function addBuddy(name = '', phone = '') {
     const div = document.createElement('div');
     div.className = "mb-3 bg-slate-800 p-3 rounded-xl border border-slate-700 relative fade-in shadow-sm";
     div.innerHTML = `
-            <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-slate-500 hover:text-red-400 font-bold p-1 transition">✕</button>
+            <button onclick="removeBuddy(this)" class="absolute top-1 right-2 text-slate-500 hover:text-red-400 font-bold p-1 transition">✕</button>
             <h4 class="text-xs font-bold text-slate-500 mb-2 uppercase">Buddy</h4>
             <input type="text" class="buddy-name w-full p-2 border border-slate-600 rounded-lg mb-2 bg-slate-900 text-white placeholder-slate-500 focus:ring-1 focus:ring-blue-500 outline-none" placeholder="同伴姓名" value="${name}">
-            <input type="tel" class="buddy-phone w-full p-2 border border-slate-600 rounded-lg mb-2 bg-slate-900 text-white placeholder-slate-500 focus:ring-1 focus:ring-blue-500 outline-none" placeholder="同伴電話 (選填)" value="${phone}">
+            <p class="text-xs error-text mb-1 hidden buddy-name-error"></p>
+            <input type="tel" class="buddy-phone w-full p-2 border border-slate-600 rounded-lg mb-2 bg-slate-900 text-white placeholder-slate-500 focus:ring-1 focus:ring-blue-500 outline-none" placeholder="同伴電話 (選填)" inputmode="numeric" pattern="[0-9]*" value="${phone}">
+            <p class="text-xs error-text mb-1 hidden buddy-phone-error"></p>
             <label class="flex items-center p-2 bg-slate-900 rounded-lg border border-slate-600 cursor-pointer hover:border-blue-500 transition select-none group">
                 <input type="checkbox" class="buddy-bash mr-2 h-4 w-4 rounded cursor-pointer bg-slate-800 border-slate-500">
-                <span class="text-sm text-slate-400 cursor-pointer flex-1 group-hover:text-blue-300 transition">參加聚餐?</span>
+                <span class="text-sm text-slate-400 cursor-pointer flex-1 group-hover:text-blue-300 transition">參加聚餐？</span>
             </label>
         `;
     document.getElementById('buddyList').appendChild(div);
+    validateForm(false);
+  }
+
+  function removeBuddy(btn) {
+    const parent = btn.parentElement;
+    if (parent) parent.remove();
+    validateForm(false);
   }
 
   function submitForm() {
-    const mainName = document.getElementById('mainName').value.trim();
-    const mainPhone = document.getElementById('mainPhone').value.trim();
-    const mainBash = document.getElementById('mainBash').checked;
+    if (!validateForm()) return;
 
-    if (!mainName || !mainPhone) {
-      showModal({title: '資料不完整', msg: '請填寫 Main 的「兔名」與「電話」'});
-      return;
-    }
+    const mainName = document.getElementById('mainName').value.trim();
+    const mainPhone = formatPhone(document.getElementById('mainPhone').value.trim());
+    const mainBash = document.getElementById('mainBash').checked;
 
     const users = [];
     users.push({name: mainName, phone: mainPhone, bash: mainBash, coverBy: 'Self'});
-
     document.querySelectorAll('#buddyList > div').forEach(div => {
       const bName = div.querySelector('.buddy-name').value.trim();
       const bPhoneInput = div.querySelector('.buddy-phone').value.trim();
-      const bPhone = bPhoneInput || mainPhone;
-
+      const bPhone = bPhoneInput ? formatPhone(bPhoneInput) : mainPhone;
       const bBash = div.querySelector('.buddy-bash').checked;
-      if(bName) {
+      if (bName) {
         users.push({name: bName, phone: bPhone, bash: bBash, coverBy: mainName});
       }
     });
 
-    const payload = {
-      action: 'checkin',
-      runNumber: currentRunInfo.number,
-      users: users
-    };
+    const payload = {action: 'checkin', runNumber: currentRunInfo.number, users: users};
 
-    sendData(payload, () => {
+    sendData(payload, (data) => {
+      const returnedUsers = data.processedUsers;
+      const currentUser = returnedUsers[0];
+
       const storageData = {
         runNumber: currentRunInfo.number,
         status: 'checked_in',
-        users: users
+        users: returnedUsers,
+        isRepeat: false
       };
-      localStorage.setItem('mh3_group', JSON.stringify(storageData));
 
-      showModal({title: '報到成功', msg: '祝您跑步愉快！On On!', type: 'success', confirmCallback: () => {
+      // 情境判斷 (針對單人登入)
+      if (returnedUsers.length === 1) {
+        // 1. 已 Back -> 直接完成
+        if (currentUser.back === true) {
+          storageData.status = 'completed';
+          localStorage.setItem('mh3_group', JSON.stringify(storageData));
+          showSection('thankYouSection');
+          return;
+        }
+        // 2. 未 Back -> 顯示已報到過
+        else if (currentUser.isNew === false) {
+          storageData.isRepeat = true;
+          localStorage.setItem('mh3_group', JSON.stringify(storageData));
           checkLocalStorage(currentRunInfo.number);
-        }});
+          return;
+        }
+      }
+
+      // 3. 正常新人報到
+      localStorage.setItem('mh3_group', JSON.stringify(storageData));
+      showModal({
+        title: '報到成功', msg: '祝您跑步愉快！On On!', type: 'success', confirmCallback: () => {
+          checkLocalStorage(currentRunInfo.number);
+        }
+      });
     });
   }
 
   function preBackCheck() {
-    const nonBashers = currentGroup.filter(u => u.bash === false);
-
-    if (nonBashers.length > 0) {
-      const container = document.createElement('div');
-      container.className = "flex flex-col space-y-2 max-h-40 overflow-y-auto border-t border-b border-slate-600 py-2";
-
-      nonBashers.forEach((u, index) => {
-        const label = document.createElement('label');
-        label.className = "flex items-center space-x-2 cursor-pointer p-2 hover:bg-slate-700 rounded transition";
-        label.innerHTML = `
-                  <input type="checkbox" data-idx="${index}" class="bash-补-check h-4 w-4 rounded bg-slate-900 border-slate-500">
-                  <span class="text-sm text-slate-300">${u.name}</span>
-              `;
-        container.appendChild(label);
-      });
-
-      showModal({
-        title: '補登記聚餐確認',
-        msg: '以下人員未登記聚餐，請問現在要加入嗎？(若無則直接按確定)',
-        type: 'confirm',
-        dynamicContent: container,
-        confirmCallback: () => {
-          const checks = container.querySelectorAll('.bash-补-check');
-          const targets = [];
-
-          currentGroup.filter(u => u.bash === true).forEach(u => {
-            targets.push({phone: u.phone, joinBash: true});
-          });
-
-          nonBashers.forEach((u, idx) => {
-            const isChecked = checks[idx].checked;
-            targets.push({phone: u.phone, joinBash: isChecked});
-          });
-
-          executeBack(targets);
-        }
-      });
-    } else {
-      showModal({
-        title: '安全回報確認',
-        msg: `確認共 ${currentGroup.length} 人皆已安全返回？`,
-        type: 'confirm',
-        confirmCallback: () => {
-          const targets = currentGroup.map(u => ({phone: u.phone, joinBash: true}));
-          executeBack(targets);
-        }
-      });
-    }
+    syncGroupFromServer(() => {
+      const nonBashers = currentGroup.filter(u => u.bash === false);
+      if (nonBashers.length > 0) {
+        const container = document.createElement('div');
+        container.className = "flex flex-col space-y-2 max-h-40 overflow-y-auto border-t border-b border-slate-600 py-2";
+        nonBashers.forEach((u, index) => {
+          const label = document.createElement('label');
+          label.className = "flex items-center space-x-2 cursor-pointer p-2 hover:bg-slate-700 rounded transition";
+          label.innerHTML = `<input type="checkbox" data-idx="${index}" class="bash-补-check h-4 w-4 rounded bg-slate-900 border-slate-500"><span class="text-sm text-slate-300">${u.name}</span>`;
+          container.appendChild(label);
+        });
+        showModal({
+          title: '補登記聚餐確認',
+          msg: '以下人員未登記聚餐，請問現在要加入嗎？(若無則直接按確定)',
+          type: 'confirm',
+          dynamicContent: container,
+          confirmCallback: () => {
+            const checks = container.querySelectorAll('.bash-补-check');
+            const targets = [];
+            currentGroup.filter(u => u.bash === true).forEach(u => {
+              targets.push({phone: u.phone, joinBash: true});
+            });
+            nonBashers.forEach((u, idx) => {
+              const isChecked = checks[idx].checked;
+              targets.push({phone: u.phone, joinBash: isChecked});
+            });
+            executeBack(targets);
+          }
+        });
+      } else {
+        showModal({
+          title: '安全回報確認',
+          msg: `確認共 ${currentGroup.length} 人皆已安全返回？`,
+          type: 'confirm',
+          confirmCallback: () => {
+            const targets = currentGroup.map(u => ({phone: u.phone, joinBash: true}));
+            executeBack(targets);
+          }
+        });
+      }
+    });
   }
 
   function executeBack(targets) {
-    const payload = {
-      action: 'back',
-      runNumber: currentRunInfo.number,
-      targets: targets
-    };
-
+    const payload = {action: 'back', runNumber: currentRunInfo.number, targets: targets};
     sendData(payload, () => {
       const storageData = JSON.parse(localStorage.getItem('mh3_group'));
       storageData.status = 'completed';
@@ -414,17 +724,66 @@
     location.reload();
   }
 
-  function sendData(payload, onSuccess) {
+  // 於簽回前同步一次最新狀態，避免 Bash/Back 舊資料
+  function syncGroupFromServer(callback) {
+    const storage = localStorage.getItem('mh3_group');
+    if (!storage) {
+      if (callback) callback();
+      return;
+    }
+    const parsed = JSON.parse(storage);
+    const users = parsed.users || [];
+    const payload = {action: 'syncGroup', runNumber: currentRunInfo.number, users: users};
     document.getElementById('loading').classList.remove('hidden');
-    fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    })
+    fetch(API_URL, {method: 'POST', body: JSON.stringify(payload)})
       .then(res => res.json())
       .then(data => {
         document.getElementById('loading').classList.add('hidden');
-        if(data.result === 'success') {
-          onSuccess();
+        if (data.result !== 'success') {
+          showModal({title: '同步失敗', msg: data.msg || '請稍後再試'});
+          return;
+        }
+        const syncedUsers = data.users || [];
+        currentGroup = syncedUsers;
+        const updatedStorage = {
+          runNumber: parsed.runNumber,
+          status: parsed.status,
+          users: syncedUsers,
+          isRepeat: parsed.isRepeat
+        };
+        // 若全部已 Back，自動完成狀態
+        if (syncedUsers.length > 0 && syncedUsers.every(u => u.back === true)) {
+          updatedStorage.status = 'completed';
+        }
+        localStorage.setItem('mh3_group', JSON.stringify(updatedStorage));
+        // 更新顯示主要聯絡人
+        const mainUser = syncedUsers[0];
+        if (mainUser) {
+          const displayContact = mainUser.coverBy && mainUser.coverBy !== 'Self' ? mainUser.coverBy : mainUser.name;
+          document.getElementById('savedName').innerText = displayContact;
+          if (syncedUsers.length > 1) {
+            const display = document.getElementById('buddyCountDisplay');
+            display.innerText = `(+ ${syncedUsers.length - 1} 位同伴)`;
+            display.classList.remove('hidden');
+          }
+        }
+        if (callback) callback();
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('loading').classList.add('hidden');
+        showModal({title: '同步失敗', msg: '網路異常，請稍後再試'});
+      });
+  }
+
+  function sendData(payload, onSuccess) {
+    document.getElementById('loading').classList.remove('hidden');
+    fetch(API_URL, {method: 'POST', body: JSON.stringify(payload)})
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('loading').classList.add('hidden');
+        if (data.result === 'success') {
+          onSuccess(data);
         } else {
           showModal({title: '錯誤', msg: data.msg || '未知錯誤'});
         }
@@ -434,6 +793,20 @@
         showModal({title: '連線失敗', msg: '網路連線異常，請重試'});
         document.getElementById('loading').classList.add('hidden');
       });
+  }
+
+  // 表單輸入即時驗證
+  document.getElementById('formSection').addEventListener('input', () => validateForm(false));
+
+  // 確保 QA 圖示在 iOS/部分瀏覽器上也可點擊
+  const qaLink = document.getElementById('qaLink');
+  if (qaLink) {
+    qaLink.addEventListener('click', function (e) {
+      // 保留 Ctrl/Cmd 開新分頁行為
+      if (e.metaKey || e.ctrlKey) return;
+      e.preventDefault();
+      window.location.href = this.getAttribute('href');
+    });
   }
 </script>
 </body>
