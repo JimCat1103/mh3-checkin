@@ -186,7 +186,7 @@
     <div id="waitingSection" class="hidden text-center py-10 fade-in">
         <div class="text-6xl mb-6 opacity-80">⏳</div>
         <h3 class="text-2xl font-bold text-slate-300 mb-2">活動尚未開始</h3>
-        <p class="text-slate-500 mb-6">報名表將於活動當日 19:00 開放</p>
+        <p class="text-slate-500 mb-6">報名表將於活動當日 <span id="startHourDisplay">19:00</span> 開放</p>
         <div class="inline-block bg-slate-700 px-4 py-2 rounded-full text-sm font-medium text-slate-300 border border-slate-600">
             下一次活動：<span id="waitDate" class="text-blue-400 font-bold"></span>
         </div>
@@ -364,6 +364,7 @@
       document.getElementById('runHare').innerText = `Hare: ${currentRunInfo.hare || '尚未提供'}`;
       document.getElementById('runCoHare').innerText = `Co-Hare: ${currentRunInfo.coHare || '尚未提供'}`;
       document.getElementById('waitDate').innerText = currentRunInfo.dateStr;
+      document.getElementById('startHourDisplay').innerText = `${data.startHour || 19}:00`;
       document.getElementById('initLoader').classList.add('hidden');
       // 顯示/隱藏 Debug 按鈕
       const debugBtn = document.getElementById('debugResetBtn');

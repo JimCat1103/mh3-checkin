@@ -187,7 +187,7 @@
     <div id="waitingSection" class="hidden text-center py-10 fade-in">
         <div class="text-6xl mb-6 opacity-80">⏳</div>
         <h3 class="text-2xl font-bold text-slate-300 mb-2">Event Not Started</h3>
-        <p class="text-slate-500 mb-6">Registration opens at 19:00 on the event day</p>
+        <p class="text-slate-500 mb-6">Registration opens at <span id="startHourDisplay">19:00</span> on the event day</p>
         <div class="inline-block bg-slate-700 px-4 py-2 rounded-full text-sm font-medium text-slate-300 border border-slate-600">
             Next Event: <span id="waitDate" class="text-blue-400 font-bold"></span>
         </div>
@@ -369,6 +369,7 @@
       document.getElementById('runHare').innerText = `Hare: ${currentRunInfo.hare || 'TBA'}`;
       document.getElementById('runCoHare').innerText = `Co-Hare: ${currentRunInfo.coHare || 'TBA'}`;
       document.getElementById('waitDate').innerText = currentRunInfo.dateStr;
+      document.getElementById('startHourDisplay').innerText = `${data.startHour || 19}:00`;
       document.getElementById('initLoader').classList.add('hidden');
       // Show/hide Debug button
       const debugBtn = document.getElementById('debugResetBtn');
