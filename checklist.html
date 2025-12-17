@@ -133,7 +133,7 @@
       currentRunNumber = data.info.number;
       const hareText = data.info.hare || '尚未提供';
       const coHareText = data.info.coHare || '尚未提供';
-      document.getElementById('runInfo').innerText = `Run #${data.info.number}\n${data.info.dateStr}\nHare: ${hareText}\nCo-Hare: ${coHareText}`;
+      document.getElementById('runInfo').innerText = `Run #${data.info.number}\n${data.info.dateStr}\nHare: ${hareText}\nCo-Hare: ${coHareText}\n目前 Bash 人數: 約 0 人`;
       await fetchList();
     } catch (err) {
       console.error(err);
@@ -205,11 +205,15 @@
 
     parsedRows.sort((a, b) => {
       if (a.isMine !== b.isMine) return a.isMine ? -1 : 1;
-      return a.timeValue - b.timeValue;
+      return a.timeValue - b.timeValue; // Sort by check-in time (ascending)
     });
 
     const highlight = parsedRows.some(r => r.isMine);
     document.getElementById('highlightHint').classList.toggle('hidden', !highlight);
+
+    // Count and update bash participants in runInfo
+    const bashCount = parsedRows.filter(r => r.bash === true).length;
+    updateBashCount(bashCount);
 
     // 桌機版表格
     const tableWrapper = document.createElement('div');
@@ -279,6 +283,17 @@
     const parts = hms.split(':').map(Number);
     if (parts.length !== 3 || parts.some(isNaN)) return Number.POSITIVE_INFINITY;
     return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  }
+
+  function updateBashCount(count) {
+    const runInfo = document.getElementById('runInfo');
+    const currentText = runInfo.innerText;
+    const lines = currentText.split('\n');
+    // Replace the last line (Bash count) with updated count
+    if (lines.length >= 4) {
+      lines[lines.length - 1] = `目前 Bash 人數: 約 ${count} 人`;
+      runInfo.innerText = lines.join('\n');
+    }
   }
 
   function toggleLoading(state) {

@@ -134,7 +134,7 @@
       currentRunNumber = data.info.number;
       const hareText = data.info.hare || 'TBA';
       const coHareText = data.info.coHare || 'TBA';
-      document.getElementById('runInfo').innerText = `Run #${data.info.number}\n${data.info.dateStr}\nHare: ${hareText}\nCo-Hare: ${coHareText}`;
+      document.getElementById('runInfo').innerText = `Run #${data.info.number}\n${data.info.dateStr}\nHare: ${hareText}\nCo-Hare: ${coHareText}\nCurrent Bash Count: Approx. 0 people`;
       await fetchList();
     } catch (err) {
       console.error(err);
@@ -206,11 +206,15 @@
 
     parsedRows.sort((a, b) => {
       if (a.isMine !== b.isMine) return a.isMine ? -1 : 1;
-      return a.timeValue - b.timeValue;
+      return a.timeValue - b.timeValue; // Sort by check-in time (ascending)
     });
 
     const highlight = parsedRows.some(r => r.isMine);
     document.getElementById('highlightHint').classList.toggle('hidden', !highlight);
+
+    // Count and update bash participants in runInfo
+    const bashCount = parsedRows.filter(r => r.bash === true).length;
+    updateBashCount(bashCount);
 
     // Desktop table
     const tableWrapper = document.createElement('div');
@@ -280,6 +284,17 @@
     const parts = hms.split(':').map(Number);
     if (parts.length !== 3 || parts.some(isNaN)) return Number.POSITIVE_INFINITY;
     return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  }
+
+  function updateBashCount(count) {
+    const runInfo = document.getElementById('runInfo');
+    const currentText = runInfo.innerText;
+    const lines = currentText.split('\n');
+    // Replace the last line (Bash count) with updated count
+    if (lines.length >= 4) {
+      lines[lines.length - 1] = `Current Bash Count: Approx. ${count} people`;
+      runInfo.innerText = lines.join('\n');
+    }
   }
 
   function toggleLoading(state) {
