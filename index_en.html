@@ -242,11 +242,10 @@
             <input type="text" id="mainName" placeholder="Hash Name (Required)"
                    class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
             <p id="mainNameError" class="text-xs error-text mb-2 ml-1 hidden"></p>
-            <input type="tel" id="mainPhone" placeholder="Phone (Required)" inputmode="numeric" pattern="[0-9]*"
+            <input type="tel" id="mainPhone" placeholder="Phone (Required, e.g., 0912345678 or +886912345678)" inputmode="numeric" pattern="[0-9+]*"
                    class="w-full p-3 border border-slate-600 rounded-lg mb-3 bg-slate-800 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
             <p id="mainPhoneError" class="text-xs error-text mb-2 ml-1 hidden"></p>
-            <p class="text-xs text-slate-500 mb-3 ml-1">* If you've registered before, enter the same phone to retrieve
-                your data</p>
+            <p class="text-xs text-slate-500 mb-3 ml-1">* Accepts international format (7-15 digits). If you've registered before, enter the same phone to retrieve your data</p>
 
             <label class="flex items-center p-3 bg-slate-800 rounded-lg border border-slate-600 cursor-pointer hover:border-blue-500 hover:shadow-md transition select-none group">
                 <input type="checkbox" id="mainBash"
@@ -468,21 +467,21 @@
   function formatPhone(val) {
     let d = normalizeDigits(val);
     if (!d) return '';
+    // Auto-convert Taiwan 886 format to 09 format
     if (d.startsWith('886')) {
       if (d.length === 12 && d[3] === '9') d = '0' + d.slice(3);
     } else if (d.startsWith('9') && d.length === 9) {
       d = '0' + d;
     }
-    if (d.startsWith('09') && d.length === 10) return d;
     return d;
   }
 
   function isValidPhone(val) {
     const d = normalizeDigits(val);
     if (!d) return false;
-    if (d.startsWith('886')) return d.length === 12 && d[3] === '9';
-    if (d.startsWith('09')) return d.length === 10;
-    return false;
+    // Accept international format: minimum 7 digits (some countries), maximum 15 digits (E.164 standard)
+    // Common formats: Taiwan 09xxxxxxxx (10), +886 (12), US +1 (11), etc.
+    return d.length >= 7 && d.length <= 15;
   }
 
   const nameRegex = /^[\p{L}\p{M}0-9][\p{L}\p{M}0-9\s''.\-]*$/u;
