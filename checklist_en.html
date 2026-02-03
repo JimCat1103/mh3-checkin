@@ -29,7 +29,7 @@
         }
 
         .fade-in {
-            animation: fadeIn 0.35s ease-out;
+            animation: fadeIn 0.2s ease-out;
         }
 
         @keyframes fadeIn {
@@ -60,9 +60,16 @@
                 transform: rotate(360deg);
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fade-in,
+            .loader {
+                animation: none;
+            }
+        }
     </style>
 </head>
-<body class="bg-slate-900 min-h-screen text-slate-200 overflow-x-hidden">
+<body class="bg-slate-900 min-h-dvh text-slate-200 overflow-x-hidden">
 
 <div class="max-w-6xl w-full mx-auto px-4 py-4">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
@@ -75,7 +82,7 @@
                 <a href="checklist.html"
                    class="text-slate-400 hover:text-blue-400 text-xs font-bold border border-slate-500 hover:border-blue-400 rounded px-2 py-0.5 transition bg-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">中文</a>
             </div>
-            <h1 class="text-2xl font-extrabold text-blue-400 tracking-wide">Check-in Status</h1>
+            <h1 class="text-2xl font-extrabold text-blue-400 text-balance">Check-in Status</h1>
             <div id="runInfo" class="text-sm text-slate-500 mt-1 leading-relaxed whitespace-pre-line"></div>
         </div>
         <div class="flex flex-col md:flex-row w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2">

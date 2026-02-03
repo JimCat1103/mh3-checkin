@@ -97,7 +97,7 @@
         }
 
         .fade-in {
-            animation: fadeIn 0.4s ease-out;
+            animation: fadeIn 0.2s ease-out;
         }
 
         @keyframes fadeIn {
@@ -112,7 +112,7 @@
         }
 
         .modal-enter {
-            animation: modalIn 0.3s ease-out;
+            animation: modalIn 0.2s ease-out;
         }
 
         @keyframes modalIn {
@@ -123,6 +123,14 @@
             to {
                 opacity: 1;
                 transform: scale(1);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fade-in,
+            .modal-enter,
+            .loader {
+                animation: none;
             }
         }
 
@@ -148,7 +156,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-900 min-h-screen p-4 flex items-center justify-center font-sans text-slate-200">
+<body class="bg-slate-900 min-h-dvh p-4 flex items-center justify-center font-sans text-slate-200">
 
 <div class="w-full max-w-md bg-slate-800 rounded-xl shadow-2xl p-6 relative min-h-[300px] border border-slate-700">
 
@@ -163,7 +171,7 @@
         <div class="flex justify-center mb-3">
             <img src="logo.png" alt="MH3 Logo" class="h-16 w-auto sm:h-20 md:h-24 object-contain">
         </div>
-        <h1 class="text-3xl font-extrabold text-blue-500 tracking-wider drop-shadow-lg">
+        <h1 class="text-3xl font-extrabold text-blue-500 text-balance">
             <span class="sr-only">台北捷運兔 </span>MH3 Check-in
         </h1>
         <p class="sr-only">Taipei MRT Hash House Harriers 每週跑次線上簽到系統</p>

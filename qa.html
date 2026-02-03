@@ -68,7 +68,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .fade-in {
-            animation: fadeIn 0.4s ease-out;
+            animation: fadeIn 0.2s ease-out;
         }
 
         @keyframes fadeIn {
@@ -81,9 +81,15 @@
                 transform: translateY(0);
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fade-in {
+                animation: none;
+            }
+        }
     </style>
 </head>
-<body class="bg-slate-900 min-h-screen p-4 flex items-center justify-center font-sans text-slate-200">
+<body class="bg-slate-900 min-h-dvh p-4 flex items-center justify-center font-sans text-slate-200">
 
 <div class="w-full max-w-md bg-slate-800 rounded-xl shadow-2xl p-6 border border-slate-700 fade-in">
 
@@ -97,7 +103,7 @@
         <div class="flex justify-center mb-3">
             <img src="logo.png" alt="MH3 Logo" class="h-16 w-auto sm:h-20 object-contain">
         </div>
-        <h1 class="text-2xl font-extrabold text-blue-500 tracking-wider">常見問題 Q&A</h1>
+        <h1 class="text-2xl font-extrabold text-blue-500 text-balance">常見問題 Q&A</h1>
     </div>
 
     <div class="space-y-4 h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
