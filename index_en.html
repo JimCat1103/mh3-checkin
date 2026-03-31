@@ -168,9 +168,18 @@
             <a href="index.html"
                class="text-slate-400 hover:text-blue-400 text-xs font-bold border border-slate-500 hover:border-blue-400 rounded px-2 py-1 transition bg-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">中文</a>
         </div>
-        <a id="qaLink" href="qa_en.html"
-           class="absolute right-0 top-0 z-10 text-slate-400 hover:text-slate-900 text-sm font-bold border border-slate-500 hover:border-blue-400 rounded-full w-7 h-7 flex items-center justify-center transition bg-slate-800 hover:bg-blue-400 shadow-sm hover:shadow-blue-900/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
-           title="FAQ / Q&A">?</a>
+        <div class="absolute right-0 top-0 z-10 flex items-center gap-3">
+            <button onclick="document.getElementById('qrModal').classList.remove('hidden')"
+                    class="text-slate-400 hover:text-slate-900 text-xs font-bold border border-slate-500 hover:border-blue-400 rounded-full w-7 h-7 flex items-center justify-center transition bg-slate-800 hover:bg-blue-400 shadow-sm hover:shadow-blue-900/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
+                    title="QR Code">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM17 14h3v3h-3zM14 17h3v3h-3zM17 20h3v1h-3z"/>
+                </svg>
+            </button>
+            <a id="qaLink" href="qa_en.html"
+               class="text-slate-400 hover:text-slate-900 text-sm font-bold border border-slate-500 hover:border-blue-400 rounded-full w-7 h-7 flex items-center justify-center transition bg-slate-800 hover:bg-blue-400 shadow-sm hover:shadow-blue-900/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
+               title="FAQ / Q&A">?</a>
+        </div>
         <div class="flex justify-center mb-3">
             <img src="logo.png" alt="MH3 Logo" class="h-16 w-auto sm:h-20 md:h-24 object-contain">
         </div>
@@ -288,6 +297,21 @@
         </div>
     </div>
 
+    <div id="qrModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4" onclick="if(event.target===this)this.classList.add('hidden')">
+        <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm"></div>
+        <div class="relative z-10 bg-slate-800 rounded-2xl shadow-2xl w-full max-w-xs overflow-hidden modal-enter border border-slate-700">
+            <button onclick="document.getElementById('qrModal').classList.add('hidden')"
+                    class="absolute top-3 right-3 text-slate-400 hover:text-slate-900 text-sm font-bold border border-slate-500 hover:border-blue-400 rounded-full w-7 h-7 flex items-center justify-center transition bg-slate-800 hover:bg-blue-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 z-20"
+                    aria-label="Close">✕</button>
+            <div class="p-5 flex flex-col items-center">
+                <div class="bg-white rounded-xl p-4 mb-4">
+                    <img src="qr-code.png" alt="QR Code" class="w-48 h-48 sm:w-56 sm:h-56 object-contain">
+                </div>
+                <p class="text-slate-300 text-sm text-center font-medium">Scan QR Code to open check-in page</p>
+            </div>
+        </div>
+    </div>
+
     <div id="customModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
         <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm transition-opacity"
              onclick="closeModal()"></div>
@@ -363,6 +387,10 @@
   function closeModal() {
     document.getElementById('customModal').classList.add('hidden');
   }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') document.getElementById('qrModal').classList.add('hidden');
+  });
 
   window.onload = async function () {
     try {
