@@ -91,6 +91,12 @@
             </div>
             <h1 class="text-2xl font-extrabold text-blue-400 text-balance">Check-in Status</h1>
             <div id="runInfo" class="text-sm text-slate-500 mt-1 leading-relaxed whitespace-pre-line"></div>
+            <div class="text-sm text-slate-500 leading-relaxed">
+                <span id="runRestaurant"></span>
+            </div>
+            <div class="text-sm text-slate-500 leading-relaxed whitespace-pre-line">
+                <span id="runCounts"></span>
+            </div>
         </div>
         <div class="flex flex-col md:flex-row w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2">
             <button id="refreshBtn"
@@ -176,21 +182,21 @@
         'Hare: ' + hareText,
         'Co-Hare: ' + coHareText
       ];
-      runInfoEl.appendChild(document.createTextNode(lines.join('\n') + '\n'));
+      runInfoEl.textContent = lines.join('\n');
+      const restaurantEl = document.getElementById('runRestaurant');
       if (restaurantName) {
-        runInfoEl.appendChild(document.createTextNode('Restaurant: ' + restaurantName + ' '));
+        restaurantEl.appendChild(document.createTextNode('Restaurant: ' + restaurantName + ' '));
         const mapLink = document.createElement('a');
         mapLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(restaurantName);
         mapLink.target = '_blank';
         mapLink.rel = 'noopener noreferrer';
         mapLink.textContent = '📍';
         mapLink.className = 'text-blue-400 hover:text-blue-300';
-        runInfoEl.appendChild(mapLink);
-        runInfoEl.appendChild(document.createTextNode('\n'));
+        restaurantEl.appendChild(mapLink);
       } else {
-        runInfoEl.appendChild(document.createTextNode('Restaurant: TBA\n'));
+        restaurantEl.textContent = 'Restaurant: TBA';
       }
-      runInfoEl.appendChild(document.createTextNode('Total Hash Check-in: 0 people\nCurrent Bash Count: Approx. 0 people'));
+      document.getElementById('runCounts').textContent = 'Total Hash Check-in: 0 people\nCurrent Bash Count: Approx. 0 people';
       await fetchList();
     } catch (err) {
       console.error(err);
@@ -344,14 +350,7 @@
   }
 
   function updateCounts(total, bashCount) {
-    const runInfo = document.getElementById('runInfo');
-    const currentText = runInfo.innerText;
-    const lines = currentText.split('\n');
-    if (lines.length >= 5) {
-      lines[lines.length - 2] = `Total Hash Check-in: ${total} people`;
-      lines[lines.length - 1] = `Current Bash Count: Approx. ${bashCount} people`;
-      runInfo.innerText = lines.join('\n');
-    }
+    document.getElementById('runCounts').textContent = `Total Hash Check-in: ${total} people\nCurrent Bash Count: Approx. ${bashCount} people`;
   }
 
   function toggleLoading(state) {
