@@ -166,7 +166,30 @@
       currentRunNumber = data.info.number;
       const hareText = data.info.hare || '尚未提供';
       const coHareText = data.info.coHare || '尚未提供';
-      document.getElementById('runInfo').innerText = `Run #${data.info.number}\n${data.info.dateStr}\nHare: ${hareText}\nCo-Hare: ${coHareText}\n總 Hash 報到人數: 0 人\n目前 Bash 人數: 約 0 人`;
+      const restaurantName = data.info.restaurant || '';
+      const runInfoEl = document.getElementById('runInfo');
+      runInfoEl.textContent = '';
+      const lines = [
+        'Run #' + data.info.number,
+        data.info.dateStr,
+        'Hare: ' + hareText,
+        'Co-Hare: ' + coHareText
+      ];
+      runInfoEl.appendChild(document.createTextNode(lines.join('\n') + '\n'));
+      if (restaurantName) {
+        runInfoEl.appendChild(document.createTextNode('餐廳資訊: ' + restaurantName + ' '));
+        const mapLink = document.createElement('a');
+        mapLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(restaurantName);
+        mapLink.target = '_blank';
+        mapLink.rel = 'noopener noreferrer';
+        mapLink.textContent = '📍';
+        mapLink.className = 'text-blue-400 hover:text-blue-300';
+        runInfoEl.appendChild(mapLink);
+        runInfoEl.appendChild(document.createTextNode('\n'));
+      } else {
+        runInfoEl.appendChild(document.createTextNode('餐廳資訊: 尚未提供\n'));
+      }
+      runInfoEl.appendChild(document.createTextNode('總 Hash 報到人數: 0 人\n目前 Bash 人數: 約 0 人'));
       await fetchList();
     } catch (err) {
       console.error(err);

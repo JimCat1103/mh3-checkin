@@ -191,6 +191,7 @@
                 <p id="runDate" class="leading-tight text-center"></p>
                 <p id="runHare" class="leading-tight text-center"></p>
                 <p id="runCoHare" class="leading-tight text-center"></p>
+                <p id="runRestaurant" class="leading-tight text-center"></p>
             </div>
         </div>
     </div>
@@ -403,6 +404,20 @@
       document.getElementById('runDate').innerText = currentRunInfo.dateStr;
       document.getElementById('runHare').innerText = `Hare: ${currentRunInfo.hare || 'TBA'}`;
       document.getElementById('runCoHare').innerText = `Co-Hare: ${currentRunInfo.coHare || 'TBA'}`;
+      const restaurantEl = document.getElementById('runRestaurant');
+      const restaurantName = currentRunInfo.restaurant || '';
+      if (restaurantName) {
+        restaurantEl.textContent = 'Restaurant: ' + restaurantName + ' ';
+        const mapLink = document.createElement('a');
+        mapLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(restaurantName);
+        mapLink.target = '_blank';
+        mapLink.rel = 'noopener noreferrer';
+        mapLink.textContent = '📍';
+        mapLink.className = 'inline-block ml-1 align-middle text-blue-400 hover:text-blue-300';
+        restaurantEl.appendChild(mapLink);
+      } else {
+        restaurantEl.textContent = 'Restaurant: TBA';
+      }
       document.getElementById('waitDate').innerText = currentRunInfo.dateStr;
       document.getElementById('startHourDisplay').innerText = `${data.startHour || 19}:00`;
       document.getElementById('initLoader').classList.add('hidden');
