@@ -144,6 +144,7 @@
     </div>
 </div>
 
+<script src="hareline.js"></script>
 <script>
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') document.getElementById('qrModal').classList.add('hidden');
@@ -159,49 +160,62 @@
     return norm.slice(0, 2) + 'XXXXX' + norm.slice(-3);
   };
 
-  window.onload = async function () {
-    await initPage();
+  window.onload = function () {
+    initPage();
     document.getElementById('refreshBtn').addEventListener('click', fetchList);
   };
 
-  async function initPage() {
+  function renderRunInfoFromHareline(data) {
+    currentRunNumber = data.info.number;
+    const hareText = data.info.hare || '尚未提供';
+    const coHareText = data.info.coHare || '尚未提供';
+    const restaurantName = data.info.restaurant || '';
+    const runInfoEl = document.getElementById('runInfo');
+    runInfoEl.textContent = '';
+    const lines = [
+      'Run #' + data.info.number,
+      data.info.dateStr,
+      'Hare: ' + hareText,
+      'Co-Hare: ' + coHareText
+    ];
+    runInfoEl.textContent = lines.join('\n');
+    const restaurantEl = document.getElementById('runRestaurant');
+    restaurantEl.textContent = '';
+    if (restaurantName) {
+      restaurantEl.appendChild(document.createTextNode('餐廳資訊: ' + restaurantName + ' '));
+      const mapLink = document.createElement('a');
+      mapLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(restaurantName);
+      mapLink.target = '_blank';
+      mapLink.rel = 'noopener noreferrer';
+      mapLink.textContent = '📍';
+      mapLink.className = 'text-blue-400 hover:text-blue-300';
+      restaurantEl.appendChild(mapLink);
+    } else {
+      restaurantEl.textContent = '餐廳資訊: 尚未提供';
+    }
+    document.getElementById('runCounts').textContent = '總 Hash 報到人數: 0 人\n目前 Bash 人數: 約 0 人';
+  }
+
+  function initPage() {
     toggleLoading(true);
-    try {
-      const res = await fetch(API_URL, {method: 'POST', body: JSON.stringify({action: 'getInfo'})});
-      const data = await res.json();
-      currentRunNumber = data.info.number;
-      const hareText = data.info.hare || '尚未提供';
-      const coHareText = data.info.coHare || '尚未提供';
-      const restaurantName = data.info.restaurant || '';
-      const runInfoEl = document.getElementById('runInfo');
-      runInfoEl.textContent = '';
-      const lines = [
-        'Run #' + data.info.number,
-        data.info.dateStr,
-        'Hare: ' + hareText,
-        'Co-Hare: ' + coHareText
-      ];
-      runInfoEl.textContent = lines.join('\n');
-      const restaurantEl = document.getElementById('runRestaurant');
-      if (restaurantName) {
-        restaurantEl.appendChild(document.createTextNode('餐廳資訊: ' + restaurantName + ' '));
-        const mapLink = document.createElement('a');
-        mapLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(restaurantName);
-        mapLink.target = '_blank';
-        mapLink.rel = 'noopener noreferrer';
-        mapLink.textContent = '📍';
-        mapLink.className = 'text-blue-400 hover:text-blue-300';
-        restaurantEl.appendChild(mapLink);
-      } else {
-        restaurantEl.textContent = '餐廳資訊: 尚未提供';
+    if (!window.HarelineCache || typeof window.HarelineCache.readHareline !== 'function') {
+      alert('活動資訊模組載入失敗，請重新整理頁面');
+      toggleLoading(false);
+      return;
+    }
+    let listFetched = false;
+    window.HarelineCache.readHareline(function (data) {
+      renderRunInfoFromHareline(data);
+      // Only fetch the checkin list once (on first callback with the run number).
+      if (!listFetched) {
+        listFetched = true;
+        fetchList();
       }
-      document.getElementById('runCounts').textContent = '總 Hash 報到人數: 0 人\n目前 Bash 人數: 約 0 人';
-      await fetchList();
-    } catch (err) {
-      console.error(err);
+    }, function (err) {
+      console.error('HarelineCache readHareline failed:', err);
       alert('載入活動資訊失敗，請稍後再試');
       toggleLoading(false);
-    }
+    });
   }
 
   function getMyPhones() {

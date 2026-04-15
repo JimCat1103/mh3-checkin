@@ -145,6 +145,7 @@
     </div>
 </div>
 
+<script src="hareline.js"></script>
 <script>
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') document.getElementById('qrModal').classList.add('hidden');
@@ -160,49 +161,61 @@
     return norm.slice(0, 2) + 'XXXXX' + norm.slice(-3);
   };
 
-  window.onload = async function () {
-    await initPage();
+  window.onload = function () {
+    initPage();
     document.getElementById('refreshBtn').addEventListener('click', fetchList);
   };
 
-  async function initPage() {
+  function renderRunInfoFromHareline(data) {
+    currentRunNumber = data.info.number;
+    const hareText = data.info.hare || 'TBA';
+    const coHareText = data.info.coHare || 'TBA';
+    const restaurantName = data.info.restaurant || '';
+    const runInfoEl = document.getElementById('runInfo');
+    runInfoEl.textContent = '';
+    const lines = [
+      'Run #' + data.info.number,
+      data.info.dateStr,
+      'Hare: ' + hareText,
+      'Co-Hare: ' + coHareText
+    ];
+    runInfoEl.textContent = lines.join('\n');
+    const restaurantEl = document.getElementById('runRestaurant');
+    restaurantEl.textContent = '';
+    if (restaurantName) {
+      restaurantEl.appendChild(document.createTextNode('Restaurant: ' + restaurantName + ' '));
+      const mapLink = document.createElement('a');
+      mapLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(restaurantName);
+      mapLink.target = '_blank';
+      mapLink.rel = 'noopener noreferrer';
+      mapLink.textContent = '📍';
+      mapLink.className = 'text-blue-400 hover:text-blue-300';
+      restaurantEl.appendChild(mapLink);
+    } else {
+      restaurantEl.textContent = 'Restaurant: TBA';
+    }
+    document.getElementById('runCounts').textContent = 'Total Hash Check-in: 0 people\nCurrent Bash Count: Approx. 0 people';
+  }
+
+  function initPage() {
     toggleLoading(true);
-    try {
-      const res = await fetch(API_URL, {method: 'POST', body: JSON.stringify({action: 'getInfo'})});
-      const data = await res.json();
-      currentRunNumber = data.info.number;
-      const hareText = data.info.hare || 'TBA';
-      const coHareText = data.info.coHare || 'TBA';
-      const restaurantName = data.info.restaurant || '';
-      const runInfoEl = document.getElementById('runInfo');
-      runInfoEl.textContent = '';
-      const lines = [
-        'Run #' + data.info.number,
-        data.info.dateStr,
-        'Hare: ' + hareText,
-        'Co-Hare: ' + coHareText
-      ];
-      runInfoEl.textContent = lines.join('\n');
-      const restaurantEl = document.getElementById('runRestaurant');
-      if (restaurantName) {
-        restaurantEl.appendChild(document.createTextNode('Restaurant: ' + restaurantName + ' '));
-        const mapLink = document.createElement('a');
-        mapLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(restaurantName);
-        mapLink.target = '_blank';
-        mapLink.rel = 'noopener noreferrer';
-        mapLink.textContent = '📍';
-        mapLink.className = 'text-blue-400 hover:text-blue-300';
-        restaurantEl.appendChild(mapLink);
-      } else {
-        restaurantEl.textContent = 'Restaurant: TBA';
+    if (!window.HarelineCache || typeof window.HarelineCache.readHareline !== 'function') {
+      alert('Run info module failed to load. Please refresh the page.');
+      toggleLoading(false);
+      return;
+    }
+    let listFetched = false;
+    window.HarelineCache.readHareline(function (data) {
+      renderRunInfoFromHareline(data);
+      if (!listFetched) {
+        listFetched = true;
+        fetchList();
       }
-      document.getElementById('runCounts').textContent = 'Total Hash Check-in: 0 people\nCurrent Bash Count: Approx. 0 people';
-      await fetchList();
-    } catch (err) {
-      console.error(err);
+    }, function (err) {
+      console.error('HarelineCache readHareline failed:', err);
       alert('Failed to load event info, please try again later');
       toggleLoading(false);
-    }
+    });
   }
 
   function getMyPhones() {

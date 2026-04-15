@@ -327,6 +327,7 @@
 
 </div>
 
+<script src="hareline.js"></script>
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbxmkQakubfwGK2ZRoEL1_Z3BXixcFLuGQDMZcp2Fml8a9uvxBV-L4e5KOTx-8K5uIm5Sw/exec';
   let currentRunInfo = {};
@@ -389,53 +390,60 @@
     if (e.key === 'Escape') document.getElementById('qrModal').classList.add('hidden');
   });
 
-  window.onload = async function () {
-    try {
-      const response = await fetch(API_URL, {method: 'POST', body: JSON.stringify({action: 'getInfo'})});
-      const data = await response.json();
-      currentRunInfo = data.info;
-      isTestMode = data.isTestMode === true;
-      const status = data.status;
-      document.getElementById('runTitle').innerText = `Run #${currentRunInfo.number}`;
-      document.getElementById('runDate').innerText = currentRunInfo.dateStr;
-      document.getElementById('runHare').innerText = `Hare: ${currentRunInfo.hare || '尚未提供'}`;
-      document.getElementById('runCoHare').innerText = `Co-Hare: ${currentRunInfo.coHare || '尚未提供'}`;
-      const restaurantEl = document.getElementById('runRestaurant');
-      const restaurantName = currentRunInfo.restaurant || '';
-      if (restaurantName) {
-        restaurantEl.textContent = '餐廳資訊: ' + restaurantName + ' ';
-        const mapLink = document.createElement('a');
-        mapLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(restaurantName);
-        mapLink.target = '_blank';
-        mapLink.rel = 'noopener noreferrer';
-        mapLink.textContent = '📍';
-        mapLink.className = 'inline-block ml-1 align-middle text-blue-400 hover:text-blue-300';
-        restaurantEl.appendChild(mapLink);
-      } else {
-        restaurantEl.textContent = '餐廳資訊: 尚未提供';
-      }
-      document.getElementById('waitDate').innerText = currentRunInfo.dateStr;
-      document.getElementById('startHourDisplay').innerText = `${data.startHour || 19}:00`;
-      document.getElementById('initLoader').classList.add('hidden');
-      // 顯示/隱藏 Debug 按鈕
-      const debugBtn = document.getElementById('debugResetBtn');
-      if (debugBtn) {
-        if (isTestMode) {
-          debugBtn.classList.remove('hidden');
-        } else {
-          debugBtn.classList.add('hidden');
-        }
-      }
-      if (status === 'waiting') {
-        showSection('waitingSection');
-      } else {
-        document.getElementById('runInfoDisplay').classList.remove('hidden');
-        checkLocalStorage(currentRunInfo.number);
-      }
-    } catch (e) {
-      showModal({title: '連線錯誤', msg: '無法連接到伺服器。'});
-      document.getElementById('initLoader').classList.add('hidden');
+  function renderRunInfo(data) {
+    currentRunInfo = data.info;
+    isTestMode = data.isTestMode === true;
+    const status = data.status;
+    document.getElementById('runTitle').innerText = `Run #${currentRunInfo.number}`;
+    document.getElementById('runDate').innerText = currentRunInfo.dateStr;
+    document.getElementById('runHare').innerText = `Hare: ${currentRunInfo.hare || '尚未提供'}`;
+    document.getElementById('runCoHare').innerText = `Co-Hare: ${currentRunInfo.coHare || '尚未提供'}`;
+    const restaurantEl = document.getElementById('runRestaurant');
+    restaurantEl.textContent = '';
+    const restaurantName = currentRunInfo.restaurant || '';
+    if (restaurantName) {
+      restaurantEl.appendChild(document.createTextNode('餐廳資訊: ' + restaurantName + ' '));
+      const mapLink = document.createElement('a');
+      mapLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(restaurantName);
+      mapLink.target = '_blank';
+      mapLink.rel = 'noopener noreferrer';
+      mapLink.textContent = '📍';
+      mapLink.className = 'inline-block ml-1 align-middle text-blue-400 hover:text-blue-300';
+      restaurantEl.appendChild(mapLink);
+    } else {
+      restaurantEl.textContent = '餐廳資訊: 尚未提供';
     }
+    document.getElementById('waitDate').innerText = currentRunInfo.dateStr;
+    document.getElementById('startHourDisplay').innerText = `${data.startHour || 19}:00`;
+    document.getElementById('initLoader').classList.add('hidden');
+    // 顯示/隱藏 Debug 按鈕
+    const debugBtn = document.getElementById('debugResetBtn');
+    if (debugBtn) {
+      if (isTestMode) {
+        debugBtn.classList.remove('hidden');
+      } else {
+        debugBtn.classList.add('hidden');
+      }
+    }
+    if (status === 'waiting') {
+      showSection('waitingSection');
+    } else {
+      document.getElementById('runInfoDisplay').classList.remove('hidden');
+      checkLocalStorage(currentRunInfo.number);
+    }
+  }
+
+  window.onload = function () {
+    if (!window.HarelineCache || typeof window.HarelineCache.readHareline !== 'function') {
+      showModal({title: '載入錯誤', msg: '活動資訊模組載入失敗，請重新整理頁面。'});
+      document.getElementById('initLoader').classList.add('hidden');
+      return;
+    }
+    window.HarelineCache.readHareline(renderRunInfo, function (err) {
+      showModal({title: '連線錯誤', msg: '無法載入活動資訊，請檢查網路連線後重新整理。'});
+      document.getElementById('initLoader').classList.add('hidden');
+      console.error('HarelineCache readHareline failed:', err);
+    });
   };
 
   function checkLocalStorage(serverRunNumber) {
