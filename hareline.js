@@ -412,11 +412,45 @@
     });
   }
 
+  // ---- GAS pre-warm ----------------------------------------------------
+  //
+  // Fire-and-forget POST to the Apps Script Web App to wake its V8 container
+  // before the user submits anything. The container cold-start (2~8s) is
+  // absorbed by the user's read/fill time after page load.
+  //
+  // Intentional design:
+  //   - mode: 'no-cors' avoids a CORS preflight (Apps Script does not emit
+  //     CORS headers). The response is opaque; we do not need to read it.
+  //   - keepalive: true lets the request finish even if the user navigates
+  //     away before the response arrives.
+  //   - No client-side throttle: every page load sends one ping. Container
+  //     recycling is unpredictable; skipping is more costly than pinging.
+  //   - Completely silent on failure: no console.* under any path, no
+  //     rejection propagated, no retry.
+  //
+  // Note: apiUrl is accepted as a parameter (not hardcoded) so hareline.js
+  // stays decoupled from the Apps Script endpoint constant that lives in
+  // each page.
+  function prewarmGas(apiUrl) {
+    try {
+      if (!apiUrl || typeof window.fetch !== 'function') return;
+      window.fetch(apiUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        keepalive: true,
+        body: JSON.stringify({ action: 'ping' })
+      }).catch(function () { /* silent */ });
+    } catch (e) {
+      // silent
+    }
+  }
+
   // ---- Expose public API ----------------------------------------------
 
   window.HarelineCache = {
     readHareline: readHareline,
     getNextRunInfo: getNextRunInfo,
+    prewarmGas: prewarmGas,
     // Exposed for testing / verification only — not part of the public contract.
     _internals: {
       parseHareline: parseHareline,

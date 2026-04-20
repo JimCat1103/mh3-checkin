@@ -212,6 +212,9 @@
     </div>
 
     <div id="thankYouSection" class="hidden text-center py-10 fade-in">
+        <div id="syncErrorBanner" class="hidden bg-amber-600/20 border border-amber-500 rounded-lg p-3 mb-4 text-sm text-amber-200 text-left">
+            Sync failed. We will retry automatically when you open this page next time. Refresh now to retry immediately.
+        </div>
         <div class="text-6xl mb-6 opacity-90">🎉</div>
         <h3 class="text-2xl font-bold text-green-400 mb-3">Event Completed</h3>
         <p class="text-slate-400 mb-8 px-4">Thank you for joining! See you at the next Hash.</p>
@@ -448,7 +451,36 @@
       document.getElementById('initLoader').classList.add('hidden');
       console.error('HarelineCache readHareline failed:', err);
     });
+    // Pre-warm the Apps Script container in parallel with CSV fetch so the
+    // user's eventual checkin/back request lands on a hot instance.
+    if (window.HarelineCache && typeof window.HarelineCache.prewarmGas === 'function') {
+      window.HarelineCache.prewarmGas(API_URL);
+    }
+    resumePendingBackSync();
   };
+
+  // If a previous Back submission failed and was queued, retry once on load.
+  // Single-shot: the flag is removed regardless of outcome to prevent infinite loops.
+  function resumePendingBackSync() {
+    const raw = localStorage.getItem('mh3_pending_back_sync');
+    if (!raw) return;
+    let parsed;
+    try { parsed = JSON.parse(raw); } catch (e) { localStorage.removeItem('mh3_pending_back_sync'); return; }
+    if (!parsed || !parsed.runNumber || !Array.isArray(parsed.targets)) {
+      localStorage.removeItem('mh3_pending_back_sync');
+      return;
+    }
+    attemptWithRetry({action: 'back', runNumber: parsed.runNumber, targets: parsed.targets})
+      .then(() => {
+        localStorage.removeItem('mh3_pending_back_sync');
+        const banner = document.getElementById('syncErrorBanner');
+        if (banner) banner.classList.add('hidden');
+      })
+      .catch(err => {
+        console.error('Pending back sync retry failed:', err);
+        localStorage.removeItem('mh3_pending_back_sync');
+      });
+  }
 
   function checkLocalStorage(serverRunNumber) {
     const savedGroupJson = localStorage.getItem('mh3_group');
@@ -686,38 +718,73 @@
 
     const payload = {action: 'checkin', runNumber: currentRunInfo.number, users: users};
 
-    sendData(payload, (data) => {
-      const returnedUsers = data.processedUsers;
-      const currentUser = returnedUsers[0];
+    // Apply Optimistic UI only when there is no existing matching mh3_group;
+    // otherwise fall back to the synchronous sendData path (rare branch).
+    const existingRaw = localStorage.getItem('mh3_group');
+    const existingGroup = existingRaw ? JSON.parse(existingRaw) : null;
+    const hasMatchingGroup = existingGroup && `${existingGroup.runNumber}` === `${currentRunInfo.number}`;
 
-      const storageData = {
-        runNumber: currentRunInfo.number,
-        status: 'checked_in',
-        users: returnedUsers,
-        isRepeat: false
-      };
-
-      if (returnedUsers.length === 1) {
-        if (currentUser.back === true) {
-          storageData.status = 'completed';
-          localStorage.setItem('mh3_group', JSON.stringify(storageData));
-          showSection('thankYouSection');
-          return;
-        } else if (currentUser.isNew === false) {
-          storageData.isRepeat = true;
-          localStorage.setItem('mh3_group', JSON.stringify(storageData));
-          checkLocalStorage(currentRunInfo.number);
-          return;
-        }
-      }
-
-      localStorage.setItem('mh3_group', JSON.stringify(storageData));
-      showModal({
-        title: 'Check-in Successful', msg: 'Have a great run! On On!', type: 'success', confirmCallback: () => {
-          checkLocalStorage(currentRunInfo.number);
-        }
+    if (hasMatchingGroup) {
+      sendData(payload, (data) => {
+        applyCheckinResult(data);
       });
+      return;
+    }
+
+    // Optimistic path: write provisional state and show success modal immediately.
+    const provisionalUsers = users.map(u => Object.assign({}, u, {back: false, isNew: true, coverBy: u.coverBy || 'Self'}));
+    const provisionalStorage = {
+      runNumber: currentRunInfo.number,
+      status: 'checked_in',
+      users: provisionalUsers,
+      isRepeat: false
+    };
+    localStorage.setItem('mh3_group', JSON.stringify(provisionalStorage));
+    showModal({
+      title: 'Check-in Successful', msg: 'Have a great run! On On!', type: 'success', confirmCallback: () => {
+        checkLocalStorage(currentRunInfo.number);
+      }
     });
+
+    attemptWithRetry(payload).then(data => {
+      applyCheckinResult(data);
+    }).catch(err => {
+      console.error('Checkin sync failed after retries:', err);
+      localStorage.removeItem('mh3_group');
+      showSection('formSection');
+      showModal({title: 'Submission Failed', msg: 'Please try submitting again.'});
+    });
+  }
+
+  // Reconcile UI/storage with server's authoritative response.
+  // Used both by the Optimistic path (.then) and the synchronous fallback.
+  function applyCheckinResult(data) {
+    const returnedUsers = data.processedUsers;
+    const currentUser = returnedUsers[0];
+
+    const storageData = {
+      runNumber: currentRunInfo.number,
+      status: 'checked_in',
+      users: returnedUsers,
+      isRepeat: false
+    };
+
+    if (returnedUsers.length === 1) {
+      if (currentUser.back === true) {
+        storageData.status = 'completed';
+        localStorage.setItem('mh3_group', JSON.stringify(storageData));
+        showSection('thankYouSection');
+        return;
+      } else if (currentUser.isNew === false) {
+        storageData.isRepeat = true;
+        localStorage.setItem('mh3_group', JSON.stringify(storageData));
+        checkLocalStorage(currentRunInfo.number);
+        return;
+      }
+    }
+
+    // Normal new check-in: just update storage with authoritative users.
+    localStorage.setItem('mh3_group', JSON.stringify(storageData));
   }
 
   function preBackCheck() {
@@ -766,11 +833,29 @@
 
   function executeBack(targets) {
     const payload = {action: 'back', runNumber: currentRunInfo.number, targets: targets};
-    sendData(payload, () => {
-      const storageData = JSON.parse(localStorage.getItem('mh3_group'));
+
+    // Optimistic: update local state + UI before network.
+    const storageRaw = localStorage.getItem('mh3_group');
+    if (storageRaw) {
+      const storageData = JSON.parse(storageRaw);
       storageData.status = 'completed';
       localStorage.setItem('mh3_group', JSON.stringify(storageData));
-      showSection('thankYouSection');
+    }
+    const banner = document.getElementById('syncErrorBanner');
+    if (banner) banner.classList.add('hidden');
+    showSection('thankYouSection');
+
+    // Background sync with retry.
+    attemptWithRetry(payload).then(() => {
+      localStorage.removeItem('mh3_pending_back_sync');
+    }).catch(err => {
+      console.error('Back sync failed after retries:', err);
+      if (banner) banner.classList.remove('hidden');
+      localStorage.setItem('mh3_pending_back_sync', JSON.stringify({
+        runNumber: currentRunInfo.number,
+        targets: targets,
+        createdAt: Date.now()
+      }));
     });
   }
 
@@ -877,6 +962,46 @@
         showModal({title: 'Connection Failed', msg: 'Network connection error, please retry'});
         document.getElementById('loading').classList.add('hidden');
       });
+  }
+
+  // Background send with retry (exponential backoff).
+  // - Retries network/parse errors up to maxAttempts times.
+  // - Does NOT retry when the server responds 2xx with result !== 'success'
+  //   (that signals a deterministic business error; retrying won't help).
+  function attemptWithRetry(payload, opts) {
+    opts = Object.assign({maxAttempts: 3, backoffMs: [1000, 2000, 4000]}, opts || {});
+    return new Promise((resolve, reject) => {
+      let attempt = 0;
+      const go = () => {
+        attempt++;
+        fetch(API_URL, {method: 'POST', body: JSON.stringify(payload)})
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.result === 'success') {
+              resolve(data);
+            } else {
+              const e = new Error((data && data.msg) || 'server_error');
+              e.serverError = true;
+              reject(e);
+            }
+          })
+          .catch(err => {
+            if (err && err.serverError) {
+              reject(err);
+              return;
+            }
+            if (attempt >= opts.maxAttempts) {
+              reject(err);
+              return;
+            }
+            const delay = opts.backoffMs[attempt - 1] != null
+              ? opts.backoffMs[attempt - 1]
+              : opts.backoffMs[opts.backoffMs.length - 1];
+            setTimeout(go, delay);
+          });
+      };
+      go();
+    });
   }
 
   document.getElementById('formSection').addEventListener('input', () => validateForm(false));

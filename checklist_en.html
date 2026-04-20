@@ -204,6 +204,11 @@
       toggleLoading(false);
       return;
     }
+    // Pre-warm the Apps Script container in parallel with CSV + listCheckin
+    // so the user's refresh action lands on a hot instance.
+    if (typeof window.HarelineCache.prewarmGas === 'function') {
+      window.HarelineCache.prewarmGas(API_URL);
+    }
     let listFetched = false;
     window.HarelineCache.readHareline(function (data) {
       renderRunInfoFromHareline(data);
