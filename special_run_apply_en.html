@@ -588,24 +588,35 @@
     currentEditToken = editToken;
     currentRunNumber = runNumber;
 
-    const schemaPromise = attemptWithRetry({
-      action: 'getSpecialConfig',
-      runNumber: runNumber,
-      skipImages: true
-    });
-    const submissionPromise = attemptWithRetry({
+    // Phase 1: bundle (submission + embedded schema) — single round-trip
+    const bundlePromise = attemptWithRetry({
       action: 'getSpecialRunSubmission',
       runNumber: runNumber,
       editToken: editToken
     });
+    // Phase 2: images async (non-blocking)
+    const imagesPromise = attemptWithRetry({
+      action: 'getSpecialConfigImages',
+      runNumber: runNumber
+    }).catch(function (err) {
+      console.warn('getSpecialConfigImages failed (non-fatal):', err);
+      return {result: 'success', images: []};
+    });
 
-    submissionPromise
+    bundlePromise
       .then(function (subData) {
         if (subData.expired) {
           showExpiredEditView(subData);
           return;
         }
-        return schemaPromise.then(function (cfgData) {
+
+        // New backend: schema embedded in subData.fields. Old backend: fallback to separate getSpecialConfig.
+        const hasEmbeddedSchema = Array.isArray(subData.fields) && subData.fields.length > 0;
+        const schemaDataPromise = hasEmbeddedSchema
+          ? Promise.resolve({ fields: subData.fields, runTitle: subData.runTitle, meta: subData.meta })
+          : attemptWithRetry({ action: 'getSpecialConfig', runNumber: runNumber, skipImages: true });
+
+        return schemaDataPromise.then(function (cfgData) {
           cfgData.fields = ensureEmailField(normalizeFields(cfgData.fields));
           currentSchema = cfgData;
           currentDeadline = subData.deadline || (cfgData.meta && cfgData.meta.deadline) || null;
@@ -622,6 +633,10 @@
           disableEmailInput();
           document.getElementById('initLoader').classList.add('hidden');
           document.getElementById('formSection').classList.remove('hidden');
+
+          imagesPromise.then(function (imgData) {
+            backfillImages(imgData && imgData.images ? imgData.images : []);
+          });
         });
       })
       .catch(function (err) {
