@@ -1090,6 +1090,9 @@
 
     const fieldNames = editable.map(function (f) { return f.name; });
 
+    const pageBaseUrl = window.location.origin
+      + window.location.pathname.replace(/[^/]*$/, '');
+
     const payload = editMode && currentEditToken
       ? {
           action: 'updateSpecialRunSubmission',
@@ -1097,14 +1100,16 @@
           editToken: currentEditToken,
           fieldNames: fieldNames,
           values: values,
-          lang: 'en'
+          lang: 'en',
+          baseUrl: pageBaseUrl
         }
       : {
           action: 'submitSpecialRun',
           runNumber: currentRunNumber,
           fieldNames: fieldNames,
           values: values,
-          lang: 'en'
+          lang: 'en',
+          baseUrl: pageBaseUrl
         };
 
     // Synchronous flow (no optimistic UI): show loading on button → wait → switch to thank-you only on success

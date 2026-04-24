@@ -1211,6 +1211,11 @@
 
     const fieldNames = editable.map(function (f) { return f.name; });
 
+    // 編輯連結用的 base URL：取目前頁面的 origin + pathname 目錄，讓 email 連回當前 deploy domain
+    // 後端 allowlist 過濾避免 phishing；換 domain 時後端 ALLOWED_EDIT_BASE_URLS 加新 entry 即可
+    const pageBaseUrl = window.location.origin
+      + window.location.pathname.replace(/[^/]*$/, ''); // 結尾有 /
+
     // Edit mode → updateSpecialRunSubmission；新報名 → submitSpecialRun
     const payload = editMode && currentEditToken
       ? {
@@ -1219,14 +1224,16 @@
           editToken: currentEditToken,
           fieldNames: fieldNames,
           values: values,
-          lang: PAGE_LANG
+          lang: PAGE_LANG,
+          baseUrl: pageBaseUrl
         }
       : {
           action: 'submitSpecialRun',
           runNumber: currentRunNumber,
           fieldNames: fieldNames,
           values: values,
-          lang: PAGE_LANG
+          lang: PAGE_LANG,
+          baseUrl: pageBaseUrl
         };
 
     // 同步流程（非 optimistic）：按鈕進 loading 狀態 → 等後端結果 → 成功才切 thank-you
