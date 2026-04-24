@@ -247,6 +247,12 @@
     </div>
 </div>
 
+<!-- 送出中全螢幕 overlay（蓋在表單上，semi-transparent dark + backdrop blur + 中央 loader + 文字） -->
+<div id="submitOverlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/70 backdrop-blur-sm">
+    <div class="loader mb-4"></div>
+    <p id="submitOverlayText" class="text-slate-100 font-medium tracking-wide text-base sm:text-lg">送出中...</p>
+</div>
+
 <div id="customModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
     <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm transition-opacity"
          onclick="closeModal()"></div>
@@ -696,6 +702,7 @@
           renderSpecialForm(cfgData.fields);
           prefillFormFromValues(subData.values || {});
           disableEmailInput();
+          disableSingleOptionChoices();
           document.getElementById('initLoader').classList.add('hidden');
           document.getElementById('formSection').classList.remove('hidden');
 
@@ -776,6 +783,46 @@
     input.readOnly = true;
     input.disabled = true;
     input.classList.add('opacity-60', 'cursor-not-allowed');
+  }
+
+  // 編輯模式：只有單一選項的 radio / multi 邏輯上無法改，disable 免得使用者以為還能點
+  // 常見 case：注意事項的「我同意」只有一個選項 — 第一次送出就選過了、編輯時無意義
+  function disableSingleOptionChoices() {
+    if (!currentSchema) return;
+    currentSchema.fields.forEach(function (f) {
+      if ((f.type === 'radio' || f.type === 'multi') && Array.isArray(f.options) && f.options.length === 1) {
+        const block = document.querySelector('[data-field-name="' + cssAttrEscape(f.name) + '"]');
+        if (!block) return;
+        block.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(function (inp) {
+          inp.disabled = true;
+        });
+        block.querySelectorAll('label').forEach(function (lbl) {
+          lbl.classList.add('opacity-60', 'cursor-not-allowed', 'pointer-events-none');
+        });
+      }
+    });
+  }
+
+  // 送出中全螢幕 overlay 的顯示/隱藏 + 按鈕 loading 狀態重設
+  // 抽成 helper 以便 handleSubmit / resetToForm 共用，避免各處手動改 button dataset
+  function showSubmitOverlay() {
+    const overlay = document.getElementById('submitOverlay');
+    if (!overlay) return;
+    const textEl = document.getElementById('submitOverlayText');
+    if (textEl) textEl.textContent = PAGE_LANG === 'en' ? 'Submitting...' : '送出中...';
+    overlay.classList.remove('hidden');
+  }
+  function hideSubmitOverlay() {
+    const overlay = document.getElementById('submitOverlay');
+    if (overlay) overlay.classList.add('hidden');
+  }
+  function resetSubmitButton() {
+    const btn = document.getElementById('submitBtn');
+    if (!btn) return;
+    btn.disabled = false;
+    btn.removeAttribute('aria-busy');
+    btn.classList.remove('btn-loading');
+    btn.textContent = PAGE_LANG === 'en' ? 'Submit' : '送出報名';
   }
 
   // 過期 + valid token → read-only 摘要頁
@@ -1333,22 +1380,11 @@
           baseUrl: pageBaseUrl
         };
 
-    // 同步流程（非 optimistic）：按鈕進 loading 狀態 → 等後端結果 → 成功才切 thank-you
+    // 同步流程（非 optimistic）：全螢幕 overlay 顯示 loading → 等後端結果 → 成功才切 thank-you
     // 避免 duplicate / expired 等業務拒絕時先閃一下「感謝報名」誤導使用者
     const btn = document.getElementById('submitBtn');
-    const originalBtnText = btn ? btn.textContent : '';
-    if (btn) {
-      btn.disabled = true;
-      btn.setAttribute('aria-busy', 'true');
-      btn.classList.add('btn-loading');
-      // 用 DOM API 組 spinner + text，避免 innerHTML 可能帶來的 XSS 風險
-      btn.textContent = '';
-      const spinner = document.createElement('span');
-      spinner.className = 'btn-spinner';
-      spinner.setAttribute('aria-hidden', 'true');
-      btn.appendChild(spinner);
-      btn.appendChild(document.createTextNode(PAGE_LANG === 'en' ? 'Submitting...' : '送出中...'));
-    }
+    if (btn) btn.disabled = true;
+    showSubmitOverlay();
 
     attemptWithRetry(payload).then(function (data) {
       // 成功：若是新報名，保留 editToken 到 localStorage 方便之後除錯
@@ -1357,17 +1393,14 @@
           localStorage.setItem('mh3_special_edit_' + currentRunNumber, data.editToken);
         } catch (e) { /* ignore */ }
       }
+      hideSubmitOverlay();
+      resetSubmitButton();
       // 切到 thank-you（原本是 optimistic 時 pre-render，現在改成成功後才 render + 切 view）
       showThankYou(fieldNames, values);
     }).catch(function (err) {
       console.error('submit failed:', err);
-      // 還原按鈕（loading 狀態清除；textContent = ... 會一併清掉 spinner 子節點）
-      if (btn) {
-        btn.textContent = originalBtnText;
-        btn.removeAttribute('aria-busy');
-        btn.classList.remove('btn-loading');
-        btn.disabled = false;
-      }
+      hideSubmitOverlay();
+      resetSubmitButton();
       const expired = err && (err.reason === 'expired' || err.message === 'expired');
       const duplicate = err && err.reason === 'duplicate';
 
@@ -1527,6 +1560,9 @@
     if (!currentSchema) return;
     // 「再填一筆」= 新一次獨立送出，解鎖 submit（上一輪若被 duplicate 鎖住，下一筆不該繼承）
     submitLocked = false;
+    // 重設 submit button（上一輪可能還在 loading 狀態、被 disabled 住或留了 spinner）
+    resetSubmitButton();
+    hideSubmitOverlay();
     renderSpecialForm(currentSchema.fields);
     document.getElementById('thankYouSection').classList.add('hidden');
     document.getElementById('formSection').classList.remove('hidden');

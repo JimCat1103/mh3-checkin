@@ -215,6 +215,12 @@
     </div>
 </div>
 
+<!-- Full-screen submit loading overlay (same visual vocabulary as initLoader but fixed viewport cover) -->
+<div id="submitOverlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/70 backdrop-blur-sm">
+    <div class="loader mb-4"></div>
+    <p id="submitOverlayText" class="text-slate-100 font-medium tracking-wide text-base sm:text-lg">Submitting...</p>
+</div>
+
 <div id="customModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
     <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm transition-opacity"
          onclick="closeModal()"></div>
@@ -631,6 +637,7 @@
           renderSpecialForm(cfgData.fields);
           prefillFormFromValues(subData.values || {});
           disableEmailInput();
+          disableSingleOptionChoices();
           document.getElementById('initLoader').classList.add('hidden');
           document.getElementById('formSection').classList.remove('hidden');
 
@@ -704,6 +711,44 @@
     input.readOnly = true;
     input.disabled = true;
     input.classList.add('opacity-60', 'cursor-not-allowed');
+  }
+
+  // Single-option radio/multi = logically unchangeable → disable in edit mode
+  function disableSingleOptionChoices() {
+    if (!currentSchema) return;
+    currentSchema.fields.forEach(function (f) {
+      if ((f.type === 'radio' || f.type === 'multi') && Array.isArray(f.options) && f.options.length === 1) {
+        const block = document.querySelector('[data-field-name="' + cssAttrEscape(f.name) + '"]');
+        if (!block) return;
+        block.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(function (inp) {
+          inp.disabled = true;
+        });
+        block.querySelectorAll('label').forEach(function (lbl) {
+          lbl.classList.add('opacity-60', 'cursor-not-allowed', 'pointer-events-none');
+        });
+      }
+    });
+  }
+
+  // Submit overlay + button state helpers
+  function showSubmitOverlay() {
+    const overlay = document.getElementById('submitOverlay');
+    if (!overlay) return;
+    const textEl = document.getElementById('submitOverlayText');
+    if (textEl) textEl.textContent = 'Submitting...';
+    overlay.classList.remove('hidden');
+  }
+  function hideSubmitOverlay() {
+    const overlay = document.getElementById('submitOverlay');
+    if (overlay) overlay.classList.add('hidden');
+  }
+  function resetSubmitButton() {
+    const btn = document.getElementById('submitBtn');
+    if (!btn) return;
+    btn.disabled = false;
+    btn.removeAttribute('aria-busy');
+    btn.classList.remove('btn-loading');
+    btn.textContent = 'Submit';
   }
 
   function showExpiredEditView(subData) {
@@ -1207,34 +1252,22 @@
           baseUrl: pageBaseUrl
         };
 
-    // Synchronous flow (no optimistic UI): show loading on button → wait → switch to thank-you only on success
+    // Synchronous flow: show full-screen overlay during fetch, switch to thank-you only on success
     const btn = document.getElementById('submitBtn');
-    const originalBtnText = btn ? btn.textContent : '';
-    if (btn) {
-      btn.disabled = true;
-      btn.setAttribute('aria-busy', 'true');
-      btn.classList.add('btn-loading');
-      btn.textContent = '';
-      const spinner = document.createElement('span');
-      spinner.className = 'btn-spinner';
-      spinner.setAttribute('aria-hidden', 'true');
-      btn.appendChild(spinner);
-      btn.appendChild(document.createTextNode('Submitting...'));
-    }
+    if (btn) btn.disabled = true;
+    showSubmitOverlay();
 
     attemptWithRetry(payload).then(function (data) {
       if (!editMode && data && data.editToken) {
         try { localStorage.setItem('mh3_special_edit_' + currentRunNumber, data.editToken); } catch (e) { /* ignore */ }
       }
+      hideSubmitOverlay();
+      resetSubmitButton();
       showThankYou(fieldNames, values);
     }).catch(function (err) {
       console.error('submit failed:', err);
-      if (btn) {
-        btn.textContent = originalBtnText;
-        btn.removeAttribute('aria-busy');
-        btn.classList.remove('btn-loading');
-        btn.disabled = false;
-      }
+      hideSubmitOverlay();
+      resetSubmitButton();
       const expired = err && (err.reason === 'expired' || err.message === 'expired');
       const duplicate = err && err.reason === 'duplicate';
       if (duplicate) {
@@ -1364,6 +1397,8 @@
   function resetToForm() {
     if (!currentSchema) return;
     submitLocked = false;
+    resetSubmitButton();
+    hideSubmitOverlay();
     renderSpecialForm(currentSchema.fields);
     document.getElementById('thankYouSection').classList.add('hidden');
     document.getElementById('formSection').classList.remove('hidden');
