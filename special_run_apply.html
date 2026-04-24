@@ -287,8 +287,12 @@
   let editMode = false;
   let currentEditToken = null;
   let currentDeadline = null; // 'YYYY-MM-DD' 或 null
-  // 送出鎖定（duplicate / expired 等終止性錯誤後永久 disable submit，不讓 recomputeSubmitState 把它再 enable 回來）
+  // 送出鎖定（expired 等**永久性**錯誤後 disable submit）
   let submitLocked = false;
+  // Duplicate 衝突紀錄：使用者送出被後端以 reason:'duplicate' 擋下的 (欄位 → 該值 + 錯誤訊息)
+  // validateField 在 input 改變時比對：若目前值仍等於被擋的值 → 維持 invalid；改掉就恢復 valid
+  // 使用者改欄位後不需要清除這個記錄（會自動 mismatch），「再填一筆」時才整個清掉
+  let duplicateConflicts = {}; // { fieldName: { value, msg } }
 
   function showModal({title, msg}) {
     document.getElementById('modalTitle').innerText = title || '提示';
@@ -1055,6 +1059,11 @@
         return {ok: false, msg: PAGE_LANG === 'en' ? 'Please enter exactly 5 digits' : '請輸入 5 位數字'};
       }
     }
+    // Duplicate 衝突：這個欄位上次送出被後端以 reason:'duplicate' 擋下；值沒變就維持 invalid
+    const dup = duplicateConflicts[field.name];
+    if (dup && dup.value === val) {
+      return {ok: false, msg: dup.msg};
+    }
     return {ok: true};
   }
 
@@ -1405,14 +1414,41 @@
       const duplicate = err && err.reason === 'duplicate';
 
       if (duplicate) {
+        // 把錯誤標在 conflictField（email 或 phone）的那個欄位上，讓 validation UI 走正常流程
+        // 不鎖 submit — 使用者改欄位後 recomputeSubmitState 會自然重新啟用按鈕
+        const conflictField = err && err.conflictField; // 'email' | 'phone' | undefined
+        let conflictFieldObj = null;
+        if (conflictField === 'email') {
+          conflictFieldObj = currentSchema.fields.find(function (f) { return f.name === 'Email'; });
+        } else if (conflictField === 'phone') {
+          conflictFieldObj = currentSchema.fields.find(function (f) { return f.name === '電話'; });
+        }
+        if (conflictFieldObj) {
+          const inlineMsg = conflictField === 'email'
+            ? (PAGE_LANG === 'en' ? 'This email is already registered for this run' : '此 Email 已經報名過這次特跑')
+            : (PAGE_LANG === 'en' ? 'This phone is already registered for this run' : '此電話已經報名過這次特跑');
+          // 記錄到 duplicateConflicts，讓 validateField 下次被叫到時能讀到「這個值已是 duplicate」
+          // 使用者改了值 → 自動跟記錄 mismatch → validation 放行
+          duplicateConflicts[conflictFieldObj.name] = {
+            value: values[conflictFieldObj.name],
+            msg: inlineMsg
+          };
+          markInvalid(conflictFieldObj, inlineMsg);
+          const block = document.querySelector('[data-field-name="' + cssAttrEscape(conflictFieldObj.name) + '"]');
+          if (block) {
+            block.dataset.touched = '1';
+            const el = block.querySelector('input, select, textarea');
+            if (el) { el.focus(); block.scrollIntoView({behavior: 'smooth', block: 'center'}); }
+          }
+        }
         showModal({
           title: PAGE_LANG === 'en' ? 'Already registered' : '已經報名過',
           msg: PAGE_LANG === 'en'
-            ? 'This email or phone is already registered for this run. Use the edit link in your first confirmation email to update.'
-            : '此 Email 或電話已經報名過這次特跑。如要修改請從第一次送出的確認信裡點擊編輯連結。'
+            ? 'This email or phone is already registered for this run. Change the highlighted field, or use the edit link in your first confirmation email.'
+            : '此 Email 或電話已經報名過這次特跑。請修改紅框欄位，或從第一次送出的確認信裡點擊編輯連結。'
         });
-        submitLocked = true;
-        if (btn) btn.disabled = true;
+        // 重算 submit state — 因為 validateField 現在會看 duplicateConflicts，會回 invalid，button 正確 disable
+        recomputeSubmitState();
       } else if (expired) {
         if (editMode) {
           // 編輯時遇到過期 → 強制走 expired read-only 摘要頁
@@ -1558,8 +1594,10 @@
 
   function resetToForm() {
     if (!currentSchema) return;
-    // 「再填一筆」= 新一次獨立送出，解鎖 submit（上一輪若被 duplicate 鎖住，下一筆不該繼承）
+    // 「再填一筆」= 新一次獨立送出，解鎖 submit（上一輪若被 expired 鎖住，下一筆不該繼承）
     submitLocked = false;
+    // 清掉上一輪的 duplicate 衝突記錄（下一筆可能要填同一個 email/phone，算新的送出）
+    duplicateConflicts = {};
     // 重設 submit button（上一輪可能還在 loading 狀態、被 disabled 住或留了 spinner）
     resetSubmitButton();
     hideSubmitOverlay();

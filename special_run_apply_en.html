@@ -254,6 +254,8 @@
   let currentEditToken = null;
   let currentDeadline = null;
   let submitLocked = false;
+  // Duplicate conflict tracking — backend-rejected values persist as invalid until user changes them
+  let duplicateConflicts = {}; // { fieldName: { value, msg } }
 
   function showModal({title, msg}) {
     document.getElementById('modalTitle').innerText = title || 'Notice';
@@ -959,6 +961,11 @@
         return {ok: false, msg: 'Please enter exactly 5 digits'};
       }
     }
+    // Duplicate conflict — backend-rejected value persists as invalid until user changes it
+    const dup = duplicateConflicts[field.name];
+    if (dup && dup.value === val) {
+      return {ok: false, msg: dup.msg};
+    }
     return {ok: true};
   }
 
@@ -1271,12 +1278,34 @@
       const expired = err && (err.reason === 'expired' || err.message === 'expired');
       const duplicate = err && err.reason === 'duplicate';
       if (duplicate) {
+        const conflictField = err && err.conflictField;
+        let conflictFieldObj = null;
+        if (conflictField === 'email') {
+          conflictFieldObj = currentSchema.fields.find(function (f) { return f.name === 'Email'; });
+        } else if (conflictField === 'phone') {
+          conflictFieldObj = currentSchema.fields.find(function (f) { return f.name === '電話'; });
+        }
+        if (conflictFieldObj) {
+          const inlineMsg = conflictField === 'email'
+            ? 'This email is already registered for this run'
+            : 'This phone is already registered for this run';
+          duplicateConflicts[conflictFieldObj.name] = {
+            value: values[conflictFieldObj.name],
+            msg: inlineMsg
+          };
+          markInvalid(conflictFieldObj, inlineMsg);
+          const block = document.querySelector('[data-field-name="' + cssAttrEscape(conflictFieldObj.name) + '"]');
+          if (block) {
+            block.dataset.touched = '1';
+            const el = block.querySelector('input, select, textarea');
+            if (el) { el.focus(); block.scrollIntoView({behavior: 'smooth', block: 'center'}); }
+          }
+        }
         showModal({
           title: 'Already registered',
-          msg: 'This email or phone is already registered for this run. Use the edit link in your first confirmation email to update.'
+          msg: 'This email or phone is already registered for this run. Change the highlighted field, or use the edit link in your first confirmation email.'
         });
-        submitLocked = true;
-        if (btn) btn.disabled = true;
+        recomputeSubmitState();
       } else if (expired) {
         if (editMode) {
           document.getElementById('formSection').classList.add('hidden');
@@ -1397,6 +1426,7 @@
   function resetToForm() {
     if (!currentSchema) return;
     submitLocked = false;
+    duplicateConflicts = {};
     resetSubmitButton();
     hideSubmitOverlay();
     renderSpecialForm(currentSchema.fields);
