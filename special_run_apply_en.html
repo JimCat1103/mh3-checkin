@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MH3 Special Run Registration - Taipei MRT Hash House Harriers</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="description" content="Taipei MRT Hash House Harriers (MH3) Special Run Registration page.">
+    <meta name="keywords" content="MH3, Taipei Hash, Hash House Harriers, Special Run, Registration">
+    <meta name="author" content="MH3 Taipei MRT Hash House Harriers">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://jimcat.github.io/mh3-checkin/special_run_apply_en.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://jimcat.github.io/mh3-checkin/special_run_apply.html">
+    <link rel="alternate" hreflang="en" href="https://jimcat.github.io/mh3-checkin/special_run_apply_en.html">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jimcat.github.io/mh3-checkin/special_run_apply_en.html">
+    <meta property="og:title" content="MH3 Special Run Registration">
+    <meta property="og:description" content="Taipei MRT Hash House Harriers Special Run Registration">
+    <meta property="og:image" content="https://jimcat.github.io/mh3-checkin/logo.png">
+    <meta property="og:image:alt" content="MH3 Taipei MRT Hash House Harriers Logo">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:site_name" content="MH3 Taipei Check-in">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="MH3 Special Run Registration">
+    <meta name="twitter:description" content="Taipei MRT Hash House Harriers Special Run Registration">
+    <meta name="twitter:image" content="https://jimcat.github.io/mh3-checkin/logo.png">
+
+    <meta name="theme-color" content="#1e293b">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loader {
+            border: 4px solid #334155;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-enter { animation: modalEnter 0.25s ease-out; }
+        @keyframes modalEnter { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        input[type="date"] { color-scheme: dark; }
+
+        /* Image skeleton shimmer — shown during progressive load while image URL is fetched */
+        .image-skeleton {
+            position: relative;
+            overflow: hidden;
+            background-color: #0f172a;
+            background-image: linear-gradient(90deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0%   { background-position: -150% 0; }
+            100% { background-position: 150% 0; }
+        }
+        .image-fade-in { animation: imageFadeIn 0.35s ease-out; }
+        @keyframes imageFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="bg-slate-900 min-h-dvh p-3 sm:p-4 flex items-start sm:items-center justify-center font-sans text-slate-200">
+
+<div class="w-full max-w-md bg-slate-800 rounded-xl shadow-2xl p-5 sm:p-6 relative min-h-[300px] border border-slate-700">
+
+    <div class="text-center mb-6 border-b border-slate-700 pb-4 relative">
+        <a href="index_en.html"
+           class="absolute left-0 top-0 text-blue-400 hover:text-blue-300 text-sm font-bold flex items-center transition">
+            ← Back
+        </a>
+        <div class="absolute right-0 top-0 flex items-center gap-3">
+            <a href="special_run_apply.html"
+               class="text-slate-400 hover:text-blue-400 text-xs font-bold border border-slate-500 hover:border-blue-400 rounded px-2 py-1 transition bg-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">中</a>
+            <button onclick="document.getElementById('qrModal').classList.remove('hidden')"
+                    class="text-slate-400 hover:text-slate-900 text-xs font-bold border border-slate-500 hover:border-blue-400 rounded-full w-7 h-7 flex items-center justify-center transition bg-slate-800 hover:bg-blue-400 shadow-sm hover:shadow-blue-900/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
+                    title="QR Code">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM17 14h3v3h-3zM14 17h3v3h-3zM17 20h3v1h-3z"/>
+                </svg>
+            </button>
+            <a href="qa_en.html"
+               class="text-slate-400 hover:text-slate-900 text-sm font-bold border border-slate-500 hover:border-blue-400 rounded-full w-7 h-7 flex items-center justify-center transition bg-slate-800 hover:bg-blue-400 shadow-sm hover:shadow-blue-900/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
+               title="Q&A">?</a>
+        </div>
+        <div class="flex justify-center mb-3 pt-6">
+            <img src="logo.png" alt="MH3 Logo" class="h-16 w-auto sm:h-20 object-contain">
+        </div>
+        <h1 class="text-2xl font-extrabold text-blue-500 tracking-wider">Special Run</h1>
+        <p class="text-sm text-slate-400 mt-1">Registration</p>
+        <div id="editModeBanner" class="hidden mt-3 inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/40 text-amber-300 text-xs font-semibold px-3 py-1 rounded-full">
+            <span class="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
+            <span>Edit your response</span>
+        </div>
+        <div id="runTitleDisplay" class="hidden mt-3 fade-in">
+            <h2 id="runTitle" class="text-lg font-bold text-slate-100"></h2>
+            <p id="runMeta" class="text-xs text-slate-500 mt-1"></p>
+        </div>
+    </div>
+
+    <div id="initLoader"
+         class="absolute inset-0 bg-slate-800 z-40 flex flex-col items-center justify-center rounded-xl">
+        <div class="loader mb-4"></div>
+        <p class="text-slate-400 font-medium tracking-wide">Loading...</p>
+    </div>
+
+    <div id="noEventSection" class="hidden text-center py-10 fade-in">
+        <div class="text-6xl mb-6 opacity-80">📅</div>
+        <h3 id="noEventTitle" class="text-2xl font-bold text-slate-300 mb-2">No special run open for registration</h3>
+        <p id="noEventMsg" class="text-slate-500 mb-6">Stay tuned for the next special run!</p>
+        <a href="index_en.html"
+           class="inline-block bg-blue-600 text-white px-6 py-3 rounded-xl font-bold text-lg hover:bg-blue-500 hover:shadow-blue-900/50 shadow-lg transition">
+            Back to Check-in
+        </a>
+    </div>
+
+    <div id="invalidTokenSection" class="hidden text-center py-10 fade-in">
+        <div class="text-6xl mb-6 opacity-80">🔗</div>
+        <h3 class="text-2xl font-bold text-slate-300 mb-2">This edit link is invalid or has expired</h3>
+        <p class="text-slate-500 mb-6">Contact the organizers if you have questions.</p>
+        <a href="index_en.html"
+           class="inline-block bg-blue-600 text-white px-6 py-3 rounded-xl font-bold text-lg hover:bg-blue-500 hover:shadow-blue-900/50 shadow-lg transition">
+            Back to Check-in
+        </a>
+    </div>
+
+    <section id="expiredEditSection" class="hidden fade-in">
+        <div class="text-center mb-6">
+            <div class="text-6xl mb-4 opacity-80">⏰</div>
+            <h3 class="text-xl font-bold text-amber-300 mb-2">The edit window has closed</h3>
+            <p id="expiredDeadlineMsg" class="text-slate-500 text-sm"></p>
+            <p class="text-slate-500 text-sm mt-1">Contact the organizers to make changes.</p>
+        </div>
+        <div class="bg-slate-900 rounded-xl p-4 mb-6 border border-slate-700 text-left">
+            <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Your response</p>
+            <div id="expiredSummary" class="divide-y divide-slate-700/50"></div>
+        </div>
+        <a href="index_en.html"
+           class="mt-3 block w-full text-center bg-slate-700 text-blue-100 py-3 rounded-xl font-semibold text-sm hover:bg-slate-600 hover:text-white border border-slate-600 transition min-h-[44px] flex items-center justify-center">
+            Back to Check-in
+        </a>
+    </section>
+
+    <section id="formSection" class="hidden fade-in">
+        <div id="formFields" class="space-y-3"></div>
+        <p id="submitHelper" class="hidden mt-5 text-xs text-amber-400 text-center flex items-center justify-center gap-1.5">
+            <span class="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
+            <span id="submitHelperText"></span>
+        </p>
+        <button id="submitBtn" type="button"
+                class="w-full mt-3 bg-blue-500 hover:bg-blue-400 active:bg-blue-600 text-slate-900 font-bold py-3.5 rounded-xl transition text-base min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500">
+            Submit
+        </button>
+        <a href="index_en.html"
+           class="mt-3 block w-full text-center bg-slate-700 text-blue-100 py-3 rounded-xl font-semibold text-sm hover:bg-slate-600 hover:text-white border border-slate-600 transition min-h-[44px] flex items-center justify-center">
+            Back to Check-in
+        </a>
+    </section>
+
+    <section id="thankYouSection" class="hidden fade-in text-center py-4">
+        <div class="text-6xl sm:text-7xl mb-4">🎉</div>
+        <h3 class="text-2xl font-bold text-green-400 mb-2">Thank you for registering</h3>
+        <p class="text-slate-400 mb-6 text-sm">A confirmation email has been sent to your inbox</p>
+        <div class="bg-slate-900 rounded-xl p-4 mb-6 border border-slate-700 text-left">
+            <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">Summary</p>
+            <div id="submissionSummary" class="divide-y divide-slate-700/50"></div>
+        </div>
+        <button id="resubmitBtn" type="button"
+                class="w-full bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-blue-100 font-semibold py-3 rounded-xl border border-slate-600 transition min-h-[48px]">
+            Submit another
+        </button>
+        <a href="index_en.html"
+           class="mt-3 block w-full text-center text-slate-400 hover:text-blue-400 py-2.5 text-sm transition min-h-[40px] flex items-center justify-center">
+            Back to Check-in
+        </a>
+    </section>
+
+</div>
+
+<div id="qrModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4" onclick="if(event.target===this)this.classList.add('hidden')">
+    <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm"></div>
+    <div class="relative z-10 bg-slate-800 rounded-2xl shadow-2xl w-full max-w-xs overflow-hidden border border-slate-700">
+        <button onclick="document.getElementById('qrModal').classList.add('hidden')"
+                class="absolute top-3 right-3 text-slate-400 hover:text-slate-900 text-sm font-bold border border-slate-500 hover:border-blue-400 rounded-full w-7 h-7 flex items-center justify-center transition bg-slate-800 hover:bg-blue-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 z-20"
+                aria-label="Close">✕</button>
+        <div class="p-5 flex flex-col items-center">
+            <div class="bg-white rounded-xl p-4 mb-4">
+                <img src="qr-code.png" alt="QR Code" class="w-48 h-48 sm:w-56 sm:h-56 object-contain">
+            </div>
+            <p class="text-slate-300 text-sm text-center font-medium">Scan QR Code to open check-in page</p>
+        </div>
+    </div>
+</div>
+
+<div id="customModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
+    <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm transition-opacity"
+         onclick="closeModal()"></div>
+    <div class="bg-slate-800 rounded-2xl shadow-2xl w-full max-w-sm relative z-10 overflow-hidden modal-enter border border-slate-700">
+        <div class="p-6 text-center">
+            <div id="modalIcon" class="text-4xl mb-4">ℹ️</div>
+            <h3 id="modalTitle" class="text-xl font-bold text-white mb-2">Notice</h3>
+            <p id="modalMessage" class="text-slate-400 text-sm leading-relaxed mb-6">Content...</p>
+            <button onclick="closeModal()"
+                    class="w-full bg-blue-500 hover:bg-blue-400 text-slate-900 font-bold py-2.5 rounded-xl transition">
+                OK
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="hareline.js"></script>
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('qrModal').classList.add('hidden');
+      document.getElementById('customModal').classList.add('hidden');
+    }
+  });
+
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxmkQakubfwGK2ZRoEL1_Z3BXixcFLuGQDMZcp2Fml8a9uvxBV-L4e5KOTx-8K5uIm5Sw/exec';
+
+  let currentSchema = null;
+  let currentRunNumber = null;
+  let editMode = false;
+  let currentEditToken = null;
+  let currentDeadline = null;
+
+  function showModal({title, msg}) {
+    document.getElementById('modalTitle').innerText = title || 'Notice';
+    document.getElementById('modalMessage').innerText = msg || '';
+    document.getElementById('customModal').classList.remove('hidden');
+  }
+  function closeModal() {
+    document.getElementById('customModal').classList.add('hidden');
+  }
+
+  function attemptWithRetry(payload, opts) {
+    opts = Object.assign({maxAttempts: 3, backoffMs: [1000, 2000, 4000]}, opts || {});
+    return new Promise((resolve, reject) => {
+      let attempt = 0;
+      const go = () => {
+        attempt++;
+        fetch(API_URL, {method: 'POST', body: JSON.stringify(payload)})
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.result === 'success') {
+              resolve(data);
+            } else {
+              const e = new Error((data && data.msg) || (data && data.reason) || 'server_error');
+              e.serverError = true;
+              e.reason = data && data.reason || null;
+              reject(e);
+            }
+          })
+          .catch(err => {
+            if (err && err.serverError) { reject(err); return; }
+            if (attempt >= opts.maxAttempts) { reject(err); return; }
+            const delay = opts.backoffMs[attempt - 1] != null
+              ? opts.backoffMs[attempt - 1]
+              : opts.backoffMs[opts.backoffMs.length - 1];
+            setTimeout(go, delay);
+          });
+      };
+      go();
+    });
+  }
+
+  window.onload = function () {
+    if (window.HarelineCache && typeof window.HarelineCache.prewarmGas === 'function') {
+      window.HarelineCache.prewarmGas(API_URL);
+    }
+
+    // Edit mode routing (same Decision as zh version)
+    const urlParams = new URLSearchParams(window.location.search);
+    const editTokenParam = urlParams.get('edit');
+    const runParam = urlParams.get('run');
+    if (editTokenParam && runParam) {
+      enterEditMode(editTokenParam, runParam);
+      return;
+    }
+
+    if (!window.HarelineCache || typeof window.HarelineCache._internals === 'undefined') {
+      showModal({title: 'Load Error', msg: 'Event info module failed to load. Please refresh.'});
+      document.getElementById('initLoader').classList.add('hidden');
+      document.getElementById('noEventSection').classList.remove('hidden');
+      return;
+    }
+
+    fetchHarelineWithFlags().then(function (rows) {
+      const todayMid = new Date();
+      todayMid.setHours(0, 0, 0, 0);
+      const eligibles = rows
+        .filter(function (r) {
+          if (!r.date) return false;
+          const d = parseSheetDate(r.date);
+          if (!d) return false;
+          return d.getTime() >= todayMid.getTime() && r.isSpecial && r.openApply;
+        })
+        .sort(function (a, b) {
+          return parseSheetDate(a.date).getTime() - parseSheetDate(b.date).getTime();
+        });
+
+      if (eligibles.length === 0) {
+        document.getElementById('initLoader').classList.add('hidden');
+        document.getElementById('noEventSection').classList.remove('hidden');
+        return;
+      }
+
+      const target = eligibles[0];
+      currentRunNumber = target.number;
+      loadConfig(target);
+    }).catch(function (err) {
+      console.error('fetchHarelineWithFlags failed:', err);
+      document.getElementById('initLoader').classList.add('hidden');
+      showModal({title: 'Connection Error', msg: 'Failed to load run info. Please check your network and refresh.'});
+      document.getElementById('noEventSection').classList.remove('hidden');
+    });
+  };
+
+  function fetchHarelineWithFlags() {
+    const url = (window.HarelineCache && window.HarelineCache._internals && window.HarelineCache._internals.HARELINE_CSV_URL) || '';
+    if (!url) return Promise.reject(new Error('HARELINE_CSV_URL unavailable'));
+    const minuteBucket = Math.floor(Date.now() / 60000);
+    return fetch(url + '&t=' + minuteBucket, {method: 'GET', credentials: 'omit'})
+      .then(function (res) {
+        if (!res.ok) throw new Error('http');
+        return res.text();
+      })
+      .then(function (text) {
+        return parseHarelineCsv7(text);
+      });
+  }
+
+  function parseHarelineCsv7(text) {
+    const lines = splitCsvLines(text);
+    if (lines.length === 0) return [];
+    let startIdx = 0;
+    const firstFields = tokenizeLine(lines[0]);
+    if (!/^#?\d+$/.test(String(firstFields[0] || '').trim())) startIdx = 1;
+    const out = [];
+    for (let i = startIdx; i < lines.length; i++) {
+      const fields = tokenizeLine(lines[i]);
+      const first = String(fields[0] || '').trim();
+      if (!first) continue;
+      out.push({
+        number: first.replace(/^#+/, ''),
+        date: String(fields[1] || '').trim(),
+        hare: String(fields[2] || '').trim(),
+        coHare: String(fields[3] || '').trim(),
+        restaurant: String(fields[4] || '').trim(),
+        isSpecial: isTrueStr(fields[5]),
+        openApply: isTrueStr(fields[6])
+      });
+    }
+    return out;
+  }
+
+  function tokenizeLine(line) {
+    const fields = [];
+    let cur = '', inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line.charAt(i);
+      if (inQuotes) {
+        if (ch === '"') {
+          if (i + 1 < line.length && line.charAt(i + 1) === '"') { cur += '"'; i++; }
+          else inQuotes = false;
+        } else cur += ch;
+      } else {
+        if (ch === '"') inQuotes = true;
+        else if (ch === ',') { fields.push(cur); cur = ''; }
+        else cur += ch;
+      }
+    }
+    fields.push(cur);
+    return fields;
+  }
+
+  function splitCsvLines(text) {
+    const lines = [];
+    let cur = '', inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text.charAt(i);
+      if (ch === '"') { inQuotes = !inQuotes; cur += ch; }
+      else if (!inQuotes && (ch === '\n' || ch === '\r')) {
+        if (ch === '\r' && i + 1 < text.length && text.charAt(i + 1) === '\n') i++;
+        lines.push(cur); cur = '';
+      } else cur += ch;
+    }
+    if (cur.length > 0) lines.push(cur);
+    return lines;
+  }
+
+  function isTrueStr(v) {
+    if (v === true) return true;
+    const s = String(v || '').trim().toLowerCase();
+    return s === 'true' || s === '1' || s === 'yes';
+  }
+
+  function parseSheetDate(s) {
+    if (!s) return null;
+    const parts = String(s).trim().split(/[\/\-]/);
+    if (parts.length !== 3) return null;
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    const d = parseInt(parts[2], 10);
+    if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+    return new Date(y, m - 1, d, 0, 0, 0, 0);
+  }
+
+  // Bilingual convention: sheet cells may use `|` to separate zh (left) / en (right).
+  // Left side is canonical (used as submission key & Sheet B column key); right side is for display only.
+  // If no `|`, both languages share the same value.
+  const PAGE_LANG = (document.documentElement.lang || '').toLowerCase().indexOf('en') === 0 ? 'en' : 'zh';
+
+  function pickLang(text) {
+    if (text == null) return text;
+    const parts = String(text).split('|');
+    if (PAGE_LANG === 'en' && parts.length > 1 && parts[1].trim() !== '') return parts[1].trim();
+    return (parts[0] || '').trim();
+  }
+  function canonicalName(text) {
+    if (text == null) return text;
+    return String(text).split('|')[0].trim();
+  }
+
+  function normalizeFields(fields) {
+    return (fields || []).map(function (f) {
+      const options = (f.options || []).map(function (optRaw) {
+        return { value: canonicalName(optRaw), label: pickLang(optRaw) };
+      });
+      let value = f.value;
+      if (f.type === 'info') {
+        value = pickLang(f.value);
+      } else if (f.type !== 'image' && typeof f.value === 'string' && f.value.indexOf('|') > -1) {
+        value = pickLang(f.value);
+      }
+      return {
+        name: canonicalName(f.name),
+        label: pickLang(f.name),
+        type: f.type,
+        options: options,
+        required: f.required,
+        value: value,
+        description: f.description || null,
+        dependsOn: f.dependsOn || null
+      };
+    });
+  }
+
+  // Conditional visibility (see zh version for full comments)
+  function isFieldActive(field, currentValues) {
+    if (!field.dependsOn) return true;
+    const controlVal = currentValues[field.dependsOn.field];
+    if (controlVal == null || controlVal === '') return false;
+    if (Array.isArray(controlVal)) {
+      return controlVal.some(function (v) { return field.dependsOn.values.indexOf(v) !== -1; });
+    }
+    return field.dependsOn.values.indexOf(controlVal) !== -1;
+  }
+
+  function collectAllCurrentValues() {
+    const out = {};
+    if (!currentSchema) return out;
+    currentSchema.fields.forEach(function (f) {
+      if (f.type === 'image' || f.type === 'info') return;
+      out[f.name] = collectFieldValue(f);
+    });
+    return out;
+  }
+
+  function applyConditionalVisibility() {
+    if (!currentSchema) return;
+    const vals = collectAllCurrentValues();
+    currentSchema.fields.forEach(function (f) {
+      if (!f.dependsOn) return;
+      const block = document.querySelector('[data-field-name="' + cssAttrEscape(f.name) + '"]');
+      if (!block) return;
+      const active = isFieldActive(f, vals);
+      if (active) {
+        block.classList.remove('hidden');
+      } else {
+        block.classList.add('hidden');
+        const err = block.querySelector('[data-error-for]');
+        if (err) { err.classList.add('hidden'); err.textContent = ''; }
+      }
+    });
+  }
+
+  // Ensure Email is always the first field (hardcoded, not from SpecialConfig).
+  // If the organizer also adds Email in SpecialConfig, strip the dup.
+  function ensureEmailField(fields) {
+    const filtered = (fields || []).filter(function (f) {
+      return String(f.name || '').trim().toLowerCase() !== 'email';
+    });
+    const emailField = {
+      name: 'Email',
+      label: 'Email',
+      type: 'email',
+      options: [],
+      required: true,
+      value: null
+    };
+    return [emailField].concat(filtered);
+  }
+
+  function loadConfig(runInfo) {
+    // Progressive load: phase 1 fetch schema (skipImages=true) → render form with skeleton;
+    // phase 2 fetch image URLs in parallel → backfill <img> when ready (non-blocking).
+    const schemaPromise = attemptWithRetry({
+      action: 'getSpecialConfig',
+      runNumber: runInfo.number,
+      skipImages: true
+    });
+    const imagesPromise = attemptWithRetry({
+      action: 'getSpecialConfigImages',
+      runNumber: runInfo.number
+    }).catch(function (err) {
+      console.warn('getSpecialConfigImages failed (non-fatal):', err);
+      return {result: 'success', images: []};
+    });
+
+    schemaPromise
+      .then(function (data) {
+        // Deadline fast-path
+        const metaDeadline = data.meta && data.meta.deadline;
+        currentDeadline = metaDeadline || null;
+        if (metaDeadline) {
+          const cutoffMs = Date.parse(metaDeadline + 'T23:59:59+08:00');
+          if (!isNaN(cutoffMs) && Date.now() > cutoffMs) {
+            document.getElementById('noEventTitle').innerText = 'Registration closed';
+            document.getElementById('noEventMsg').innerText = 'The registration window has ended.';
+            document.getElementById('initLoader').classList.add('hidden');
+            document.getElementById('noEventSection').classList.remove('hidden');
+            return;
+          }
+        }
+
+        data.fields = ensureEmailField(normalizeFields(data.fields));
+        currentSchema = data;
+        const metaRunTitle = data.meta && data.meta.runTitle;
+        const titleForDisplay = pickLang(metaRunTitle || data.runTitle) || ('#' + runInfo.number + ' Special Run');
+        document.getElementById('runTitle').innerText = titleForDisplay;
+        document.getElementById('runMeta').innerText = runInfo.date + '  Hare: ' + (runInfo.hare || '—');
+        document.getElementById('runTitleDisplay').classList.remove('hidden');
+
+        renderSpecialForm(data.fields);
+        document.getElementById('initLoader').classList.add('hidden');
+        document.getElementById('formSection').classList.remove('hidden');
+
+        imagesPromise.then(function (imgData) {
+          backfillImages(imgData && imgData.images ? imgData.images : []);
+        });
+      })
+      .catch(function (err) {
+        console.error('getSpecialConfig failed:', err);
+        document.getElementById('initLoader').classList.add('hidden');
+        document.getElementById('noEventSection').classList.remove('hidden');
+      });
+  }
+
+  // Edit mode entry (same Decision as zh version)
+  function enterEditMode(editToken, runNumber) {
+    editMode = true;
+    currentEditToken = editToken;
+    currentRunNumber = runNumber;
+
+    const schemaPromise = attemptWithRetry({
+      action: 'getSpecialConfig',
+      runNumber: runNumber,
+      skipImages: true
+    });
+    const submissionPromise = attemptWithRetry({
+      action: 'getSpecialRunSubmission',
+      runNumber: runNumber,
+      editToken: editToken
+    });
+
+    submissionPromise
+      .then(function (subData) {
+        if (subData.expired) {
+          showExpiredEditView(subData);
+          return;
+        }
+        return schemaPromise.then(function (cfgData) {
+          cfgData.fields = ensureEmailField(normalizeFields(cfgData.fields));
+          currentSchema = cfgData;
+          currentDeadline = subData.deadline || (cfgData.meta && cfgData.meta.deadline) || null;
+
+          const titleForDisplay = pickLang(subData.runTitle || (cfgData.meta && cfgData.meta.runTitle) || '')
+            || ('#' + runNumber + ' Special Run');
+          document.getElementById('runTitle').innerText = titleForDisplay;
+          document.getElementById('runMeta').innerText = 'Editing response';
+          document.getElementById('runTitleDisplay').classList.remove('hidden');
+          document.getElementById('editModeBanner').classList.remove('hidden');
+
+          renderSpecialForm(cfgData.fields);
+          prefillFormFromValues(subData.values || {});
+          disableEmailInput();
+          document.getElementById('initLoader').classList.add('hidden');
+          document.getElementById('formSection').classList.remove('hidden');
+        });
+      })
+      .catch(function (err) {
+        console.warn('enterEditMode failed:', err);
+        document.getElementById('initLoader').classList.add('hidden');
+        document.getElementById('invalidTokenSection').classList.remove('hidden');
+      });
+  }
+
+  function prefillFormFromValues(values) {
+    if (!values || !currentSchema) return;
+    currentSchema.fields.forEach(function (field) {
+      if (field.type === 'image' || field.type === 'info') return;
+      if (!values.hasOwnProperty(field.name)) return;
+      const raw = values[field.name];
+      const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+      if (!block) return;
+      const t = field.type;
+      if (t === 'text' || t === 'phone' || t === 'email' || t === 'number' || t === 'textarea') {
+        const el = block.querySelector('input, textarea');
+        if (el) el.value = raw == null ? '' : String(raw);
+      } else if (t === 'date') {
+        const el = block.querySelector('input[type="date"]');
+        if (el) {
+          let dateStr = raw == null ? '' : String(raw);
+          if (dateStr && dateStr.indexOf('T') > 0) dateStr = dateStr.slice(0, 10);
+          el.value = dateStr;
+        }
+      } else if (t === 'select') {
+        const el = block.querySelector('select');
+        if (el) el.value = raw == null ? '' : String(raw);
+      } else if (t === 'radio') {
+        const target = raw == null ? '' : String(raw);
+        const input = block.querySelector('input[type="radio"][value="' + cssAttrEscape(target) + '"]');
+        if (input) input.checked = true;
+      } else if (t === 'multi') {
+        const list = Array.isArray(raw)
+          ? raw
+          : String(raw || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+        list.forEach(function (v) {
+          const input = block.querySelector('input[type="checkbox"][value="' + cssAttrEscape(v) + '"]');
+          if (input) input.checked = true;
+        });
+      }
+      block.dataset.touched = '1';
+    });
+    if (typeof applyConditionalVisibility === 'function') applyConditionalVisibility();
+    if (typeof recomputeSubmitState === 'function') recomputeSubmitState();
+  }
+
+  function disableEmailInput() {
+    const block = document.querySelector('[data-field-name="Email"]');
+    if (!block) return;
+    const input = block.querySelector('input');
+    if (!input) return;
+    input.readOnly = true;
+    input.disabled = true;
+    input.classList.add('opacity-60', 'cursor-not-allowed');
+  }
+
+  function showExpiredEditView(subData) {
+    const banner = document.getElementById('expiredDeadlineMsg');
+    if (banner && subData.deadline) {
+      banner.innerText = 'The edit window has closed (' + subData.deadline + ').';
+    }
+    const summary = document.getElementById('expiredSummary');
+    summary.textContent = '';
+    const fieldNames = subData.fieldNames || Object.keys(subData.values || {});
+    fieldNames.forEach(function (name) {
+      const v = (subData.values || {})[name];
+      const row = document.createElement('div');
+      row.className = 'flex flex-col sm:flex-row sm:items-start sm:gap-4 py-2.5 first:pt-0 last:pb-0';
+      const nameEl = document.createElement('span');
+      nameEl.className = 'text-[10px] uppercase tracking-wider text-slate-500 font-semibold sm:w-1/3 sm:text-xs sm:normal-case sm:tracking-normal sm:font-medium sm:pt-0.5 shrink-0 mb-0.5 sm:mb-0';
+      nameEl.textContent = pickLang(name);
+      const valEl = document.createElement('span');
+      valEl.className = 'text-slate-100 text-sm break-words flex-1';
+      valEl.textContent = (v == null || v === '') ? '—' : String(v);
+      row.appendChild(nameEl);
+      row.appendChild(valEl);
+      summary.appendChild(row);
+    });
+    document.getElementById('initLoader').classList.add('hidden');
+    document.getElementById('expiredEditSection').classList.remove('hidden');
+  }
+
+  // Backfill image URLs into rendered skeleton blocks.
+  function backfillImages(images) {
+    if (!Array.isArray(images) || images.length === 0) return;
+    images.forEach(function (img) {
+      if (!img || !img.value) return;
+      const block = document.querySelector('[data-field-name="' + cssAttrEscape(img.name) + '"][data-field-type="image"]');
+      if (!block) return;
+      const holder = block.querySelector('[data-image-holder]');
+      if (!holder) return;
+      const imgEl = document.createElement('img');
+      imgEl.src = img.value;
+      imgEl.alt = block.dataset.fieldLabel || img.name;
+      imgEl.className = 'w-full rounded-xl shadow-lg border border-slate-700/50 object-cover max-h-80 bg-slate-900 image-fade-in';
+      imgEl.loading = 'lazy';
+      imgEl.addEventListener('load', function () {
+        holder.classList.remove('image-skeleton');
+        holder.style.aspectRatio = '';
+      });
+      imgEl.addEventListener('error', function () {
+        holder.classList.remove('image-skeleton');
+      });
+      holder.textContent = '';
+      holder.appendChild(imgEl);
+      if (currentSchema && Array.isArray(currentSchema.fields)) {
+        for (var i = 0; i < currentSchema.fields.length; i++) {
+          if (currentSchema.fields[i].name === img.name) {
+            currentSchema.fields[i].value = img.value;
+            break;
+          }
+        }
+      }
+    });
+  }
+
+  // Mobile-first RWD renderer (see zh version for full doc comments)
+  function renderSpecialForm(fields) {
+    const container = document.getElementById('formFields');
+    container.textContent = '';
+
+    fields.forEach(function (field, idx) {
+      const block = document.createElement('div');
+      block.dataset.fieldName = field.name;
+      block.dataset.fieldType = field.type;
+      block.className = 'form-field';
+      const t = field.type;
+
+      if (t === 'info') {
+        block.className = 'form-field border-l-4 border-blue-500 pl-3 sm:pl-4 py-1 space-y-1';
+        const caption = document.createElement('p');
+        caption.className = 'text-[10px] uppercase tracking-widest text-slate-500 font-bold';
+        caption.textContent = field.label || field.name;
+        block.appendChild(caption);
+        const content = document.createElement('p');
+        content.className = 'text-slate-100 text-sm leading-relaxed whitespace-pre-line';
+        content.textContent = field.value || '';
+        block.appendChild(content);
+        container.appendChild(block);
+        return;
+      }
+
+      if (t === 'image') {
+        block.className = 'form-field space-y-2';
+        block.dataset.fieldLabel = field.label || field.name;
+        const holder = document.createElement('div');
+        holder.dataset.imageHolder = '1';
+        holder.className = 'w-full rounded-xl border border-slate-700/50';
+        if (field.value) {
+          const img = document.createElement('img');
+          img.src = field.value;
+          img.alt = field.label || field.name;
+          img.className = 'w-full rounded-xl shadow-lg border border-slate-700/50 object-cover max-h-80 bg-slate-900';
+          img.loading = 'lazy';
+          holder.appendChild(img);
+        } else {
+          holder.classList.add('image-skeleton', 'shadow-lg');
+          holder.style.aspectRatio = '1 / 1';
+          holder.setAttribute('role', 'img');
+          holder.setAttribute('aria-label', (field.label || field.name) + ' (loading)');
+        }
+        block.appendChild(holder);
+        const caption = document.createElement('p');
+        caption.className = 'text-[10px] uppercase tracking-widest text-slate-500 font-bold text-center';
+        caption.textContent = field.label || field.name;
+        block.appendChild(caption);
+        container.appendChild(block);
+        return;
+      }
+
+      // Input: card-like shell
+      block.className = 'form-field bg-slate-900/40 border border-slate-700 rounded-xl p-4 space-y-2.5';
+      const labelRow = document.createElement('div');
+      labelRow.className = 'flex items-baseline gap-2';
+      const label = document.createElement('label');
+      label.className = 'block text-sm font-semibold text-slate-100';
+      label.textContent = field.label || field.name;
+      label.htmlFor = 'field_' + idx;
+      labelRow.appendChild(label);
+      if (field.required) {
+        const mark = document.createElement('span');
+        mark.className = 'inline-flex items-center gap-1 text-[10px] font-semibold text-red-400';
+        const dot = document.createElement('span');
+        dot.className = 'w-1.5 h-1.5 bg-red-400 rounded-full';
+        mark.appendChild(dot);
+        mark.appendChild(document.createTextNode('Required'));
+        labelRow.appendChild(mark);
+      }
+      block.appendChild(labelRow);
+
+      // Description block for radio/multi: display free-form text from backend's `description`
+      // (when per-run value doesn't match any option, e.g., terms-and-conditions text)
+      if (field.description) {
+        const desc = document.createElement('p');
+        desc.className = 'text-sm text-slate-300 leading-relaxed whitespace-pre-line bg-slate-900/60 border border-slate-700 rounded-lg p-3';
+        desc.textContent = pickLang(field.description);
+        block.appendChild(desc);
+      }
+
+      const control = renderControl(field, 'field_' + idx);
+      block.appendChild(control);
+
+      const err = document.createElement('p');
+      err.className = 'hidden text-xs text-red-400 flex items-center gap-1';
+      err.dataset.errorFor = field.name;
+      block.appendChild(err);
+
+      container.appendChild(block);
+    });
+    applyConditionalVisibility();
+    recomputeSubmitState();
+    container.addEventListener('change', function () {
+      applyConditionalVisibility();
+      recomputeSubmitState();
+    });
+    container.addEventListener('input', function () {
+      applyConditionalVisibility();
+      recomputeSubmitState();
+    });
+    container.addEventListener('blur', function (e) {
+      const target = e.target;
+      if (!target || !target.closest) return;
+      const block = target.closest('[data-field-name]');
+      if (!block) return;
+      block.dataset.touched = '1';
+      refreshFieldErrorUI(block);
+      recomputeSubmitState();
+    }, true);
+  }
+
+  // ---- Field validation ----
+
+  // Per-field validation: returns {ok:true} or {ok:false, msg:'...'}
+  function validateField(field, val) {
+    const isArr = Array.isArray(val);
+    const isEmpty = val == null || val === '' || (isArr && val.length === 0);
+
+    if (field.required && isEmpty) {
+      return {ok: false, msg: 'This field is required'};
+    }
+    if (isEmpty) return {ok: true};
+
+    if (field.type === 'email') {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(val))) {
+        return {ok: false, msg: 'Please enter a valid email'};
+      }
+    }
+    if (field.type === 'phone') {
+      const digits = String(val).replace(/[\s\-().+]/g, '');
+      if (!/^\d{8,15}$/.test(digits)) {
+        return {ok: false, msg: 'Please enter a valid phone number'};
+      }
+    }
+    if (field.type === 'number') {
+      if (isNaN(Number(val))) {
+        return {ok: false, msg: 'Please enter a number'};
+      }
+    }
+    const canonName = String(field.name || '').toLowerCase();
+    if (canonName.indexOf('末5碼') >= 0 || canonName.indexOf('last 5') >= 0) {
+      if (!/^\d{5}$/.test(String(val).trim())) {
+        return {ok: false, msg: 'Please enter exactly 5 digits'};
+      }
+    }
+    return {ok: true};
+  }
+
+  function refreshFieldErrorUI(block) {
+    if (!block || !currentSchema) return;
+    if (block.dataset.touched !== '1') return;
+    const name = block.dataset.fieldName;
+    const field = currentSchema.fields.find(function (f) { return f.name === name; });
+    if (!field || field.type === 'image' || field.type === 'info') return;
+    if (block.classList.contains('hidden')) { clearInvalid(block); return; }
+    const val = collectFieldValue(field);
+    const res = validateField(field, val);
+    if (res.ok) clearInvalid(block);
+    else markInvalid(field, res.msg);
+  }
+
+  function clearInvalid(block) {
+    const err = block.querySelector('[data-error-for]');
+    if (err) { err.classList.add('hidden'); err.textContent = ''; }
+    const el = block.querySelector('input:not([type=radio]):not([type=checkbox]), select, textarea');
+    if (el) el.classList.remove('!border-red-400');
+    const grp = block.querySelector('[data-group-name]');
+    if (grp) grp.classList.remove('ring-1', 'ring-red-400', 'rounded-lg', 'p-1', '-m-1');
+  }
+
+  // Submit state driver — dim + show helper when visible editable fields are not all valid
+  function recomputeSubmitState() {
+    const btn = document.getElementById('submitBtn');
+    const helper = document.getElementById('submitHelper');
+    const helperText = document.getElementById('submitHelperText');
+    if (!currentSchema || !btn) return;
+    const allValues = collectAllCurrentValues();
+    let invalidCount = 0;
+    currentSchema.fields.forEach(function (field) {
+      if (field.type === 'image' || field.type === 'info') return;
+      if (!isFieldActive(field, allValues)) return;
+      const val = collectFieldValue(field);
+      if (!validateField(field, val).ok) invalidCount++;
+    });
+    if (invalidCount === 0) {
+      btn.disabled = false;
+      btn.removeAttribute('aria-disabled');
+      if (helper) helper.classList.add('hidden');
+    } else {
+      btn.disabled = true;
+      btn.setAttribute('aria-disabled', 'true');
+      if (helper && helperText) {
+        helperText.textContent = 'Still ' + invalidCount + ' field' + (invalidCount === 1 ? '' : 's') + ' to complete';
+        helper.classList.remove('hidden');
+      }
+    }
+  }
+
+  function renderControl(field, id) {
+    const baseInput = 'w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-slate-100 placeholder-slate-500 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition min-h-[44px]';
+    const t = field.type;
+
+    if (t === 'text' || t === 'phone' || t === 'email' || t === 'number') {
+      const input = document.createElement('input');
+      input.id = id;
+      input.name = field.name;
+      input.className = baseInput;
+      input.type = (t === 'phone') ? 'tel' : t;
+      if (t === 'phone') input.inputMode = 'tel';
+      if (t === 'number') input.inputMode = 'decimal';
+      if (t === 'email') { input.autocomplete = 'email'; input.inputMode = 'email'; }
+      if (field.value) input.value = field.value;
+      if (field.required) input.required = true;
+      return input;
+    }
+    if (t === 'textarea') {
+      const ta = document.createElement('textarea');
+      ta.id = id;
+      ta.name = field.name;
+      ta.className = baseInput + ' resize-y leading-relaxed';
+      ta.rows = 4;
+      if (field.value) ta.value = field.value;
+      if (field.required) ta.required = true;
+      return ta;
+    }
+    if (t === 'select') {
+      const wrap = document.createElement('div');
+      wrap.className = 'relative';
+      const sel = document.createElement('select');
+      sel.id = id;
+      sel.name = field.name;
+      sel.className = baseInput + ' cursor-pointer appearance-none pr-9';
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.text = 'Please select';
+      placeholder.disabled = true;
+      placeholder.selected = !field.value;
+      sel.appendChild(placeholder);
+      (field.options || []).forEach(function (opt) {
+        const v = (typeof opt === 'object' && opt !== null) ? opt.value : opt;
+        const l = (typeof opt === 'object' && opt !== null) ? opt.label : opt;
+        const o = document.createElement('option');
+        o.value = v;
+        o.text = l;
+        if (field.value === v) o.selected = true;
+        sel.appendChild(o);
+      });
+      if (field.required) sel.required = true;
+      wrap.appendChild(sel);
+      // Chevron icon via DOM
+      const chev = document.createElement('span');
+      chev.className = 'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500';
+      const SVG_NS = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(SVG_NS, 'svg');
+      svg.setAttribute('class', 'h-4 w-4');
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('stroke', 'currentColor');
+      svg.setAttribute('stroke-width', '2');
+      const path = document.createElementNS(SVG_NS, 'path');
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('stroke-linejoin', 'round');
+      path.setAttribute('d', 'M19 9l-7 7-7-7');
+      svg.appendChild(path);
+      chev.appendChild(svg);
+      wrap.appendChild(chev);
+      return wrap;
+    }
+    if (t === 'radio' || t === 'multi') {
+      const wrap = document.createElement('div');
+      wrap.className = 'flex flex-wrap gap-2';
+      wrap.dataset.groupName = field.name;
+      (field.options || []).forEach(function (opt) {
+        const v = (typeof opt === 'object' && opt !== null) ? opt.value : opt;
+        const l = (typeof opt === 'object' && opt !== null) ? opt.label : opt;
+        const wrapperLabel = document.createElement('label');
+        wrapperLabel.className = 'cursor-pointer';
+        const input = document.createElement('input');
+        input.type = (t === 'radio') ? 'radio' : 'checkbox';
+        input.name = field.name + (t === 'multi' ? '[]' : '');
+        input.value = v;
+        input.className = 'peer sr-only';
+        if (field.value) {
+          const vals = Array.isArray(field.value) ? field.value : String(field.value).split(',').map(function (s) { return s.trim(); });
+          if (vals.indexOf(v) !== -1) input.checked = true;
+        }
+        const pill = document.createElement('span');
+        pill.className = 'inline-flex items-center justify-center px-4 py-2 min-h-[40px] bg-slate-900 border border-slate-700 rounded-full text-sm text-slate-300 transition-all hover:border-blue-400 hover:text-slate-100 peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-slate-900 peer-checked:font-bold peer-focus-visible:ring-2 peer-focus-visible:ring-blue-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-slate-800';
+        pill.textContent = l;
+        wrapperLabel.appendChild(input);
+        wrapperLabel.appendChild(pill);
+        wrap.appendChild(wrapperLabel);
+      });
+      return wrap;
+    }
+    if (t === 'date') {
+      const input = document.createElement('input');
+      input.id = id;
+      input.name = field.name;
+      input.className = baseInput + ' cursor-pointer';
+      input.type = 'date';
+      if (field.value) input.value = field.value;
+      if (field.required) input.required = true;
+      return input;
+    }
+    const fallback = document.createElement('div');
+    fallback.className = 'text-xs text-slate-500';
+    fallback.textContent = '(unsupported field type: ' + t + ')';
+    return fallback;
+  }
+
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'submitBtn') {
+      handleSubmit();
+    } else if (e.target && e.target.id === 'resubmitBtn') {
+      resetToForm();
+    }
+  });
+
+  function handleSubmit() {
+    if (!currentSchema) return;
+    const allValues = collectAllCurrentValues();
+    const editable = currentSchema.fields.filter(function (f) {
+      if (f.type === 'image' || f.type === 'info') return false;
+      return isFieldActive(f, allValues);
+    });
+    const values = {};
+    let firstInvalid = null;
+
+    document.querySelectorAll('[data-error-for]').forEach(function (p) {
+      p.classList.add('hidden');
+      p.textContent = '';
+    });
+    document.querySelectorAll('.form-field input, .form-field select, .form-field textarea').forEach(function (el) {
+      el.classList.remove('!border-red-400');
+    });
+    document.querySelectorAll('[data-group-name]').forEach(function (g) {
+      g.classList.remove('ring-1', 'ring-red-400', 'rounded-lg', 'p-1', '-m-1');
+    });
+
+    editable.forEach(function (field) {
+      const val = collectFieldValue(field);
+      values[field.name] = val;
+      const res = validateField(field, val);
+      if (!res.ok) {
+        markInvalid(field, res.msg);
+        const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+        if (block) block.dataset.touched = '1';
+        if (!firstInvalid) firstInvalid = field;
+      }
+    });
+
+    if (firstInvalid) {
+      const block = document.querySelector('[data-field-name="' + cssAttrEscape(firstInvalid.name) + '"]');
+      if (block) {
+        const el = block.querySelector('input, select, textarea');
+        if (el) { el.focus(); block.scrollIntoView({behavior: 'smooth', block: 'center'}); }
+      }
+      recomputeSubmitState();
+      return;
+    }
+
+    const fieldNames = editable.map(function (f) { return f.name; });
+    showThankYou(fieldNames, values);
+
+    const payload = editMode && currentEditToken
+      ? {
+          action: 'updateSpecialRunSubmission',
+          runNumber: currentRunNumber,
+          editToken: currentEditToken,
+          fieldNames: fieldNames,
+          values: values,
+          lang: 'en'
+        }
+      : {
+          action: 'submitSpecialRun',
+          runNumber: currentRunNumber,
+          fieldNames: fieldNames,
+          values: values,
+          lang: 'en'
+        };
+
+    attemptWithRetry(payload).then(function (data) {
+      if (!editMode && data && data.editToken) {
+        try { localStorage.setItem('mh3_special_edit_' + currentRunNumber, data.editToken); } catch (e) { /* ignore */ }
+      }
+    }).catch(function (err) {
+      console.error('submit failed:', err);
+      const expired = err && (err.reason === 'expired' || err.message === 'expired');
+      const duplicate = err && err.reason === 'duplicate';
+      document.getElementById('thankYouSection').classList.add('hidden');
+      if (duplicate) {
+        document.getElementById('formSection').classList.remove('hidden');
+        showModal({
+          title: 'Already registered',
+          msg: 'This email or phone is already registered for this run. Use the edit link in your first confirmation email to update.'
+        });
+        const btn = document.getElementById('submitBtn');
+        if (btn) btn.disabled = true;
+      } else if (expired) {
+        if (editMode) {
+          document.getElementById('formSection').classList.add('hidden');
+          showModal({title: 'Edit window closed', msg: 'The edit window has closed. Contact the organizers to make changes.'});
+          showExpiredEditView({ deadline: currentDeadline, values: values, fieldNames: fieldNames });
+        } else {
+          document.getElementById('formSection').classList.remove('hidden');
+          showModal({title: 'Registration closed', msg: 'The registration window has ended.'});
+          const btn = document.getElementById('submitBtn');
+          if (btn) btn.disabled = true;
+        }
+      } else {
+        document.getElementById('formSection').classList.remove('hidden');
+        showModal({title: 'Submission Failed', msg: 'Network error or server issue. Please try again.'});
+      }
+    });
+  }
+
+  function collectFieldValue(field) {
+    const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+    if (!block) return '';
+    if (field.type === 'text' || field.type === 'phone' || field.type === 'email' || field.type === 'number' || field.type === 'textarea' || field.type === 'date') {
+      const el = block.querySelector('input, textarea');
+      return el ? el.value.trim() : '';
+    }
+    if (field.type === 'select') {
+      const el = block.querySelector('select');
+      return el ? el.value : '';
+    }
+    if (field.type === 'radio') {
+      const checked = block.querySelector('input[type="radio"]:checked');
+      return checked ? checked.value : '';
+    }
+    if (field.type === 'multi') {
+      const boxes = block.querySelectorAll('input[type="checkbox"]:checked');
+      return Array.prototype.map.call(boxes, function (b) { return b.value; });
+    }
+    return '';
+  }
+
+  function markInvalid(field, msg) {
+    const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+    if (!block) return;
+    const err = block.querySelector('[data-error-for]');
+    if (err) {
+      err.textContent = '';
+      const icon = document.createElement('span');
+      icon.className = 'inline-block w-1 h-1 bg-red-400 rounded-full';
+      err.appendChild(icon);
+      err.appendChild(document.createTextNode(' ' + msg));
+      err.classList.remove('hidden');
+    }
+    const el = block.querySelector('input:not([type=radio]):not([type=checkbox]), select, textarea');
+    if (el) el.classList.add('!border-red-400');
+    const grp = block.querySelector('[data-group-name]');
+    if (grp) grp.classList.add('ring-1', 'ring-red-400', 'rounded-lg', 'p-1', '-m-1');
+  }
+
+  function showThankYou(fieldNames, values) {
+    const summary = document.getElementById('submissionSummary');
+    summary.textContent = '';
+    const schemaByName = {};
+    (currentSchema && currentSchema.fields || []).forEach(function (f) {
+      schemaByName[f.name] = f;
+    });
+    fieldNames.forEach(function (name) {
+      const field = schemaByName[name];
+      const displayLabel = field ? (field.label || field.name) : name;
+      const val = values[name];
+      let displayVal;
+      if (field && (field.type === 'radio' || field.type === 'select' || field.type === 'multi') && Array.isArray(field.options)) {
+        const optLookup = {};
+        field.options.forEach(function (opt) {
+          if (opt && typeof opt === 'object') optLookup[opt.value] = opt.label;
+          else optLookup[opt] = opt;
+        });
+        if (Array.isArray(val)) {
+          displayVal = val.map(function (v) { return optLookup[v] || v; }).join(', ');
+        } else {
+          displayVal = optLookup[val] || (val == null ? '' : String(val));
+        }
+      } else {
+        displayVal = Array.isArray(val) ? val.join(', ') : (val == null ? '' : String(val));
+      }
+      const row = document.createElement('div');
+      row.className = 'flex flex-col sm:flex-row sm:items-start sm:gap-4 py-2.5 first:pt-0 last:pb-0';
+      const nameEl = document.createElement('span');
+      nameEl.className = 'text-[10px] uppercase tracking-wider text-slate-500 font-semibold sm:w-1/3 sm:text-xs sm:normal-case sm:tracking-normal sm:font-medium sm:pt-0.5 shrink-0 mb-0.5 sm:mb-0';
+      nameEl.textContent = displayLabel;
+      const valEl = document.createElement('span');
+      valEl.className = 'text-slate-100 text-sm break-words flex-1';
+      valEl.textContent = displayVal || '—';
+      row.appendChild(nameEl);
+      row.appendChild(valEl);
+      summary.appendChild(row);
+    });
+    document.getElementById('formSection').classList.add('hidden');
+    document.getElementById('thankYouSection').classList.remove('hidden');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  function resetToForm() {
+    if (!currentSchema) return;
+    renderSpecialForm(currentSchema.fields);
+    document.getElementById('thankYouSection').classList.add('hidden');
+    document.getElementById('formSection').classList.remove('hidden');
+    const firstEditable = document.querySelector('#formFields input, #formFields select, #formFields textarea');
+    if (firstEditable) firstEditable.focus();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  function cssAttrEscape(s) {
+    return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  }
+</script>
+</body>
+</html>

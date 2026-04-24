@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MH3 特跑報名 - 台北捷運兔特別跑次申請</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="description" content="台北捷運兔 MH3 特別跑次報名頁面，參加特跑活動請在此填寫申請表單。">
+    <meta name="keywords" content="MH3, 台北捷運兔, Hash 特跑, 特別跑次, 報名, 申請">
+    <meta name="author" content="MH3 台北捷運兔">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://jimcat.github.io/mh3-checkin/special_run_apply.html">
+    <link rel="alternate" hreflang="zh-TW" href="https://jimcat.github.io/mh3-checkin/special_run_apply.html">
+    <link rel="alternate" hreflang="en" href="https://jimcat.github.io/mh3-checkin/special_run_apply_en.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jimcat.github.io/mh3-checkin/special_run_apply.html">
+    <meta property="og:title" content="MH3 特跑報名 - 台北捷運兔">
+    <meta property="og:description" content="台北捷運兔 MH3 特別跑次報名頁面">
+    <meta property="og:image" content="https://jimcat.github.io/mh3-checkin/logo.png">
+    <meta property="og:image:alt" content="MH3 台北捷運兔 Logo">
+    <meta property="og:locale" content="zh_TW">
+    <meta property="og:site_name" content="MH3 台北捷運兔 Check-in">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="MH3 特跑報名">
+    <meta name="twitter:description" content="台北捷運兔特別跑次報名頁面">
+    <meta name="twitter:image" content="https://jimcat.github.io/mh3-checkin/logo.png">
+
+    <meta name="theme-color" content="#1e293b">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loader {
+            border: 4px solid #334155;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-enter {
+            animation: modalEnter 0.25s ease-out;
+        }
+
+        @keyframes modalEnter {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* 讓 date picker 的日曆 icon 在深色背景可讀 */
+        input[type="date"] {
+            color-scheme: dark;
+        }
+
+        /* Image skeleton shimmer — 第一階段 schema 載入完、圖片還在後背景抓時使用 */
+        .image-skeleton {
+            position: relative;
+            overflow: hidden;
+            background-color: #0f172a;
+            background-image: linear-gradient(90deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%   { background-position: -150% 0; }
+            100% { background-position: 150% 0; }
+        }
+
+        .image-fade-in {
+            animation: imageFadeIn 0.35s ease-out;
+        }
+
+        @keyframes imageFadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 min-h-dvh p-3 sm:p-4 flex items-start sm:items-center justify-center font-sans text-slate-200">
+
+<div class="w-full max-w-md bg-slate-800 rounded-xl shadow-2xl p-5 sm:p-6 relative min-h-[300px] border border-slate-700">
+
+    <div class="text-center mb-6 border-b border-slate-700 pb-4 relative">
+        <a href="index.html"
+           class="absolute left-0 top-0 text-blue-400 hover:text-blue-300 text-sm font-bold flex items-center transition">
+            ← 返回
+        </a>
+        <div class="absolute right-0 top-0 flex items-center gap-3">
+            <a href="special_run_apply_en.html"
+               class="text-slate-400 hover:text-blue-400 text-xs font-bold border border-slate-500 hover:border-blue-400 rounded px-2 py-1 transition bg-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">EN</a>
+            <button onclick="document.getElementById('qrModal').classList.remove('hidden')"
+                    class="text-slate-400 hover:text-slate-900 text-xs font-bold border border-slate-500 hover:border-blue-400 rounded-full w-7 h-7 flex items-center justify-center transition bg-slate-800 hover:bg-blue-400 shadow-sm hover:shadow-blue-900/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
+                    title="QR Code">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM17 14h3v3h-3zM14 17h3v3h-3zM17 20h3v1h-3z"/>
+                </svg>
+            </button>
+            <a href="qa.html"
+               class="text-slate-400 hover:text-slate-900 text-sm font-bold border border-slate-500 hover:border-blue-400 rounded-full w-7 h-7 flex items-center justify-center transition bg-slate-800 hover:bg-blue-400 shadow-sm hover:shadow-blue-900/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 cursor-pointer"
+               title="常見問題 / Q&A">?</a>
+        </div>
+        <div class="flex justify-center mb-3 pt-6">
+            <img src="logo.png" alt="MH3 Logo" class="h-16 w-auto sm:h-20 object-contain">
+        </div>
+        <h1 class="text-2xl font-extrabold text-blue-500 tracking-wider">特跑報名</h1>
+        <p class="text-sm text-slate-400 mt-1">Special Run Registration</p>
+        <div id="editModeBanner" class="hidden mt-3 inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/40 text-amber-300 text-xs font-semibold px-3 py-1 rounded-full">
+            <span class="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
+            <span>編輯你的回覆</span>
+        </div>
+        <div id="runTitleDisplay" class="hidden mt-3 fade-in">
+            <h2 id="runTitle" class="text-lg font-bold text-slate-100"></h2>
+            <p id="runMeta" class="text-xs text-slate-500 mt-1"></p>
+        </div>
+    </div>
+
+    <div id="initLoader"
+         class="absolute inset-0 bg-slate-800 z-40 flex flex-col items-center justify-center rounded-xl">
+        <div class="loader mb-4"></div>
+        <p class="text-slate-400 font-medium tracking-wide">載入中...</p>
+    </div>
+
+    <div id="noEventSection" class="hidden text-center py-10 fade-in">
+        <div class="text-6xl mb-6 opacity-80">📅</div>
+        <h3 id="noEventTitle" class="text-2xl font-bold text-slate-300 mb-2">目前無開放申請的特跑</h3>
+        <p id="noEventMsg" class="text-slate-500 mb-6">敬請期待下一次的特跑活動！</p>
+        <a href="index.html"
+           class="inline-block bg-blue-600 text-white px-6 py-3 rounded-xl font-bold text-lg hover:bg-blue-500 hover:shadow-blue-900/50 shadow-lg transition">
+            返回一般跑次簽到
+        </a>
+    </div>
+
+    <div id="invalidTokenSection" class="hidden text-center py-10 fade-in">
+        <div class="text-6xl mb-6 opacity-80">🔗</div>
+        <h3 class="text-2xl font-bold text-slate-300 mb-2">此編輯連結失效或已過期</h3>
+        <p class="text-slate-500 mb-6">如有疑問請聯絡幹部。</p>
+        <a href="index.html"
+           class="inline-block bg-blue-600 text-white px-6 py-3 rounded-xl font-bold text-lg hover:bg-blue-500 hover:shadow-blue-900/50 shadow-lg transition">
+            返回一般跑次簽到
+        </a>
+    </div>
+
+    <section id="expiredEditSection" class="hidden fade-in">
+        <div class="text-center mb-6">
+            <div class="text-6xl mb-4 opacity-80">⏰</div>
+            <h3 class="text-xl font-bold text-amber-300 mb-2">編輯時限已到</h3>
+            <p id="expiredDeadlineMsg" class="text-slate-500 text-sm"></p>
+            <p class="text-slate-500 text-sm mt-1">如需異動請聯絡幹部</p>
+        </div>
+        <div class="bg-slate-900 rounded-xl p-4 mb-6 border border-slate-700 text-left">
+            <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">你的回覆 / Your response</p>
+            <div id="expiredSummary" class="divide-y divide-slate-700/50"></div>
+        </div>
+        <a href="index.html"
+           class="mt-3 block w-full text-center bg-slate-700 text-blue-100 py-3 rounded-xl font-semibold text-sm hover:bg-slate-600 hover:text-white border border-slate-600 transition min-h-[44px] flex items-center justify-center">
+            返回一般跑次簽到
+        </a>
+    </section>
+
+    <section id="formSection" class="hidden fade-in">
+        <div id="formFields" class="space-y-3"></div>
+        <p id="submitHelper" class="hidden mt-5 text-xs text-amber-400 text-center flex items-center justify-center gap-1.5">
+            <span class="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
+            <span id="submitHelperText"></span>
+        </p>
+        <button id="submitBtn" type="button"
+                class="w-full mt-3 bg-blue-500 hover:bg-blue-400 active:bg-blue-600 text-slate-900 font-bold py-3.5 rounded-xl transition text-base min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500">
+            送出報名
+        </button>
+        <a href="index.html"
+           class="mt-3 block w-full text-center bg-slate-700 text-blue-100 py-3 rounded-xl font-semibold text-sm hover:bg-slate-600 hover:text-white border border-slate-600 transition min-h-[44px] flex items-center justify-center">
+            返回一般跑次簽到
+        </a>
+    </section>
+
+    <section id="thankYouSection" class="hidden fade-in text-center py-4">
+        <div class="text-6xl sm:text-7xl mb-4">🎉</div>
+        <h3 class="text-2xl font-bold text-green-400 mb-2">感謝你的報名</h3>
+        <p class="text-slate-400 mb-6 text-sm">確認信已寄到你的信箱</p>
+        <div class="bg-slate-900 rounded-xl p-4 mb-6 border border-slate-700 text-left">
+            <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-3">報名內容 / Summary</p>
+            <div id="submissionSummary" class="divide-y divide-slate-700/50"></div>
+        </div>
+        <button id="resubmitBtn" type="button"
+                class="w-full bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-blue-100 font-semibold py-3 rounded-xl border border-slate-600 transition min-h-[48px]">
+            再填一筆
+        </button>
+        <a href="index.html"
+           class="mt-3 block w-full text-center text-slate-400 hover:text-blue-400 py-2.5 text-sm transition min-h-[40px] flex items-center justify-center">
+            返回一般跑次簽到
+        </a>
+    </section>
+
+</div>
+
+<div id="qrModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4" onclick="if(event.target===this)this.classList.add('hidden')">
+    <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm"></div>
+    <div class="relative z-10 bg-slate-800 rounded-2xl shadow-2xl w-full max-w-xs overflow-hidden border border-slate-700">
+        <button onclick="document.getElementById('qrModal').classList.add('hidden')"
+                class="absolute top-3 right-3 text-slate-400 hover:text-slate-900 text-sm font-bold border border-slate-500 hover:border-blue-400 rounded-full w-7 h-7 flex items-center justify-center transition bg-slate-800 hover:bg-blue-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 z-20"
+                aria-label="關閉">✕</button>
+        <div class="p-5 flex flex-col items-center">
+            <div class="bg-white rounded-xl p-4 mb-4">
+                <img src="qr-code.png" alt="QR Code" class="w-48 h-48 sm:w-56 sm:h-56 object-contain">
+            </div>
+            <p class="text-slate-300 text-sm text-center font-medium">掃描 QR Code 開啟報到頁面</p>
+        </div>
+    </div>
+</div>
+
+<div id="customModal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
+    <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm transition-opacity"
+         onclick="closeModal()"></div>
+    <div class="bg-slate-800 rounded-2xl shadow-2xl w-full max-w-sm relative z-10 overflow-hidden modal-enter border border-slate-700">
+        <div class="p-6 text-center">
+            <div id="modalIcon" class="text-4xl mb-4">ℹ️</div>
+            <h3 id="modalTitle" class="text-xl font-bold text-white mb-2">提示</h3>
+            <p id="modalMessage" class="text-slate-400 text-sm leading-relaxed mb-6">內容...</p>
+            <button onclick="closeModal()"
+                    class="w-full bg-blue-500 hover:bg-blue-400 text-slate-900 font-bold py-2.5 rounded-xl transition">
+                確定
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="hareline.js"></script>
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('qrModal').classList.add('hidden');
+      document.getElementById('customModal').classList.add('hidden');
+    }
+  });
+
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxmkQakubfwGK2ZRoEL1_Z3BXixcFLuGQDMZcp2Fml8a9uvxBV-L4e5KOTx-8K5uIm5Sw/exec';
+
+  // 狀態：這次 session 的 schema 快取（避免「再填一筆」重新打 API）
+  let currentSchema = null;
+  let currentRunNumber = null;
+  // 編輯模式狀態
+  let editMode = false;
+  let currentEditToken = null;
+  let currentDeadline = null; // 'YYYY-MM-DD' 或 null
+
+  function showModal({title, msg}) {
+    document.getElementById('modalTitle').innerText = title || '提示';
+    document.getElementById('modalMessage').innerText = msg || '';
+    document.getElementById('customModal').classList.remove('hidden');
+  }
+  function closeModal() {
+    document.getElementById('customModal').classList.add('hidden');
+  }
+
+  // Retry helper（照搬 index.html 的實作；額外保留 server-reported reason）
+  function attemptWithRetry(payload, opts) {
+    opts = Object.assign({maxAttempts: 3, backoffMs: [1000, 2000, 4000]}, opts || {});
+    return new Promise((resolve, reject) => {
+      let attempt = 0;
+      const go = () => {
+        attempt++;
+        fetch(API_URL, {method: 'POST', body: JSON.stringify(payload)})
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.result === 'success') {
+              resolve(data);
+            } else {
+              const e = new Error((data && data.msg) || (data && data.reason) || 'server_error');
+              e.serverError = true;
+              e.reason = data && data.reason || null;
+              reject(e);
+            }
+          })
+          .catch(err => {
+            if (err && err.serverError) { reject(err); return; }
+            if (attempt >= opts.maxAttempts) { reject(err); return; }
+            const delay = opts.backoffMs[attempt - 1] != null
+              ? opts.backoffMs[attempt - 1]
+              : opts.backoffMs[opts.backoffMs.length - 1];
+            setTimeout(go, delay);
+          });
+      };
+      go();
+    });
+  }
+
+  window.onload = function () {
+    // Pre-warm GAS 容器（平行 CSV fetch）
+    if (window.HarelineCache && typeof window.HarelineCache.prewarmGas === 'function') {
+      window.HarelineCache.prewarmGas(API_URL);
+    }
+
+    // 編輯模式路由（Decision: Edit URL 語言路由）
+    // URL 含 ?edit=<token>&run=<N> → skip 正常 Hareline 路由，走 enterEditMode
+    const urlParams = new URLSearchParams(window.location.search);
+    const editTokenParam = urlParams.get('edit');
+    const runParam = urlParams.get('run');
+    if (editTokenParam && runParam) {
+      enterEditMode(editTokenParam, runParam);
+      return;
+    }
+
+    if (!window.HarelineCache || typeof window.HarelineCache._internals === 'undefined') {
+      showModal({title: '載入錯誤', msg: '活動資訊模組載入失敗，請重新整理頁面。'});
+      document.getElementById('initLoader').classList.add('hidden');
+      document.getElementById('noEventSection').classList.remove('hidden');
+      return;
+    }
+
+    // hareline.js 目前只解析前 5 欄，我們需要 F/G 欄位判定。
+    // 直接 fetch CSV 自行解析 7 欄
+    fetchHarelineWithFlags().then(function (rows) {
+      const todayMid = new Date();
+      todayMid.setHours(0, 0, 0, 0);
+      const eligibles = rows
+        .filter(function (r) {
+          if (!r.date) return false;
+          const d = parseSheetDate(r.date);
+          if (!d) return false;
+          return d.getTime() >= todayMid.getTime() && r.isSpecial && r.openApply;
+        })
+        .sort(function (a, b) {
+          return parseSheetDate(a.date).getTime() - parseSheetDate(b.date).getTime();
+        });
+
+      if (eligibles.length === 0) {
+        document.getElementById('initLoader').classList.add('hidden');
+        document.getElementById('noEventSection').classList.remove('hidden');
+        return;
+      }
+
+      const target = eligibles[0];
+      currentRunNumber = target.number;
+      loadConfig(target);
+    }).catch(function (err) {
+      console.error('fetchHarelineWithFlags failed:', err);
+      document.getElementById('initLoader').classList.add('hidden');
+      showModal({title: '連線錯誤', msg: '無法載入活動資訊，請檢查網路連線後重新整理。'});
+      document.getElementById('noEventSection').classList.remove('hidden');
+    });
+  };
+
+  // 從 publish-to-web CSV 讀 Hareline 並保留 F/G 欄（是否為特跑、是否開放申請）
+  function fetchHarelineWithFlags() {
+    const url = (window.HarelineCache && window.HarelineCache._internals && window.HarelineCache._internals.HARELINE_CSV_URL) || '';
+    if (!url) return Promise.reject(new Error('HARELINE_CSV_URL unavailable'));
+    const minuteBucket = Math.floor(Date.now() / 60000);
+    return fetch(url + '&t=' + minuteBucket, {method: 'GET', credentials: 'omit'})
+      .then(function (res) {
+        if (!res.ok) throw new Error('http');
+        return res.text();
+      })
+      .then(function (text) {
+        return parseHarelineCsv7(text);
+      });
+  }
+
+  function parseHarelineCsv7(text) {
+    const lines = splitCsvLines(text);
+    if (lines.length === 0) return [];
+    let startIdx = 0;
+    const firstFields = tokenizeLine(lines[0]);
+    if (!/^#?\d+$/.test(String(firstFields[0] || '').trim())) startIdx = 1;
+    const out = [];
+    for (let i = startIdx; i < lines.length; i++) {
+      const fields = tokenizeLine(lines[i]);
+      const first = String(fields[0] || '').trim();
+      if (!first) continue;
+      out.push({
+        number: first.replace(/^#+/, ''),
+        date: String(fields[1] || '').trim(),
+        hare: String(fields[2] || '').trim(),
+        coHare: String(fields[3] || '').trim(),
+        restaurant: String(fields[4] || '').trim(),
+        isSpecial: isTrueStr(fields[5]),
+        openApply: isTrueStr(fields[6])
+      });
+    }
+    return out;
+  }
+
+  function tokenizeLine(line) {
+    const fields = [];
+    let cur = '', inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line.charAt(i);
+      if (inQuotes) {
+        if (ch === '"') {
+          if (i + 1 < line.length && line.charAt(i + 1) === '"') { cur += '"'; i++; }
+          else inQuotes = false;
+        } else cur += ch;
+      } else {
+        if (ch === '"') inQuotes = true;
+        else if (ch === ',') { fields.push(cur); cur = ''; }
+        else cur += ch;
+      }
+    }
+    fields.push(cur);
+    return fields;
+  }
+
+  function splitCsvLines(text) {
+    const lines = [];
+    let cur = '', inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text.charAt(i);
+      if (ch === '"') { inQuotes = !inQuotes; cur += ch; }
+      else if (!inQuotes && (ch === '\n' || ch === '\r')) {
+        if (ch === '\r' && i + 1 < text.length && text.charAt(i + 1) === '\n') i++;
+        lines.push(cur); cur = '';
+      } else cur += ch;
+    }
+    if (cur.length > 0) lines.push(cur);
+    return lines;
+  }
+
+  function isTrueStr(v) {
+    if (v === true) return true;
+    const s = String(v || '').trim().toLowerCase();
+    return s === 'true' || s === '1' || s === 'yes';
+  }
+
+  function parseSheetDate(s) {
+    if (!s) return null;
+    const parts = String(s).trim().split(/[\/\-]/);
+    if (parts.length !== 3) return null;
+    const y = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    const d = parseInt(parts[2], 10);
+    if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+    return new Date(y, m - 1, d, 0, 0, 0, 0);
+  }
+
+  // Bilingual 規則：sheet 儲存格可用 `|` 分隔中英，例：「姓名|Name」「男|Male,女|Female」
+  // 左側=中文（canonical，送出資料、sheet 欄位 key 統一用此），右側=英文（顯示用）
+  // 若無 `|`，中英共用同一值
+  const PAGE_LANG = (document.documentElement.lang || '').toLowerCase().indexOf('en') === 0 ? 'en' : 'zh';
+
+  function pickLang(text) {
+    if (text == null) return text;
+    const parts = String(text).split('|');
+    if (PAGE_LANG === 'en' && parts.length > 1 && parts[1].trim() !== '') return parts[1].trim();
+    return (parts[0] || '').trim();
+  }
+  function canonicalName(text) {
+    if (text == null) return text;
+    return String(text).split('|')[0].trim();
+  }
+
+  // 對後端回傳的 fields 做 bilingual normalize：
+  // - name: canonical（中文）用於 submission key / Sheet B 欄位
+  // - label: pickLang 之後的顯示字串
+  // - options: [{value: canonical, label: pickLang}]
+  // - value: info 類型需翻譯；image 是 URL 不動；input 類型預設值亦 pickLang
+  function normalizeFields(fields) {
+    return (fields || []).map(function (f) {
+      const options = (f.options || []).map(function (optRaw) {
+        return { value: canonicalName(optRaw), label: pickLang(optRaw) };
+      });
+      let value = f.value;
+      if (f.type === 'info') {
+        value = pickLang(f.value);
+      } else if (f.type !== 'image' && typeof f.value === 'string' && f.value.indexOf('|') > -1) {
+        value = pickLang(f.value);
+      }
+      return {
+        name: canonicalName(f.name),
+        label: pickLang(f.name),
+        type: f.type,
+        options: options,
+        required: f.required,
+        value: value,
+        description: f.description || null, // radio/multi 不匹配 options 的 per-run 文字
+        dependsOn: f.dependsOn || null  // {field, values[]} 或 null
+      };
+    });
+  }
+
+  // 計算某欄位目前是否該顯示（依 dependsOn 判斷）
+  function isFieldActive(field, currentValues) {
+    if (!field.dependsOn) return true;
+    const controlVal = currentValues[field.dependsOn.field];
+    if (controlVal == null || controlVal === '') return false;
+    if (Array.isArray(controlVal)) {
+      return controlVal.some(function (v) { return field.dependsOn.values.indexOf(v) !== -1; });
+    }
+    return field.dependsOn.values.indexOf(controlVal) !== -1;
+  }
+
+  // 蒐集當前所有 input 值（用於條件判斷）
+  function collectAllCurrentValues() {
+    const out = {};
+    if (!currentSchema) return out;
+    currentSchema.fields.forEach(function (f) {
+      if (f.type === 'image' || f.type === 'info') return;
+      out[f.name] = collectFieldValue(f);
+    });
+    return out;
+  }
+
+  // 套用條件邏輯：掃所有欄位 → 該隱藏的加 hidden、顯示的 remove hidden
+  function applyConditionalVisibility() {
+    if (!currentSchema) return;
+    const vals = collectAllCurrentValues();
+    currentSchema.fields.forEach(function (f) {
+      if (!f.dependsOn) return;
+      const block = document.querySelector('[data-field-name="' + cssAttrEscape(f.name) + '"]');
+      if (!block) return;
+      const active = isFieldActive(f, vals);
+      if (active) {
+        block.classList.remove('hidden');
+      } else {
+        block.classList.add('hidden');
+        // 隱藏時清掉錯誤標記
+        const err = block.querySelector('[data-error-for]');
+        if (err) { err.classList.add('hidden'); err.textContent = ''; }
+      }
+    });
+  }
+
+  // 保證 Email 一定是第一個欄位（寫死，不從 SpecialConfig 來）
+  // 若管理者在 SpecialConfig 也加了 Email 欄位，以前端這個為準、去掉重複
+  function ensureEmailField(fields) {
+    const filtered = (fields || []).filter(function (f) {
+      return String(f.name || '').trim().toLowerCase() !== 'email';
+    });
+    const emailField = {
+      name: 'Email',
+      label: 'Email',
+      type: 'email',
+      options: [],
+      required: true,
+      value: null
+    };
+    return [emailField].concat(filtered);
+  }
+
+  function loadConfig(runInfo) {
+    // Progressive load：
+    //   Phase 1 — skipImages=true 取 schema（快，無圖片處理），立刻渲染表單骨架 + image skeleton
+    //   Phase 2 — 並行呼叫 getSpecialConfigImages，回來後 backfill img.src，不卡第一次 paint
+    const schemaPromise = attemptWithRetry({
+      action: 'getSpecialConfig',
+      runNumber: runInfo.number,
+      skipImages: true
+    });
+    const imagesPromise = attemptWithRetry({
+      action: 'getSpecialConfigImages',
+      runNumber: runInfo.number
+    }).catch(function (err) {
+      // 圖片階段失敗不擋表單；log 後回傳空陣列讓 backfill 跳過
+      console.warn('getSpecialConfigImages failed (non-fatal):', err);
+      return {result: 'success', images: []};
+    });
+
+    schemaPromise
+      .then(function (data) {
+        // Deadline fast-path（Decision: Deadline enforcement across submission paths 前端層）
+        // 若後端回 meta.deadline 已過 → 顯示「報名已截止」noEventSection
+        const metaDeadline = data.meta && data.meta.deadline;
+        currentDeadline = metaDeadline || null;
+        if (metaDeadline) {
+          const cutoffMs = Date.parse(metaDeadline + 'T23:59:59+08:00');
+          if (!isNaN(cutoffMs) && Date.now() > cutoffMs) {
+            document.getElementById('noEventTitle').innerText = PAGE_LANG === 'en'
+              ? 'Registration closed'
+              : '報名已截止';
+            document.getElementById('noEventMsg').innerText = PAGE_LANG === 'en'
+              ? 'The registration window has ended.'
+              : '此次特跑報名已結束。';
+            document.getElementById('initLoader').classList.add('hidden');
+            document.getElementById('noEventSection').classList.remove('hidden');
+            return;
+          }
+        }
+
+        // 先做 bilingual normalize，再在最前面加 Email
+        data.fields = ensureEmailField(normalizeFields(data.fields));
+        currentSchema = data;
+        const metaRunTitle = data.meta && data.meta.runTitle;
+        const titleForDisplay = pickLang(metaRunTitle || data.runTitle) || (PAGE_LANG === 'en' ? ('#' + runInfo.number + ' Special Run') : ('#' + runInfo.number + ' 特跑'));
+        document.getElementById('runTitle').innerText = titleForDisplay;
+        document.getElementById('runMeta').innerText = runInfo.date + '  Hare: ' + (runInfo.hare || '—');
+        document.getElementById('runTitleDisplay').classList.remove('hidden');
+
+        renderSpecialForm(data.fields);
+        document.getElementById('initLoader').classList.add('hidden');
+        document.getElementById('formSection').classList.remove('hidden');
+
+        // 非同步 backfill 圖片（不阻塞）
+        imagesPromise.then(function (imgData) {
+          backfillImages(imgData && imgData.images ? imgData.images : []);
+        });
+      })
+      .catch(function (err) {
+        console.error('getSpecialConfig failed:', err);
+        document.getElementById('initLoader').classList.add('hidden');
+        document.getElementById('noEventSection').classList.remove('hidden');
+      });
+  }
+
+  // 編輯模式入口（Decision: Edit URL 語言路由、Decision: Expired token 的兩種分支）
+  // Phase 1: schema（skipImages=true）
+  // Phase 2: getSpecialRunSubmission 撈回既有 values
+  // 回應分支：invalid_token → #invalidTokenSection；expired=true → #expiredEditSection；其餘 → 預填 form
+  function enterEditMode(editToken, runNumber) {
+    editMode = true;
+    currentEditToken = editToken;
+    currentRunNumber = runNumber;
+
+    const schemaPromise = attemptWithRetry({
+      action: 'getSpecialConfig',
+      runNumber: runNumber,
+      skipImages: true
+    });
+    const submissionPromise = attemptWithRetry({
+      action: 'getSpecialRunSubmission',
+      runNumber: runNumber,
+      editToken: editToken
+    }).catch(function (err) {
+      // server-reported error（invalid_token / expired）會在這裡被 reject
+      if (err && err.serverError) {
+        return Promise.reject(err);
+      }
+      return Promise.reject(err);
+    });
+
+    submissionPromise
+      .then(function (subData) {
+        // 過期 + 有效 token → 顯示 read-only 摘要
+        if (subData.expired) {
+          showExpiredEditView(subData);
+          return;
+        }
+        // 正常編輯：等 schema 回來後 render + prefill
+        return schemaPromise.then(function (cfgData) {
+          cfgData.fields = ensureEmailField(normalizeFields(cfgData.fields));
+          currentSchema = cfgData;
+          currentDeadline = subData.deadline || (cfgData.meta && cfgData.meta.deadline) || null;
+
+          const titleForDisplay = pickLang(subData.runTitle || (cfgData.meta && cfgData.meta.runTitle) || '')
+            || (PAGE_LANG === 'en' ? ('#' + runNumber + ' Special Run') : ('#' + runNumber + ' 特跑'));
+          document.getElementById('runTitle').innerText = titleForDisplay;
+          document.getElementById('runMeta').innerText = PAGE_LANG === 'en'
+            ? ('Editing response')
+            : ('編輯中');
+          document.getElementById('runTitleDisplay').classList.remove('hidden');
+          document.getElementById('editModeBanner').classList.remove('hidden');
+
+          renderSpecialForm(cfgData.fields);
+          prefillFormFromValues(subData.values || {});
+          disableEmailInput();
+          document.getElementById('initLoader').classList.add('hidden');
+          document.getElementById('formSection').classList.remove('hidden');
+        });
+      })
+      .catch(function (err) {
+        // Invalid token / 其他錯誤一律走 invalidTokenSection（不暴露細節）
+        console.warn('enterEditMode failed:', err);
+        document.getElementById('initLoader').classList.add('hidden');
+        document.getElementById('invalidTokenSection').classList.remove('hidden');
+      });
+  }
+
+  // 把 getSpecialRunSubmission 拿到的 values 預填到已 render 的表單
+  function prefillFormFromValues(values) {
+    if (!values || !currentSchema) return;
+    currentSchema.fields.forEach(function (field) {
+      if (field.type === 'image' || field.type === 'info') return;
+      if (!values.hasOwnProperty(field.name)) return;
+      const raw = values[field.name];
+      const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+      if (!block) return;
+      const t = field.type;
+      if (t === 'text' || t === 'phone' || t === 'email' || t === 'number' || t === 'textarea') {
+        const el = block.querySelector('input, textarea');
+        if (el) el.value = raw == null ? '' : String(raw);
+      } else if (t === 'date') {
+        const el = block.querySelector('input[type="date"]');
+        if (el) {
+          // raw 可能是 ISO 字串或 'YYYY-MM-DD'
+          let dateStr = raw == null ? '' : String(raw);
+          if (dateStr && dateStr.indexOf('T') > 0) dateStr = dateStr.slice(0, 10);
+          el.value = dateStr;
+        }
+      } else if (t === 'select') {
+        const el = block.querySelector('select');
+        if (el) el.value = raw == null ? '' : String(raw);
+      } else if (t === 'radio') {
+        const target = raw == null ? '' : String(raw);
+        const input = block.querySelector('input[type="radio"][value="' + cssAttrEscape(target) + '"]');
+        if (input) input.checked = true;
+      } else if (t === 'multi') {
+        // raw 可能是陣列或 "A, B" 字串
+        const list = Array.isArray(raw)
+          ? raw
+          : String(raw || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+        list.forEach(function (v) {
+          const input = block.querySelector('input[type="checkbox"][value="' + cssAttrEscape(v) + '"]');
+          if (input) input.checked = true;
+        });
+      }
+      block.dataset.touched = '1';
+    });
+    if (typeof applyConditionalVisibility === 'function') applyConditionalVisibility();
+    if (typeof recomputeSubmitState === 'function') recomputeSubmitState();
+  }
+
+  // 編輯模式：Email 鎖定（readonly + disabled，灰色視覺）
+  function disableEmailInput() {
+    const block = document.querySelector('[data-field-name="Email"]');
+    if (!block) return;
+    const input = block.querySelector('input');
+    if (!input) return;
+    input.readOnly = true;
+    input.disabled = true;
+    input.classList.add('opacity-60', 'cursor-not-allowed');
+  }
+
+  // 過期 + valid token → read-only 摘要頁
+  function showExpiredEditView(subData) {
+    const banner = document.getElementById('expiredDeadlineMsg');
+    if (banner && subData.deadline) {
+      banner.innerText = PAGE_LANG === 'en'
+        ? ('The edit window has closed (' + subData.deadline + ').')
+        : ('截止日期：' + subData.deadline);
+    }
+    const summary = document.getElementById('expiredSummary');
+    summary.textContent = '';
+    const fieldNames = subData.fieldNames || Object.keys(subData.values || {});
+    fieldNames.forEach(function (name) {
+      const v = (subData.values || {})[name];
+      const row = document.createElement('div');
+      row.className = 'flex flex-col sm:flex-row sm:items-start sm:gap-4 py-2.5 first:pt-0 last:pb-0';
+      const nameEl = document.createElement('span');
+      nameEl.className = 'text-[10px] uppercase tracking-wider text-slate-500 font-semibold sm:w-1/3 sm:text-xs sm:normal-case sm:tracking-normal sm:font-medium sm:pt-0.5 shrink-0 mb-0.5 sm:mb-0';
+      nameEl.textContent = pickLang(name);
+      const valEl = document.createElement('span');
+      valEl.className = 'text-slate-100 text-sm break-words flex-1';
+      valEl.textContent = (v == null || v === '') ? '—' : String(v);
+      row.appendChild(nameEl);
+      row.appendChild(valEl);
+      summary.appendChild(row);
+    });
+    document.getElementById('initLoader').classList.add('hidden');
+    document.getElementById('expiredEditSection').classList.remove('hidden');
+  }
+
+  // 把 getSpecialConfigImages 拿到的 URL 填回已渲染的 image skeleton 容器
+  // images: [{name: canonical, value: url}]
+  function backfillImages(images) {
+    if (!Array.isArray(images) || images.length === 0) return;
+    images.forEach(function (img) {
+      if (!img || !img.value) return;
+      const block = document.querySelector('[data-field-name="' + cssAttrEscape(img.name) + '"][data-field-type="image"]');
+      if (!block) return;
+      const holder = block.querySelector('[data-image-holder]');
+      if (!holder) return;
+      const imgEl = document.createElement('img');
+      imgEl.src = img.value;
+      imgEl.alt = block.dataset.fieldLabel || img.name;
+      imgEl.className = 'w-full rounded-xl shadow-lg border border-slate-700/50 object-cover max-h-80 bg-slate-900 image-fade-in';
+      imgEl.loading = 'lazy';
+      // 載入完成才清 skeleton，避免空白閃爍
+      imgEl.addEventListener('load', function () {
+        holder.classList.remove('image-skeleton');
+        holder.style.aspectRatio = '';
+      });
+      imgEl.addEventListener('error', function () {
+        holder.classList.remove('image-skeleton');
+      });
+      holder.textContent = '';
+      holder.appendChild(imgEl);
+      // 更新對應的 currentSchema 值讓 thank-you summary 能取到
+      if (currentSchema && Array.isArray(currentSchema.fields)) {
+        for (var i = 0; i < currentSchema.fields.length; i++) {
+          if (currentSchema.fields[i].name === img.name) {
+            currentSchema.fields[i].value = img.value;
+            break;
+          }
+        }
+      }
+    });
+  }
+
+  // 動態渲染表單欄位（所有節點用 createElement + textContent，避免 XSS 風險）
+  // RWD / Mobile-first：以拇指操作 + 戶外閱讀為主要考量
+  // 三種視覺語言：
+  //   - info：左藍色豎線的引言區塊，無框
+  //   - image：全寬圖片卡片，rounded + shadow
+  //   - input：card-like 外殼（深色背景 + 邊框 + 圓角），label + 控件 + 錯誤訊息
+  function renderSpecialForm(fields) {
+    const container = document.getElementById('formFields');
+    container.textContent = '';
+
+    fields.forEach(function (field, idx) {
+      const block = document.createElement('div');
+      block.dataset.fieldName = field.name;
+      block.dataset.fieldType = field.type;
+      block.className = 'form-field';
+
+      const t = field.type;
+
+      if (t === 'info') {
+        // Info：左藍色豎線引言風，無框
+        block.className = 'form-field border-l-4 border-blue-500 pl-3 sm:pl-4 py-1 space-y-1';
+        const caption = document.createElement('p');
+        caption.className = 'text-[10px] uppercase tracking-widest text-slate-500 font-bold';
+        caption.textContent = field.label || field.name;
+        block.appendChild(caption);
+        const content = document.createElement('p');
+        content.className = 'text-slate-100 text-sm leading-relaxed whitespace-pre-line';
+        content.textContent = field.value || '';
+        block.appendChild(content);
+        container.appendChild(block);
+        return;
+      }
+
+      if (t === 'image') {
+        // Image：全寬卡片；若 value 還沒到（progressive load）先顯示 skeleton 佔位
+        block.className = 'form-field space-y-2';
+        block.dataset.fieldLabel = field.label || field.name;
+        const holder = document.createElement('div');
+        holder.dataset.imageHolder = '1';
+        holder.className = 'w-full rounded-xl border border-slate-700/50';
+        if (field.value) {
+          const img = document.createElement('img');
+          img.src = field.value;
+          img.alt = field.label || field.name;
+          img.className = 'w-full rounded-xl shadow-lg border border-slate-700/50 object-cover max-h-80 bg-slate-900';
+          img.loading = 'lazy';
+          holder.appendChild(img);
+        } else {
+          // Skeleton：用方形佔位，等 backfillImages 帶 URL 進來
+          holder.classList.add('image-skeleton', 'shadow-lg');
+          holder.style.aspectRatio = '1 / 1';
+          holder.setAttribute('role', 'img');
+          holder.setAttribute('aria-label', (field.label || field.name) + (PAGE_LANG === 'en' ? ' (loading)' : ' (載入中)'));
+        }
+        block.appendChild(holder);
+        const caption = document.createElement('p');
+        caption.className = 'text-[10px] uppercase tracking-widest text-slate-500 font-bold text-center';
+        caption.textContent = field.label || field.name;
+        block.appendChild(caption);
+        container.appendChild(block);
+        return;
+      }
+
+      // Input 類型：card-like 外殼
+      block.className = 'form-field bg-slate-900/40 border border-slate-700 rounded-xl p-4 space-y-2.5';
+
+      // Label + required marker row
+      const labelRow = document.createElement('div');
+      labelRow.className = 'flex items-baseline gap-2';
+      const label = document.createElement('label');
+      label.className = 'block text-sm font-semibold text-slate-100';
+      label.textContent = field.label || field.name;
+      label.htmlFor = 'field_' + idx;
+      labelRow.appendChild(label);
+      if (field.required) {
+        const mark = document.createElement('span');
+        mark.className = 'inline-flex items-center gap-1 text-[10px] font-semibold text-red-400';
+        const dot = document.createElement('span');
+        dot.className = 'w-1.5 h-1.5 bg-red-400 rounded-full';
+        mark.appendChild(dot);
+        mark.appendChild(document.createTextNode(PAGE_LANG === 'en' ? 'Required' : '必填'));
+        labelRow.appendChild(mark);
+      }
+      block.appendChild(labelRow);
+
+      // Description：radio/multi 欄位的提醒文字（backend 把不匹配 options 的 per-run value 塞進 description）
+      // 放在 label 下、options 上方，用 whitespace-pre-line 保留換行
+      if (field.description) {
+        const desc = document.createElement('p');
+        desc.className = 'text-sm text-slate-300 leading-relaxed whitespace-pre-line bg-slate-900/60 border border-slate-700 rounded-lg p-3';
+        desc.textContent = pickLang(field.description);
+        block.appendChild(desc);
+      }
+
+      const control = renderControl(field, 'field_' + idx);
+      block.appendChild(control);
+
+      const err = document.createElement('p');
+      err.className = 'hidden text-xs text-red-400 flex items-center gap-1';
+      err.dataset.errorFor = field.name;
+      block.appendChild(err);
+
+      container.appendChild(block);
+    });
+    // Render 完立即套一次條件邏輯（依初始/預設值決定哪些 block 要先藏起來）
+    applyConditionalVisibility();
+    recomputeSubmitState();
+    // 監聽 form change，值變化時重新判斷條件顯示 + submit 按鈕狀態
+    container.addEventListener('change', function () {
+      applyConditionalVisibility();
+      recomputeSubmitState();
+    });
+    container.addEventListener('input', function () {
+      applyConditionalVisibility();
+      recomputeSubmitState();
+    });
+    // Blur 後才顯示單欄 inline error（避免使用者邊打字邊看到紅字）
+    container.addEventListener('blur', function (e) {
+      const target = e.target;
+      if (!target || !target.closest) return;
+      const block = target.closest('[data-field-name]');
+      if (!block) return;
+      block.dataset.touched = '1';
+      refreshFieldErrorUI(block);
+      recomputeSubmitState();
+    }, true);
+  }
+
+  // ---- 欄位驗證 ----
+
+  // 依 field type / 欄位名稱做的客製驗證
+  // 回傳 {ok:true} 或 {ok:false, msg:'...'}
+  function validateField(field, val) {
+    const isArr = Array.isArray(val);
+    const isEmpty = val == null || val === '' || (isArr && val.length === 0);
+
+    if (field.required && isEmpty) {
+      return {ok: false, msg: PAGE_LANG === 'en' ? 'This field is required' : '此欄位為必填'};
+    }
+    if (isEmpty) return {ok: true}; // 非必填且空值：不驗格式
+
+    if (field.type === 'email') {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(val))) {
+        return {ok: false, msg: PAGE_LANG === 'en' ? 'Please enter a valid email' : '請輸入有效的 Email'};
+      }
+    }
+    if (field.type === 'phone') {
+      const digits = String(val).replace(/[\s\-().+]/g, '');
+      if (!/^\d{8,15}$/.test(digits)) {
+        return {ok: false, msg: PAGE_LANG === 'en' ? 'Please enter a valid phone number' : '請輸入有效的電話號碼'};
+      }
+    }
+    if (field.type === 'number') {
+      if (isNaN(Number(val))) {
+        return {ok: false, msg: PAGE_LANG === 'en' ? 'Please enter a number' : '請輸入數字'};
+      }
+    }
+    // 欄位名帶「末5碼 / Last 5 Digits」→ 嚴格 5 位數字
+    const canonName = String(field.name || '').toLowerCase();
+    if (canonName.indexOf('末5碼') >= 0 || canonName.indexOf('last 5') >= 0) {
+      if (!/^\d{5}$/.test(String(val).trim())) {
+        return {ok: false, msg: PAGE_LANG === 'en' ? 'Please enter exactly 5 digits' : '請輸入 5 位數字'};
+      }
+    }
+    return {ok: true};
+  }
+
+  // 把 touched 欄位的錯誤／正常狀態反映到 UI（inline error + border）；未被 touched 的欄位不動
+  function refreshFieldErrorUI(block) {
+    if (!block || !currentSchema) return;
+    if (block.dataset.touched !== '1') return;
+    const name = block.dataset.fieldName;
+    const field = currentSchema.fields.find(function (f) { return f.name === name; });
+    if (!field || field.type === 'image' || field.type === 'info') return;
+    // 若欄位目前被條件隱藏，清除錯誤 UI
+    if (block.classList.contains('hidden')) {
+      clearInvalid(block);
+      return;
+    }
+    const val = collectFieldValue(field);
+    const res = validateField(field, val);
+    if (res.ok) clearInvalid(block);
+    else markInvalid(field, res.msg);
+  }
+
+  function clearInvalid(block) {
+    const err = block.querySelector('[data-error-for]');
+    if (err) { err.classList.add('hidden'); err.textContent = ''; }
+    const el = block.querySelector('input:not([type=radio]):not([type=checkbox]), select, textarea');
+    if (el) el.classList.remove('!border-red-400');
+    const grp = block.querySelector('[data-group-name]');
+    if (grp) grp.classList.remove('ring-1', 'ring-red-400', 'rounded-lg', 'p-1', '-m-1');
+  }
+
+  // 掃目前可見可編輯欄位的驗證狀態，更新 submit 按鈕顯示
+  function recomputeSubmitState() {
+    const btn = document.getElementById('submitBtn');
+    const helper = document.getElementById('submitHelper');
+    const helperText = document.getElementById('submitHelperText');
+    if (!currentSchema || !btn) return;
+    const allValues = collectAllCurrentValues();
+    let invalidCount = 0;
+    let firstInvalidName = null;
+    currentSchema.fields.forEach(function (field) {
+      if (field.type === 'image' || field.type === 'info') return;
+      if (!isFieldActive(field, allValues)) return;
+      const val = collectFieldValue(field);
+      const res = validateField(field, val);
+      if (!res.ok) {
+        invalidCount++;
+        if (!firstInvalidName) firstInvalidName = field.label || field.name;
+      }
+    });
+    if (invalidCount === 0) {
+      btn.disabled = false;
+      btn.removeAttribute('aria-disabled');
+      if (helper) helper.classList.add('hidden');
+    } else {
+      btn.disabled = true;
+      btn.setAttribute('aria-disabled', 'true');
+      if (helper && helperText) {
+        helperText.textContent = PAGE_LANG === 'en'
+          ? ('Still ' + invalidCount + ' field' + (invalidCount === 1 ? '' : 's') + ' to complete')
+          : ('還有 ' + invalidCount + ' 項未完成');
+        helper.classList.remove('hidden');
+      }
+    }
+  }
+
+  function renderControl(field, id) {
+    // baseInput: 44px min-height for mobile tap target, comfortable padding
+    const baseInput = 'w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-slate-100 placeholder-slate-500 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition min-h-[44px]';
+    const t = field.type;
+
+    if (t === 'text' || t === 'phone' || t === 'email' || t === 'number') {
+      const input = document.createElement('input');
+      input.id = id;
+      input.name = field.name;
+      input.className = baseInput;
+      input.type = (t === 'phone') ? 'tel' : t;
+      // 手機上的 input hint：phone 啟用數字鍵盤
+      if (t === 'phone') input.inputMode = 'tel';
+      if (t === 'number') input.inputMode = 'decimal';
+      if (t === 'email') { input.autocomplete = 'email'; input.inputMode = 'email'; }
+      if (field.value) input.value = field.value;
+      if (field.required) input.required = true;
+      return input;
+    }
+    if (t === 'textarea') {
+      const ta = document.createElement('textarea');
+      ta.id = id;
+      ta.name = field.name;
+      ta.className = baseInput + ' resize-y leading-relaxed';
+      ta.rows = 4;
+      if (field.value) ta.value = field.value;
+      if (field.required) ta.required = true;
+      return ta;
+    }
+    if (t === 'select') {
+      const wrap = document.createElement('div');
+      wrap.className = 'relative';
+      const sel = document.createElement('select');
+      sel.id = id;
+      sel.name = field.name;
+      sel.className = baseInput + ' cursor-pointer appearance-none pr-9';
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.text = PAGE_LANG === 'en' ? 'Please select' : '請選擇';
+      placeholder.disabled = true;
+      placeholder.selected = !field.value;
+      sel.appendChild(placeholder);
+      (field.options || []).forEach(function (opt) {
+        const v = (typeof opt === 'object' && opt !== null) ? opt.value : opt;
+        const l = (typeof opt === 'object' && opt !== null) ? opt.label : opt;
+        const o = document.createElement('option');
+        o.value = v;
+        o.text = l;
+        if (field.value === v) o.selected = true;
+        sel.appendChild(o);
+      });
+      if (field.required) sel.required = true;
+      wrap.appendChild(sel);
+      // Chevron icon (SVG via DOM methods — avoid innerHTML)
+      const chev = document.createElement('span');
+      chev.className = 'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500';
+      const SVG_NS = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(SVG_NS, 'svg');
+      svg.setAttribute('class', 'h-4 w-4');
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('stroke', 'currentColor');
+      svg.setAttribute('stroke-width', '2');
+      const path = document.createElementNS(SVG_NS, 'path');
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('stroke-linejoin', 'round');
+      path.setAttribute('d', 'M19 9l-7 7-7-7');
+      svg.appendChild(path);
+      chev.appendChild(svg);
+      wrap.appendChild(chev);
+      return wrap;
+    }
+    if (t === 'radio' || t === 'multi') {
+      // Pill / chip style group：flex-wrap，每個 pill 獨立視覺，選中時整顆反白
+      const wrap = document.createElement('div');
+      wrap.className = 'flex flex-wrap gap-2';
+      wrap.dataset.groupName = field.name;
+      (field.options || []).forEach(function (opt) {
+        const v = (typeof opt === 'object' && opt !== null) ? opt.value : opt;
+        const l = (typeof opt === 'object' && opt !== null) ? opt.label : opt;
+        const wrapperLabel = document.createElement('label');
+        wrapperLabel.className = 'cursor-pointer';
+        const input = document.createElement('input');
+        input.type = (t === 'radio') ? 'radio' : 'checkbox';
+        input.name = field.name + (t === 'multi' ? '[]' : '');
+        input.value = v;
+        input.className = 'peer sr-only';
+        if (field.value) {
+          const vals = Array.isArray(field.value) ? field.value : String(field.value).split(',').map(function (s) { return s.trim(); });
+          if (vals.indexOf(v) !== -1) input.checked = true;
+        }
+        const pill = document.createElement('span');
+        pill.className = 'inline-flex items-center justify-center px-4 py-2 min-h-[40px] bg-slate-900 border border-slate-700 rounded-full text-sm text-slate-300 transition-all hover:border-blue-400 hover:text-slate-100 peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-slate-900 peer-checked:font-bold peer-focus-visible:ring-2 peer-focus-visible:ring-blue-400 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-slate-800';
+        pill.textContent = l;
+        wrapperLabel.appendChild(input);
+        wrapperLabel.appendChild(pill);
+        wrap.appendChild(wrapperLabel);
+      });
+      return wrap;
+    }
+    if (t === 'date') {
+      const input = document.createElement('input');
+      input.id = id;
+      input.name = field.name;
+      input.className = baseInput + ' cursor-pointer';
+      input.type = 'date';
+      if (field.value) input.value = field.value;
+      if (field.required) input.required = true;
+      return input;
+    }
+    // Unknown type fallback（image 與 info 在 renderSpecialForm 直接處理，不會進這裡）
+    const fallback = document.createElement('div');
+    fallback.className = 'text-xs text-slate-500';
+    fallback.textContent = '(unsupported field type: ' + t + ')';
+    return fallback;
+  }
+
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'submitBtn') {
+      handleSubmit();
+    } else if (e.target && e.target.id === 'resubmitBtn') {
+      resetToForm();
+    }
+  });
+
+  function handleSubmit() {
+    if (!currentSchema) return;
+    // 只處理可編輯且目前「可見」的欄位（條件欄位若被 hidden 就不驗證、不送值）
+    const allValues = collectAllCurrentValues();
+    const editable = currentSchema.fields.filter(function (f) {
+      if (f.type === 'image' || f.type === 'info') return false;
+      return isFieldActive(f, allValues);
+    });
+    const values = {};
+    let firstInvalid = null;
+
+    // 清掉上一次的錯誤顯示
+    document.querySelectorAll('[data-error-for]').forEach(function (p) {
+      p.classList.add('hidden');
+      p.textContent = '';
+    });
+    document.querySelectorAll('.form-field input, .form-field select, .form-field textarea').forEach(function (el) {
+      el.classList.remove('!border-red-400');
+    });
+    document.querySelectorAll('[data-group-name]').forEach(function (g) {
+      g.classList.remove('ring-1', 'ring-red-400', 'rounded-lg', 'p-1', '-m-1');
+    });
+
+    editable.forEach(function (field) {
+      const val = collectFieldValue(field);
+      values[field.name] = val;
+      const res = validateField(field, val);
+      if (!res.ok) {
+        markInvalid(field, res.msg);
+        // 標記為 touched 讓後續 input 事件也會即時顯紅
+        const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+        if (block) block.dataset.touched = '1';
+        if (!firstInvalid) firstInvalid = field;
+      }
+    });
+
+    if (firstInvalid) {
+      const block = document.querySelector('[data-field-name="' + cssAttrEscape(firstInvalid.name) + '"]');
+      if (block) {
+        const el = block.querySelector('input, select, textarea');
+        if (el) { el.focus(); block.scrollIntoView({behavior: 'smooth', block: 'center'}); }
+      }
+      recomputeSubmitState();
+      return;
+    }
+
+    const fieldNames = editable.map(function (f) { return f.name; });
+    showThankYou(fieldNames, values);
+
+    // Edit mode → updateSpecialRunSubmission；新報名 → submitSpecialRun
+    const payload = editMode && currentEditToken
+      ? {
+          action: 'updateSpecialRunSubmission',
+          runNumber: currentRunNumber,
+          editToken: currentEditToken,
+          fieldNames: fieldNames,
+          values: values,
+          lang: PAGE_LANG
+        }
+      : {
+          action: 'submitSpecialRun',
+          runNumber: currentRunNumber,
+          fieldNames: fieldNames,
+          values: values,
+          lang: PAGE_LANG
+        };
+
+    attemptWithRetry(payload).then(function (data) {
+      // 成功：若是新報名，保留 editToken 到 localStorage 方便之後除錯
+      if (!editMode && data && data.editToken) {
+        try {
+          localStorage.setItem('mh3_special_edit_' + currentRunNumber, data.editToken);
+        } catch (e) { /* ignore */ }
+      }
+    }).catch(function (err) {
+      console.error('submit failed:', err);
+      const expired = err && (err.reason === 'expired' || err.message === 'expired');
+      const duplicate = err && err.reason === 'duplicate';
+      // 不管是哪種失敗，先切回 form 讓使用者重試
+      document.getElementById('thankYouSection').classList.add('hidden');
+      if (duplicate) {
+        document.getElementById('formSection').classList.remove('hidden');
+        showModal({
+          title: PAGE_LANG === 'en' ? 'Already registered' : '已經報名過',
+          msg: PAGE_LANG === 'en'
+            ? 'This email or phone is already registered for this run. Use the edit link in your first confirmation email to update.'
+            : '此 Email 或電話已經報名過這次特跑。如要修改請從第一次送出的確認信裡點擊編輯連結。'
+        });
+        const btn = document.getElementById('submitBtn');
+        if (btn) btn.disabled = true;
+      } else if (expired) {
+        if (editMode) {
+          // 編輯時遇到過期 → 強制走 expired read-only 摘要頁
+          document.getElementById('formSection').classList.add('hidden');
+          showModal({
+            title: PAGE_LANG === 'en' ? 'Edit window closed' : '編輯時限已到',
+            msg: PAGE_LANG === 'en'
+              ? 'The edit window has closed. Contact the organizers to make changes.'
+              : '編輯時限已到，如需異動請聯絡幹部。'
+          });
+          showExpiredEditView({
+            deadline: currentDeadline,
+            values: values,
+            fieldNames: fieldNames
+          });
+        } else {
+          // 新報名遇到過期 → 顯示截止訊息 + submit button disabled
+          document.getElementById('formSection').classList.remove('hidden');
+          showModal({
+            title: PAGE_LANG === 'en' ? 'Registration closed' : '報名已截止',
+            msg: PAGE_LANG === 'en'
+              ? 'The registration window has ended.'
+              : '此次特跑報名已結束，無法送出。'
+          });
+          const btn = document.getElementById('submitBtn');
+          if (btn) btn.disabled = true;
+        }
+      } else {
+        document.getElementById('formSection').classList.remove('hidden');
+        showModal({
+          title: PAGE_LANG === 'en' ? 'Submission failed' : '送出失敗',
+          msg: PAGE_LANG === 'en'
+            ? 'Network or server error. Please try again.'
+            : '網路異常或伺服器回應錯誤，請重試送出。'
+        });
+      }
+    });
+  }
+
+  function collectFieldValue(field) {
+    const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+    if (!block) return '';
+    if (field.type === 'text' || field.type === 'phone' || field.type === 'email' || field.type === 'number' || field.type === 'textarea' || field.type === 'date') {
+      const el = block.querySelector('input, textarea');
+      return el ? el.value.trim() : '';
+    }
+    if (field.type === 'select') {
+      const el = block.querySelector('select');
+      return el ? el.value : '';
+    }
+    if (field.type === 'radio') {
+      const checked = block.querySelector('input[type="radio"]:checked');
+      return checked ? checked.value : '';
+    }
+    if (field.type === 'multi') {
+      const boxes = block.querySelectorAll('input[type="checkbox"]:checked');
+      return Array.prototype.map.call(boxes, function (b) { return b.value; });
+    }
+    return '';
+  }
+
+  function markInvalid(field, msg) {
+    const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+    if (!block) return;
+    const err = block.querySelector('[data-error-for]');
+    if (err) {
+      err.textContent = '';
+      const icon = document.createElement('span');
+      icon.className = 'inline-block w-1 h-1 bg-red-400 rounded-full';
+      err.appendChild(icon);
+      err.appendChild(document.createTextNode(' ' + msg));
+      err.classList.remove('hidden');
+    }
+    // red border on input or red outline on chip group
+    const el = block.querySelector('input:not([type=radio]):not([type=checkbox]), select, textarea');
+    if (el) el.classList.add('!border-red-400');
+    // If it's a radio/multi group, add outline on the group wrap
+    const grp = block.querySelector('[data-group-name]');
+    if (grp) grp.classList.add('ring-1', 'ring-red-400', 'rounded-lg', 'p-1', '-m-1');
+  }
+
+  function showThankYou(fieldNames, values) {
+    const summary = document.getElementById('submissionSummary');
+    summary.textContent = '';
+    // 找欄位 schema 以顯示 localized label 與 option label
+    const schemaByName = {};
+    (currentSchema && currentSchema.fields || []).forEach(function (f) {
+      schemaByName[f.name] = f;
+    });
+    fieldNames.forEach(function (name) {
+      const field = schemaByName[name];
+      const displayLabel = field ? (field.label || field.name) : name;
+      const val = values[name];
+      // 對 radio/select/multi 的值做 option.label lookup 以在 en 頁顯示 localized 值
+      let displayVal;
+      if (field && (field.type === 'radio' || field.type === 'select' || field.type === 'multi') && Array.isArray(field.options)) {
+        const optLookup = {};
+        field.options.forEach(function (opt) {
+          if (opt && typeof opt === 'object') optLookup[opt.value] = opt.label;
+          else optLookup[opt] = opt;
+        });
+        if (Array.isArray(val)) {
+          displayVal = val.map(function (v) { return optLookup[v] || v; }).join(', ');
+        } else {
+          displayVal = optLookup[val] || (val == null ? '' : String(val));
+        }
+      } else {
+        displayVal = Array.isArray(val) ? val.join(', ') : (val == null ? '' : String(val));
+      }
+      const row = document.createElement('div');
+      row.className = 'flex flex-col sm:flex-row sm:items-start sm:gap-4 py-2.5 first:pt-0 last:pb-0';
+      const nameEl = document.createElement('span');
+      nameEl.className = 'text-[10px] uppercase tracking-wider text-slate-500 font-semibold sm:w-1/3 sm:text-xs sm:normal-case sm:tracking-normal sm:font-medium sm:pt-0.5 shrink-0 mb-0.5 sm:mb-0';
+      nameEl.textContent = displayLabel;
+      const valEl = document.createElement('span');
+      valEl.className = 'text-slate-100 text-sm break-words flex-1';
+      valEl.textContent = displayVal || '—';
+      row.appendChild(nameEl);
+      row.appendChild(valEl);
+      summary.appendChild(row);
+    });
+    document.getElementById('formSection').classList.add('hidden');
+    document.getElementById('thankYouSection').classList.remove('hidden');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  function resetToForm() {
+    if (!currentSchema) return;
+    renderSpecialForm(currentSchema.fields);
+    document.getElementById('thankYouSection').classList.add('hidden');
+    document.getElementById('formSection').classList.remove('hidden');
+    const firstEditable = document.querySelector('#formFields input, #formFields select, #formFields textarea');
+    if (firstEditable) firstEditable.focus();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  function cssAttrEscape(s) {
+    return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  }
+</script>
+</body>
+</html>
