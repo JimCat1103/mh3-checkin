@@ -46,6 +46,26 @@
         @keyframes modalEnter { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         input[type="date"] { color-scheme: dark; }
 
+        /* Submit button loading state */
+        .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid currentColor;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: -3px;
+            margin-right: 8px;
+        }
+        .btn-loading {
+            animation: submitPulse 1.6s ease-in-out infinite;
+        }
+        @keyframes submitPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+            50%      { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.35); }
+        }
+
         /* Image skeleton shimmer — shown during progressive load while image URL is fetched */
         .image-skeleton {
             position: relative;
@@ -1117,7 +1137,14 @@
     const originalBtnText = btn ? btn.textContent : '';
     if (btn) {
       btn.disabled = true;
-      btn.textContent = 'Submitting...';
+      btn.setAttribute('aria-busy', 'true');
+      btn.classList.add('btn-loading');
+      btn.textContent = '';
+      const spinner = document.createElement('span');
+      spinner.className = 'btn-spinner';
+      spinner.setAttribute('aria-hidden', 'true');
+      btn.appendChild(spinner);
+      btn.appendChild(document.createTextNode('Submitting...'));
     }
 
     attemptWithRetry(payload).then(function (data) {
@@ -1129,6 +1156,8 @@
       console.error('submit failed:', err);
       if (btn) {
         btn.textContent = originalBtnText;
+        btn.removeAttribute('aria-busy');
+        btn.classList.remove('btn-loading');
         btn.disabled = false;
       }
       const expired = err && (err.reason === 'expired' || err.message === 'expired');
@@ -1227,11 +1256,21 @@
       const nameEl = document.createElement('span');
       nameEl.className = 'text-[10px] uppercase tracking-wider text-slate-500 font-semibold sm:w-1/3 sm:text-xs sm:normal-case sm:tracking-normal sm:font-medium sm:pt-0.5 shrink-0 mb-0.5 sm:mb-0';
       nameEl.textContent = displayLabel;
+      // Right column: if description exists (radio/multi notice text) show muted description above the actual value
+      const valWrap = document.createElement('span');
+      valWrap.className = 'flex-1 flex flex-col gap-2 min-w-0';
+      if (field && field.description) {
+        const descEl = document.createElement('span');
+        descEl.className = 'text-slate-400 text-xs leading-relaxed whitespace-pre-line break-words';
+        descEl.textContent = pickLang(field.description);
+        valWrap.appendChild(descEl);
+      }
       const valEl = document.createElement('span');
-      valEl.className = 'text-slate-100 text-sm break-words flex-1';
+      valEl.className = 'text-slate-100 text-sm break-words';
       valEl.textContent = displayVal || '—';
+      valWrap.appendChild(valEl);
       row.appendChild(nameEl);
-      row.appendChild(valEl);
+      row.appendChild(valWrap);
       summary.appendChild(row);
     });
     document.getElementById('formSection').classList.add('hidden');
