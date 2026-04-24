@@ -261,6 +261,8 @@
   let editMode = false;
   let currentEditToken = null;
   let currentDeadline = null; // 'YYYY-MM-DD' 或 null
+  // 送出鎖定（duplicate / expired 等終止性錯誤後永久 disable submit，不讓 recomputeSubmitState 把它再 enable 回來）
+  let submitLocked = false;
 
   function showModal({title, msg}) {
     document.getElementById('modalTitle').innerText = title || '提示';
@@ -1002,6 +1004,11 @@
     const helper = document.getElementById('submitHelper');
     const helperText = document.getElementById('submitHelperText');
     if (!currentSchema || !btn) return;
+    // 已鎖定（duplicate / expired 等終止性錯誤後）→ 一律保持 disabled
+    if (submitLocked) {
+      btn.disabled = true;
+      return;
+    }
     const allValues = collectAllCurrentValues();
     let invalidCount = 0;
     let firstInvalidName = null;
@@ -1203,7 +1210,6 @@
     }
 
     const fieldNames = editable.map(function (f) { return f.name; });
-    showThankYou(fieldNames, values);
 
     // Edit mode → updateSpecialRunSubmission；新報名 → submitSpecialRun
     const payload = editMode && currentEditToken
@@ -1223,6 +1229,15 @@
           lang: PAGE_LANG
         };
 
+    // 同步流程（非 optimistic）：按鈕進 loading 狀態 → 等後端結果 → 成功才切 thank-you
+    // 避免 duplicate / expired 等業務拒絕時先閃一下「感謝報名」誤導使用者
+    const btn = document.getElementById('submitBtn');
+    const originalBtnText = btn ? btn.textContent : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = PAGE_LANG === 'en' ? 'Submitting...' : '送出中...';
+    }
+
     attemptWithRetry(payload).then(function (data) {
       // 成功：若是新報名，保留 editToken 到 localStorage 方便之後除錯
       if (!editMode && data && data.editToken) {
@@ -1230,21 +1245,26 @@
           localStorage.setItem('mh3_special_edit_' + currentRunNumber, data.editToken);
         } catch (e) { /* ignore */ }
       }
+      // 切到 thank-you（原本是 optimistic 時 pre-render，現在改成成功後才 render + 切 view）
+      showThankYou(fieldNames, values);
     }).catch(function (err) {
       console.error('submit failed:', err);
+      // 還原按鈕（loading 狀態清除）
+      if (btn) {
+        btn.textContent = originalBtnText;
+        btn.disabled = false;
+      }
       const expired = err && (err.reason === 'expired' || err.message === 'expired');
       const duplicate = err && err.reason === 'duplicate';
-      // 不管是哪種失敗，先切回 form 讓使用者重試
-      document.getElementById('thankYouSection').classList.add('hidden');
+
       if (duplicate) {
-        document.getElementById('formSection').classList.remove('hidden');
         showModal({
           title: PAGE_LANG === 'en' ? 'Already registered' : '已經報名過',
           msg: PAGE_LANG === 'en'
             ? 'This email or phone is already registered for this run. Use the edit link in your first confirmation email to update.'
             : '此 Email 或電話已經報名過這次特跑。如要修改請從第一次送出的確認信裡點擊編輯連結。'
         });
-        const btn = document.getElementById('submitBtn');
+        submitLocked = true;
         if (btn) btn.disabled = true;
       } else if (expired) {
         if (editMode) {
@@ -1262,19 +1282,17 @@
             fieldNames: fieldNames
           });
         } else {
-          // 新報名遇到過期 → 顯示截止訊息 + submit button disabled
-          document.getElementById('formSection').classList.remove('hidden');
           showModal({
             title: PAGE_LANG === 'en' ? 'Registration closed' : '報名已截止',
             msg: PAGE_LANG === 'en'
               ? 'The registration window has ended.'
               : '此次特跑報名已結束，無法送出。'
           });
-          const btn = document.getElementById('submitBtn');
+          submitLocked = true;
           if (btn) btn.disabled = true;
         }
       } else {
-        document.getElementById('formSection').classList.remove('hidden');
+        // 網路或其他暫時性錯誤：保留 form、允許重試（button 已被前面還原成可點）
         showModal({
           title: PAGE_LANG === 'en' ? 'Submission failed' : '送出失敗',
           msg: PAGE_LANG === 'en'
@@ -1374,6 +1392,8 @@
 
   function resetToForm() {
     if (!currentSchema) return;
+    // 「再填一筆」= 新一次獨立送出，解鎖 submit（上一輪若被 duplicate 鎖住，下一筆不該繼承）
+    submitLocked = false;
     renderSpecialForm(currentSchema.fields);
     document.getElementById('thankYouSection').classList.add('hidden');
     document.getElementById('formSection').classList.remove('hidden');

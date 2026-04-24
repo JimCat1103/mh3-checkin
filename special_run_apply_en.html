@@ -227,6 +227,7 @@
   let editMode = false;
   let currentEditToken = null;
   let currentDeadline = null;
+  let submitLocked = false;
 
   function showModal({title, msg}) {
     document.getElementById('modalTitle').innerText = title || 'Notice';
@@ -900,6 +901,7 @@
     const helper = document.getElementById('submitHelper');
     const helperText = document.getElementById('submitHelperText');
     if (!currentSchema || !btn) return;
+    if (submitLocked) { btn.disabled = true; return; }
     const allValues = collectAllCurrentValues();
     let invalidCount = 0;
     currentSchema.fields.forEach(function (field) {
@@ -1087,7 +1089,6 @@
     }
 
     const fieldNames = editable.map(function (f) { return f.name; });
-    showThankYou(fieldNames, values);
 
     const payload = editMode && currentEditToken
       ? {
@@ -1106,22 +1107,33 @@
           lang: 'en'
         };
 
+    // Synchronous flow (no optimistic UI): show loading on button → wait → switch to thank-you only on success
+    const btn = document.getElementById('submitBtn');
+    const originalBtnText = btn ? btn.textContent : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+    }
+
     attemptWithRetry(payload).then(function (data) {
       if (!editMode && data && data.editToken) {
         try { localStorage.setItem('mh3_special_edit_' + currentRunNumber, data.editToken); } catch (e) { /* ignore */ }
       }
+      showThankYou(fieldNames, values);
     }).catch(function (err) {
       console.error('submit failed:', err);
+      if (btn) {
+        btn.textContent = originalBtnText;
+        btn.disabled = false;
+      }
       const expired = err && (err.reason === 'expired' || err.message === 'expired');
       const duplicate = err && err.reason === 'duplicate';
-      document.getElementById('thankYouSection').classList.add('hidden');
       if (duplicate) {
-        document.getElementById('formSection').classList.remove('hidden');
         showModal({
           title: 'Already registered',
           msg: 'This email or phone is already registered for this run. Use the edit link in your first confirmation email to update.'
         });
-        const btn = document.getElementById('submitBtn');
+        submitLocked = true;
         if (btn) btn.disabled = true;
       } else if (expired) {
         if (editMode) {
@@ -1129,13 +1141,11 @@
           showModal({title: 'Edit window closed', msg: 'The edit window has closed. Contact the organizers to make changes.'});
           showExpiredEditView({ deadline: currentDeadline, values: values, fieldNames: fieldNames });
         } else {
-          document.getElementById('formSection').classList.remove('hidden');
           showModal({title: 'Registration closed', msg: 'The registration window has ended.'});
-          const btn = document.getElementById('submitBtn');
+          submitLocked = true;
           if (btn) btn.disabled = true;
         }
       } else {
-        document.getElementById('formSection').classList.remove('hidden');
         showModal({title: 'Submission Failed', msg: 'Network error or server issue. Please try again.'});
       }
     });
@@ -1226,6 +1236,7 @@
 
   function resetToForm() {
     if (!currentSchema) return;
+    submitLocked = false;
     renderSpecialForm(currentSchema.fields);
     document.getElementById('thankYouSection').classList.add('hidden');
     document.getElementById('formSection').classList.remove('hidden');
