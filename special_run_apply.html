@@ -734,6 +734,16 @@
           if (dateStr && dateStr.indexOf('T') > 0) dateStr = dateStr.slice(0, 10);
           el.value = dateStr;
         }
+      } else if (t === 'date-md') {
+        const raw2 = raw == null ? '' : String(raw);
+        // 接受 "MM/DD" 或 "YYYY-MM-DD" 或 ISO 轉回來
+        const match = raw2.match(/(\d{1,2})[\/\-](\d{1,2})(?!.*\d)/) || raw2.match(/\d{4}-(\d{2})-(\d{2})/);
+        const monthSel = block.querySelector('select[data-date-md-part="month"]');
+        const daySel = block.querySelector('select[data-date-md-part="day"]');
+        if (match && monthSel && daySel) {
+          monthSel.value = String(parseInt(match[1], 10)).padStart(2, '0');
+          daySel.value = String(parseInt(match[2], 10)).padStart(2, '0');
+        }
       } else if (t === 'select') {
         const el = block.querySelector('select');
         if (el) el.value = raw == null ? '' : String(raw);
@@ -1178,6 +1188,63 @@
       if (field.required) input.required = true;
       return input;
     }
+    if (t === 'date-md') {
+      // 月/日（不含年）兩個 select 組合；value 格式 "MM/DD"（零補 2 位）
+      // 適合生日這類不在乎年份的欄位
+      const wrap = document.createElement('div');
+      wrap.className = 'flex gap-2';
+      wrap.dataset.dateMd = '1';
+      const selectBase = baseInput + ' cursor-pointer appearance-none pr-8 flex-1';
+
+      const monthSel = document.createElement('select');
+      monthSel.id = id;
+      monthSel.name = field.name + '__month';
+      monthSel.dataset.dateMdPart = 'month';
+      monthSel.className = selectBase;
+      monthSel.setAttribute('aria-label', PAGE_LANG === 'en' ? 'Month' : '月');
+      const monthPh = document.createElement('option');
+      monthPh.value = '';
+      monthPh.text = PAGE_LANG === 'en' ? 'Month' : '月';
+      monthPh.disabled = true;
+      monthPh.selected = true;
+      monthSel.appendChild(monthPh);
+      for (let m = 1; m <= 12; m++) {
+        const opt = document.createElement('option');
+        opt.value = String(m).padStart(2, '0');
+        opt.text = String(m);
+        monthSel.appendChild(opt);
+      }
+
+      const daySel = document.createElement('select');
+      daySel.name = field.name + '__day';
+      daySel.dataset.dateMdPart = 'day';
+      daySel.className = selectBase;
+      daySel.setAttribute('aria-label', PAGE_LANG === 'en' ? 'Day' : '日');
+      const dayPh = document.createElement('option');
+      dayPh.value = '';
+      dayPh.text = PAGE_LANG === 'en' ? 'Day' : '日';
+      dayPh.disabled = true;
+      dayPh.selected = true;
+      daySel.appendChild(dayPh);
+      for (let d = 1; d <= 31; d++) {
+        const opt = document.createElement('option');
+        opt.value = String(d).padStart(2, '0');
+        opt.text = String(d);
+        daySel.appendChild(opt);
+      }
+
+      if (field.value) {
+        const match = String(field.value).match(/(\d{1,2})[\/\-](\d{1,2})/);
+        if (match) {
+          monthSel.value = String(parseInt(match[1], 10)).padStart(2, '0');
+          daySel.value = String(parseInt(match[2], 10)).padStart(2, '0');
+        }
+      }
+
+      wrap.appendChild(monthSel);
+      wrap.appendChild(daySel);
+      return wrap;
+    }
     // Unknown type fallback（image 與 info 在 renderSpecialForm 直接處理，不會進這裡）
     const fallback = document.createElement('div');
     fallback.className = 'text-xs text-slate-500';
@@ -1356,6 +1423,14 @@
     if (field.type === 'text' || field.type === 'phone' || field.type === 'email' || field.type === 'number' || field.type === 'textarea' || field.type === 'date') {
       const el = block.querySelector('input, textarea');
       return el ? el.value.trim() : '';
+    }
+    if (field.type === 'date-md') {
+      const monthSel = block.querySelector('select[data-date-md-part="month"]');
+      const daySel = block.querySelector('select[data-date-md-part="day"]');
+      const m = monthSel ? monthSel.value : '';
+      const d = daySel ? daySel.value : '';
+      if (!m || !d) return '';
+      return m + '/' + d; // e.g. "11/03"
     }
     if (field.type === 'select') {
       const el = block.querySelector('select');
