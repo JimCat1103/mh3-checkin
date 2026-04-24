@@ -1425,6 +1425,23 @@
 
   function resetToForm() {
     if (!currentSchema) return;
+    // Leaving edit mode → treat next submission as a brand-new registration:
+    // clear editToken / editMode state & URL query, otherwise the next submit will reuse the
+    // token and edit the original entry again.
+    if (editMode) {
+      editMode = false;
+      currentEditToken = null;
+      const editBanner = document.getElementById('editModeBanner');
+      if (editBanner) editBanner.classList.add('hidden');
+      const runMetaEl = document.getElementById('runMeta');
+      if (runMetaEl) runMetaEl.innerText = '';
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('edit');
+        url.searchParams.delete('run');
+        window.history.replaceState(null, '', url.toString());
+      } catch (e) { /* ignore history API failure */ }
+    }
     submitLocked = false;
     duplicateConflicts = {};
     resetSubmitButton();

@@ -1594,6 +1594,22 @@
 
   function resetToForm() {
     if (!currentSchema) return;
+    // 若上一輪是編輯模式，「再填一筆」一律視為全新報名：
+    // 清掉 editToken / editMode 狀態與 URL query，否則下一次 submit 會沿用 token 變成再次編輯原本那筆
+    if (editMode) {
+      editMode = false;
+      currentEditToken = null;
+      const editBanner = document.getElementById('editModeBanner');
+      if (editBanner) editBanner.classList.add('hidden');
+      const runMetaEl = document.getElementById('runMeta');
+      if (runMetaEl) runMetaEl.innerText = '';
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('edit');
+        url.searchParams.delete('run');
+        window.history.replaceState(null, '', url.toString());
+      } catch (e) { /* ignore history API failure */ }
+    }
     // 「再填一筆」= 新一次獨立送出，解鎖 submit（上一輪若被 expired 鎖住，下一筆不該繼承）
     submitLocked = false;
     // 清掉上一輪的 duplicate 衝突記錄（下一筆可能要填同一個 email/phone，算新的送出）
