@@ -491,6 +491,20 @@
     return field.dependsOn.values.indexOf(controlVal) !== -1;
   }
 
+  // Resolve a field's DOM block via name+type filter so two rows that share the same A-column
+  // name but differ in type (e.g., a description "info" row vs the actual "radio" row in
+  // SpecialConfig) don't collide — querySelector would otherwise return only the first block,
+  // making input-bearing rows appear empty. Falls back to name-only for back-compat.
+  function findFieldBlock(field) {
+    if (!field || !field.name) return null;
+    const name = cssAttrEscape(field.name);
+    if (field.type) {
+      const typed = document.querySelector('[data-field-name="' + name + '"][data-field-type="' + cssAttrEscape(field.type) + '"]');
+      if (typed) return typed;
+    }
+    return document.querySelector('[data-field-name="' + name + '"]');
+  }
+
   function collectAllCurrentValues() {
     const out = {};
     if (!currentSchema) return out;
@@ -506,7 +520,7 @@
     const vals = collectAllCurrentValues();
     currentSchema.fields.forEach(function (f) {
       if (!f.dependsOn) return;
-      const block = document.querySelector('[data-field-name="' + cssAttrEscape(f.name) + '"]');
+      const block = findFieldBlock(f);
       if (!block) return;
       const active = isFieldActive(f, vals);
       if (active) {
@@ -662,7 +676,7 @@
       if (field.type === 'image' || field.type === 'info') return;
       if (!values.hasOwnProperty(field.name)) return;
       const raw = values[field.name];
-      const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+      const block = findFieldBlock(field);
       if (!block) return;
       const t = field.type;
       if (t === 'text' || t === 'phone' || t === 'email' || t === 'number' || t === 'textarea') {
@@ -721,7 +735,7 @@
     if (!currentSchema) return;
     currentSchema.fields.forEach(function (f) {
       if ((f.type === 'radio' || f.type === 'multi') && Array.isArray(f.options) && f.options.length === 1) {
-        const block = document.querySelector('[data-field-name="' + cssAttrEscape(f.name) + '"]');
+        const block = findFieldBlock(f);
         if (!block) return;
         block.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(function (inp) {
           inp.disabled = true;
@@ -818,6 +832,16 @@
   function renderSpecialForm(fields) {
     const container = document.getElementById('formFields');
     container.textContent = '';
+
+    // Detect duplicate A-column names in SpecialConfig — findFieldBlock filters by name+type so most
+    // collisions are mitigated, but admins should still rename to avoid future surprises.
+    const nameCounts = {};
+    (fields || []).forEach(function (f) { nameCounts[f.name] = (nameCounts[f.name] || 0) + 1; });
+    Object.keys(nameCounts).forEach(function (n) {
+      if (nameCounts[n] > 1) {
+        console.warn('[SpecialConfig] Field name "' + n + '" appears ' + nameCounts[n] + ' times. Rename in Sheet column A to avoid lookup ambiguity.');
+      }
+    });
 
     fields.forEach(function (field, idx) {
       const block = document.createElement('div');
@@ -1221,14 +1245,14 @@
       const res = validateField(field, val);
       if (!res.ok) {
         markInvalid(field, res.msg);
-        const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+        const block = findFieldBlock(field);
         if (block) block.dataset.touched = '1';
         if (!firstInvalid) firstInvalid = field;
       }
     });
 
     if (firstInvalid) {
-      const block = document.querySelector('[data-field-name="' + cssAttrEscape(firstInvalid.name) + '"]');
+      const block = findFieldBlock(firstInvalid);
       if (block) {
         const el = block.querySelector('input, select, textarea');
         if (el) { el.focus(); block.scrollIntoView({behavior: 'smooth', block: 'center'}); }
@@ -1296,7 +1320,7 @@
             msg: inlineMsg
           };
           markInvalid(conflictFieldObj, inlineMsg);
-          const block = document.querySelector('[data-field-name="' + cssAttrEscape(conflictFieldObj.name) + '"]');
+          const block = findFieldBlock(conflictFieldObj);
           if (block) {
             block.dataset.touched = '1';
             const el = block.querySelector('input, select, textarea');
@@ -1325,7 +1349,7 @@
   }
 
   function collectFieldValue(field) {
-    const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+    const block = findFieldBlock(field);
     if (!block) return '';
     if (field.type === 'text' || field.type === 'phone' || field.type === 'email' || field.type === 'number' || field.type === 'textarea' || field.type === 'date') {
       const el = block.querySelector('input, textarea');
@@ -1355,7 +1379,7 @@
   }
 
   function markInvalid(field, msg) {
-    const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+    const block = findFieldBlock(field);
     if (!block) return;
     const err = block.querySelector('[data-error-for]');
     if (err) {

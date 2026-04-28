@@ -541,6 +541,20 @@
     return field.dependsOn.values.indexOf(controlVal) !== -1;
   }
 
+  // 找一個 field 對應的 DOM block。
+  // 優先用 name+type 雙條件匹配，避免 sheet 上不小心同 A 欄欄位名（例如「方案選擇」一個是 info 說明列、
+  // 另一個是 radio 選擇列）時，querySelector 抓到第一個 block 卻沒 input 元素的 bug。
+  // 找不到 typed block 時退回單純 name 匹配，維持向下相容。
+  function findFieldBlock(field) {
+    if (!field || !field.name) return null;
+    const name = cssAttrEscape(field.name);
+    if (field.type) {
+      const typed = document.querySelector('[data-field-name="' + name + '"][data-field-type="' + cssAttrEscape(field.type) + '"]');
+      if (typed) return typed;
+    }
+    return document.querySelector('[data-field-name="' + name + '"]');
+  }
+
   // 蒐集當前所有 input 值（用於條件判斷）
   function collectAllCurrentValues() {
     const out = {};
@@ -558,7 +572,7 @@
     const vals = collectAllCurrentValues();
     currentSchema.fields.forEach(function (f) {
       if (!f.dependsOn) return;
-      const block = document.querySelector('[data-field-name="' + cssAttrEscape(f.name) + '"]');
+      const block = findFieldBlock(f);
       if (!block) return;
       const active = isFieldActive(f, vals);
       if (active) {
@@ -734,7 +748,7 @@
       if (field.type === 'image' || field.type === 'info') return;
       if (!values.hasOwnProperty(field.name)) return;
       const raw = values[field.name];
-      const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+      const block = findFieldBlock(field);
       if (!block) return;
       const t = field.type;
       if (t === 'text' || t === 'phone' || t === 'email' || t === 'number' || t === 'textarea') {
@@ -798,7 +812,7 @@
     if (!currentSchema) return;
     currentSchema.fields.forEach(function (f) {
       if ((f.type === 'radio' || f.type === 'multi') && Array.isArray(f.options) && f.options.length === 1) {
-        const block = document.querySelector('[data-field-name="' + cssAttrEscape(f.name) + '"]');
+        const block = findFieldBlock(f);
         if (!block) return;
         block.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(function (inp) {
           inp.disabled = true;
@@ -907,6 +921,16 @@
   function renderSpecialForm(fields) {
     const container = document.getElementById('formFields');
     container.textContent = '';
+
+    // 偵測 sheet 上同 A 欄欄位名重複，提醒管理者去 Sheet 改名（避免 querySelector 抓錯 block）
+    // findFieldBlock 已用 name+type filter 緩解，但若兩 row 同 name 同 type 仍會踩 — 還是建議改名
+    const nameCounts = {};
+    (fields || []).forEach(function (f) { nameCounts[f.name] = (nameCounts[f.name] || 0) + 1; });
+    Object.keys(nameCounts).forEach(function (n) {
+      if (nameCounts[n] > 1) {
+        console.warn('[SpecialConfig] 欄位名「' + n + '」重複出現 ' + nameCounts[n] + ' 次。請到 Sheet A 欄改名以避免互相干擾。');
+      }
+    });
 
     fields.forEach(function (field, idx) {
       const block = document.createElement('div');
@@ -1350,14 +1374,14 @@
       if (!res.ok) {
         markInvalid(field, res.msg);
         // 標記為 touched 讓後續 input 事件也會即時顯紅
-        const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+        const block = findFieldBlock(field);
         if (block) block.dataset.touched = '1';
         if (!firstInvalid) firstInvalid = field;
       }
     });
 
     if (firstInvalid) {
-      const block = document.querySelector('[data-field-name="' + cssAttrEscape(firstInvalid.name) + '"]');
+      const block = findFieldBlock(firstInvalid);
       if (block) {
         const el = block.querySelector('input, select, textarea');
         if (el) { el.focus(); block.scrollIntoView({behavior: 'smooth', block: 'center'}); }
@@ -1438,7 +1462,7 @@
             msg: inlineMsg
           };
           markInvalid(conflictFieldObj, inlineMsg);
-          const block = document.querySelector('[data-field-name="' + cssAttrEscape(conflictFieldObj.name) + '"]');
+          const block = findFieldBlock(conflictFieldObj);
           if (block) {
             block.dataset.touched = '1';
             const el = block.querySelector('input, select, textarea');
@@ -1491,7 +1515,7 @@
   }
 
   function collectFieldValue(field) {
-    const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+    const block = findFieldBlock(field);
     if (!block) return '';
     if (field.type === 'text' || field.type === 'phone' || field.type === 'email' || field.type === 'number' || field.type === 'textarea' || field.type === 'date') {
       const el = block.querySelector('input, textarea');
@@ -1521,7 +1545,7 @@
   }
 
   function markInvalid(field, msg) {
-    const block = document.querySelector('[data-field-name="' + cssAttrEscape(field.name) + '"]');
+    const block = findFieldBlock(field);
     if (!block) return;
     const err = block.querySelector('[data-error-for]');
     if (err) {
