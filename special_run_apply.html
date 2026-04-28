@@ -1392,6 +1392,10 @@
 
     const fieldNames = editable.map(function (f) { return f.name; });
 
+    // Email 用的 localized display rows：在前端就把 label / option value 翻好，後端直接用、不用再 pickLang
+    // （fieldNames 是 canonical Chinese-only key，光靠後端 pickLang 切不出英文）
+    const displayFields = buildDisplayFields(editable, values);
+
     // 編輯連結用的 base URL：取目前頁面的 origin + pathname 目錄，讓 email 連回當前 deploy domain
     // 後端 allowlist 過濾避免 phishing；換 domain 時後端 ALLOWED_EDIT_BASE_URLS 加新 entry 即可
     const pageBaseUrl = window.location.origin
@@ -1405,6 +1409,7 @@
           editToken: currentEditToken,
           fieldNames: fieldNames,
           values: values,
+          displayFields: displayFields,
           lang: PAGE_LANG,
           baseUrl: pageBaseUrl
         }
@@ -1413,6 +1418,7 @@
           runNumber: currentRunNumber,
           fieldNames: fieldNames,
           values: values,
+          displayFields: displayFields,
           lang: PAGE_LANG,
           baseUrl: pageBaseUrl
         };
@@ -1562,6 +1568,35 @@
     // If it's a radio/multi group, add outline on the group wrap
     const grp = block.querySelector('[data-group-name]');
     if (grp) grp.classList.add('ring-1', 'ring-red-400', 'rounded-lg', 'p-1', '-m-1');
+  }
+
+  // 把 editable fields + 使用者填的 values 組成 email 用的 localized rows：
+  // - label：用 f.label（已是 pickLang 結果，依當前 PAGE_LANG 切過）
+  // - value：對 radio/select/multi 做 option.label lookup，把 canonical（Chinese）的 submission value
+  //   映射成顯示 label（依 PAGE_LANG 已切）。其他 type 直接用原值。
+  // 之所以放前端：fieldNames 已 normalize 成 canonical-only（pickLang 拿不到英文側），
+  // 後端要 localize 還得回 sheet 重查；前端 schema 早就有翻好的 label，這裡組好直接送即可。
+  function buildDisplayFields(editable, values) {
+    return (editable || []).map(function (f) {
+      const label = f.label || f.name;
+      const val = values[f.name];
+      let displayVal;
+      if ((f.type === 'radio' || f.type === 'select' || f.type === 'multi') && Array.isArray(f.options)) {
+        const optLookup = {};
+        f.options.forEach(function (opt) {
+          if (opt && typeof opt === 'object') optLookup[opt.value] = opt.label;
+          else optLookup[opt] = opt;
+        });
+        if (Array.isArray(val)) {
+          displayVal = val.map(function (v) { return optLookup[v] != null ? optLookup[v] : v; }).join(', ');
+        } else {
+          displayVal = optLookup[val] != null ? optLookup[val] : (val == null ? '' : String(val));
+        }
+      } else {
+        displayVal = Array.isArray(val) ? val.join(', ') : (val == null ? '' : String(val));
+      }
+      return { label: label, value: displayVal };
+    });
   }
 
   function showThankYou(fieldNames, values) {

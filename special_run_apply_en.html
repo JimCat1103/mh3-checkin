@@ -1263,6 +1263,11 @@
 
     const fieldNames = editable.map(function (f) { return f.name; });
 
+    // Pre-localize email rows on the client: fieldNames are canonical Chinese only, so the backend
+    // can't pickLang them into English by itself. Frontend already has pickLang'd labels & options,
+    // build the display rows here and ship them with the payload.
+    const displayFields = buildDisplayFields(editable, values);
+
     const pageBaseUrl = window.location.origin
       + window.location.pathname.replace(/[^/]*$/, '');
 
@@ -1273,6 +1278,7 @@
           editToken: currentEditToken,
           fieldNames: fieldNames,
           values: values,
+          displayFields: displayFields,
           lang: 'en',
           baseUrl: pageBaseUrl
         }
@@ -1281,6 +1287,7 @@
           runNumber: currentRunNumber,
           fieldNames: fieldNames,
           values: values,
+          displayFields: displayFields,
           lang: 'en',
           baseUrl: pageBaseUrl
         };
@@ -1394,6 +1401,32 @@
     if (el) el.classList.add('!border-red-400');
     const grp = block.querySelector('[data-group-name]');
     if (grp) grp.classList.add('ring-1', 'ring-red-400', 'rounded-lg', 'p-1', '-m-1');
+  }
+
+  // Build email-ready localized rows on the client (label + value already pickLang'd via PAGE_LANG).
+  // For radio/select/multi, look up option label so canonical (Chinese) submission values become
+  // the English option label in the email. Other types pass through.
+  function buildDisplayFields(editable, values) {
+    return (editable || []).map(function (f) {
+      const label = f.label || f.name;
+      const val = values[f.name];
+      let displayVal;
+      if ((f.type === 'radio' || f.type === 'select' || f.type === 'multi') && Array.isArray(f.options)) {
+        const optLookup = {};
+        f.options.forEach(function (opt) {
+          if (opt && typeof opt === 'object') optLookup[opt.value] = opt.label;
+          else optLookup[opt] = opt;
+        });
+        if (Array.isArray(val)) {
+          displayVal = val.map(function (v) { return optLookup[v] != null ? optLookup[v] : v; }).join(', ');
+        } else {
+          displayVal = optLookup[val] != null ? optLookup[val] : (val == null ? '' : String(val));
+        }
+      } else {
+        displayVal = Array.isArray(val) ? val.join(', ') : (val == null ? '' : String(val));
+      }
+      return { label: label, value: displayVal };
+    });
   }
 
   function showThankYou(fieldNames, values) {
