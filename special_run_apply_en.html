@@ -319,26 +319,15 @@
     }
 
     fetchHarelineWithFlags().then(function (rows) {
-      const todayMid = new Date();
-      todayMid.setHours(0, 0, 0, 0);
-      const eligibles = rows
-        .filter(function (r) {
-          if (!r.date) return false;
-          const d = parseSheetDate(r.date);
-          if (!d) return false;
-          return d.getTime() >= todayMid.getTime() && r.isSpecial && r.openApply;
-        })
-        .sort(function (a, b) {
-          return parseSheetDate(a.date).getTime() - parseSheetDate(b.date).getTime();
-        });
-
-      if (eligibles.length === 0) {
+      // Use shared HarelineCache helper: applyOpenDate (G 欄已到) + isSpecial + run date 未過
+      const target = (window.HarelineCache && typeof window.HarelineCache.findUpcomingSpecialRun === 'function')
+        ? window.HarelineCache.findUpcomingSpecialRun(rows)
+        : null;
+      if (!target) {
         document.getElementById('initLoader').classList.add('hidden');
         document.getElementById('noEventSection').classList.remove('hidden');
         return;
       }
-
-      const target = eligibles[0];
       currentRunNumber = target.number;
       loadConfig(target);
     }).catch(function (err) {
@@ -381,7 +370,8 @@
         coHare: String(fields[3] || '').trim(),
         restaurant: String(fields[4] || '').trim(),
         isSpecial: isTrueStr(fields[5]),
-        openApply: isTrueStr(fields[6])
+        // G 欄改成日期型（yyyy/mm/dd 字串；空 = 不開放申請）
+        applyOpenDate: String(fields[6] || '').trim()
       });
     }
     return out;

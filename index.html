@@ -192,6 +192,17 @@
                 <p id="runCoHare" class="leading-tight text-center"></p>
                 <p id="runRestaurant" class="leading-tight text-center"></p>
             </div>
+            <a id="specialRunNotice"
+               href="special_run_apply.html"
+               class="hidden mt-3 inline-flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/40 text-amber-300 text-sm font-semibold hover:bg-amber-500/20 hover:border-amber-400 hover:text-amber-200 transition-all shadow-[0_0_14px_-4px_rgba(245,158,11,0.4)]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span id="specialRunNoticeText">特跑開放申請中 #<span id="specialRunNoticeNumber"></span></span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
         </div>
     </div>
 
@@ -393,6 +404,20 @@
     if (e.key === 'Escape') document.getElementById('qrModal').classList.add('hidden');
   });
 
+  function renderSpecialRunNotice(rows) {
+    const noticeEl = document.getElementById('specialRunNotice');
+    if (!noticeEl) return;
+    const target = (window.HarelineCache && typeof window.HarelineCache.findUpcomingSpecialRun === 'function')
+      ? window.HarelineCache.findUpcomingSpecialRun(rows)
+      : null;
+    if (!target) {
+      noticeEl.classList.add('hidden');
+      return;
+    }
+    document.getElementById('specialRunNoticeNumber').textContent = String(target.number);
+    noticeEl.classList.remove('hidden');
+  }
+
   function renderRunInfo(data) {
     currentRunInfo = data.info;
     isTestMode = data.isTestMode === true;
@@ -416,6 +441,9 @@
     } else {
       restaurantEl.textContent = '餐廳資訊: 尚未提供';
     }
+    // 特跑通知按鈕：當有最近一場「開放申請中」的特跑時顯示，點了跳到 special_run_apply.html
+    // 透過 hareline.js 共用 helper（看 isSpecial + applyOpenDate <= today + run date >= today）
+    renderSpecialRunNotice(data.rows);
     document.getElementById('waitDate').innerText = currentRunInfo.dateStr;
     document.getElementById('startHourDisplay').innerText = `${data.startHour || 19}:00`;
     document.getElementById('initLoader').classList.add('hidden');

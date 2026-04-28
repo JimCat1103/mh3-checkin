@@ -44,7 +44,8 @@
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vSECQ_WdGfJrpvZCR2qHyynE_QRx_A378MWGgNtbkKEyg8PdzBqMMgdAO0wUtezoHoixIfuj74mXgwg/pub?gid=0&single=true&output=csv';
 
   var CACHE_KEY = 'mh3_hareline_v1';
-  var CACHE_VERSION = 1;
+  // v2: rows added isSpecial (col F) + applyOpenDate (col G; 原 openApply checkbox 改成日期型)
+  var CACHE_VERSION = 2;
 
   // ---- CSV parser (RFC 4180 subset) -----------------------------------
 
@@ -146,10 +147,49 @@
         date: (fields[1] || '').trim(),
         hare: (fields[2] || '').trim(),
         coHare: (fields[3] || '').trim(),
-        restaurant: (fields[4] || '').trim()
+        restaurant: (fields[4] || '').trim(),
+        // F 欄：是否為特跑（checkbox）
+        isSpecial: isTrueStr(fields[5]),
+        // G 欄：申請開放日期（yyyy/mm/dd 字串；空 = 不開放申請）
+        // 原本是 checkbox（openApply）改成日期：今 >= 此日 才視為開放申請
+        applyOpenDate: (fields[6] || '').trim()
       });
     }
     return rows;
+  }
+
+  function isTrueStr(v) {
+    if (v === true) return true;
+    var s = String(v == null ? '' : v).trim().toLowerCase();
+    return s === 'true' || s === '1' || s === 'yes';
+  }
+
+  /**
+   * 找出最接近的「開放申請中」特跑（給 index 報名按鈕 / special_run_apply 入口共用）。
+   * 條件：
+   *   - r.isSpecial = true
+   *   - r.applyOpenDate 已到（today >= applyOpenDate）
+   *   - r.date 還沒過（runDate >= today）
+   * 多筆符合 → 依 run date 升冪取第一筆（最近的下一場）。沒符合 → null。
+   */
+  function findUpcomingSpecialRun(rows, now) {
+    if (!Array.isArray(rows)) return null;
+    now = now || new Date();
+    var todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    var eligibles = [];
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      if (!r || !r.isSpecial) continue;
+      if (!r.applyOpenDate) continue;
+      var runDate = parseSheetDate(r.date);
+      if (!runDate || runDate.getTime() < todayMid.getTime()) continue;
+      var openDate = parseSheetDate(r.applyOpenDate);
+      if (!openDate || openDate.getTime() > todayMid.getTime()) continue;
+      eligibles.push({row: r, runMs: runDate.getTime()});
+    }
+    if (eligibles.length === 0) return null;
+    eligibles.sort(function (a, b) { return a.runMs - b.runMs; });
+    return eligibles[0].row;
   }
 
   // ---- localStorage cache ---------------------------------------------
@@ -450,6 +490,7 @@
   window.HarelineCache = {
     readHareline: readHareline,
     getNextRunInfo: getNextRunInfo,
+    findUpcomingSpecialRun: findUpcomingSpecialRun,
     prewarmGas: prewarmGas,
     // Exposed for testing / verification only — not part of the public contract.
     _internals: {
@@ -459,6 +500,7 @@
       getNextWednesday: getNextWednesday,
       formatDate: formatDate,
       parseSheetDate: parseSheetDate,
+      isTrueStr: isTrueStr,
       CACHE_KEY: CACHE_KEY,
       HARELINE_CSV_URL: HARELINE_CSV_URL,
       START_HOUR: START_HOUR,
