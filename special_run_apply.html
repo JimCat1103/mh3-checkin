@@ -487,9 +487,22 @@
   // 若無 `|`，中英共用同一值
   const PAGE_LANG = (document.documentElement.lang || '').toLowerCase().indexOf('en') === 0 ? 'en' : 'zh';
 
-  function pickLang(text) {
+  // Bilingual 切分（兩種模式）：
+  //   1) Block mode（per-run cell 等長內容用）：尋找獨立一行 `------EN------` 切兩段
+  //      → 不會被內容裡的 `|`（含全形 `｜` / 標題裡的分隔符號）誤切
+  //   2) Inline mode（schema 短 label 用、A 欄欄位名 / C 欄選項 label）：上述沒命中時 fallback `中文|English`
+  // 呼叫者用 `{body: true}` 強制只走 block mode（不 fallback inline `|`）。
+  function pickLang(text, opts) {
     if (text == null) return text;
-    const parts = String(text).split('|');
+    const s = String(text);
+    opts = opts || {};
+    const blockParts = s.split(/(?:^|\r?\n)[ \t]*------EN------[ \t]*(?:\r?\n|$)/);
+    if (blockParts.length >= 2) {
+      const idx = (PAGE_LANG === 'en' ? 1 : 0);
+      return (blockParts[idx] || '').trim();
+    }
+    if (opts.body) return s.trim();
+    const parts = s.split('|');
     if (PAGE_LANG === 'en' && parts.length > 1 && parts[1].trim() !== '') return parts[1].trim();
     return (parts[0] || '').trim();
   }
@@ -508,11 +521,10 @@
       const options = (f.options || []).map(function (optRaw) {
         return { value: canonicalName(optRaw), label: pickLang(optRaw) };
       });
+      // image 是 URL 不動；其他文字型 value 一律走 body mode（per-run cell 內容只認 ------EN------）
       let value = f.value;
-      if (f.type === 'info') {
-        value = pickLang(f.value);
-      } else if (f.type !== 'image' && typeof f.value === 'string' && f.value.indexOf('|') > -1) {
-        value = pickLang(f.value);
+      if (f.type !== 'image' && typeof f.value === 'string') {
+        value = pickLang(f.value, {body: true});
       }
       return {
         name: canonicalName(f.name),
@@ -629,7 +641,7 @@
         data.fields = ensureEmailField(normalizeFields(data.fields));
         currentSchema = data;
         const metaRunTitle = data.meta && data.meta.runTitle;
-        const titleForDisplay = pickLang(metaRunTitle || data.runTitle) || (PAGE_LANG === 'en' ? ('#' + runInfo.number + ' Special Run') : ('#' + runInfo.number + ' 特跑'));
+        const titleForDisplay = pickLang(metaRunTitle || data.runTitle, {body: true}) || (PAGE_LANG === 'en' ? ('#' + runInfo.number + ' Special Run') : ('#' + runInfo.number + ' 特跑'));
         document.getElementById('runTitle').innerText = titleForDisplay;
         document.getElementById('runMeta').innerText = runInfo.date + '  Hare: ' + (runInfo.hare || '—');
         document.getElementById('runTitleDisplay').classList.remove('hidden');
@@ -694,7 +706,7 @@
           currentSchema = cfgData;
           currentDeadline = subData.deadline || (cfgData.meta && cfgData.meta.deadline) || null;
 
-          const titleForDisplay = pickLang(subData.runTitle || (cfgData.meta && cfgData.meta.runTitle) || '')
+          const titleForDisplay = pickLang(subData.runTitle || (cfgData.meta && cfgData.meta.runTitle) || '', {body: true})
             || (PAGE_LANG === 'en' ? ('#' + runNumber + ' Special Run') : ('#' + runNumber + ' 特跑'));
           document.getElementById('runTitle').innerText = titleForDisplay;
           document.getElementById('runMeta').innerText = PAGE_LANG === 'en'
@@ -982,10 +994,11 @@
 
       // Description：radio/multi 欄位的提醒文字（backend 把不匹配 options 的 per-run value 塞進 description）
       // 放在 label 下、options 上方，用 whitespace-pre-line 保留換行
+      // 內容來自 per-run cell → body mode（只認 ------EN------，不切 inline `|`）
       if (field.description) {
         const desc = document.createElement('p');
         desc.className = 'text-sm text-slate-300 leading-relaxed whitespace-pre-line bg-slate-900/60 border border-slate-700 rounded-lg p-3';
-        desc.textContent = pickLang(field.description);
+        desc.textContent = pickLang(field.description, {body: true});
         block.appendChild(desc);
       }
 
@@ -1576,7 +1589,7 @@
       if (field && field.description) {
         const descEl = document.createElement('span');
         descEl.className = 'text-slate-400 text-xs leading-relaxed whitespace-pre-line break-words';
-        descEl.textContent = pickLang(field.description);
+        descEl.textContent = pickLang(field.description, {body: true});
         valWrap.appendChild(descEl);
       }
       const valEl = document.createElement('span');
