@@ -949,7 +949,9 @@
         block.appendChild(caption);
         const content = document.createElement('p');
         content.className = 'text-slate-100 text-sm leading-relaxed whitespace-pre-line';
-        content.textContent = field.value || '';
+        // info 內容支援 **粗體** / __斜體__ / [color]...[/color] 標記（appendRichText 用 createElement
+        // + textContent 構造 DOM，不走 innerHTML，無 XSS 風險）
+        appendRichText(content, field.value || '');
         block.appendChild(content);
         container.appendChild(block);
         return;
@@ -1010,10 +1012,11 @@
       // Description：radio/multi 欄位的提醒文字（backend 把不匹配 options 的 per-run value 塞進 description）
       // 放在 label 下、options 上方，用 whitespace-pre-line 保留換行
       // 內容來自 per-run cell → body mode（只認 ------EN------，不切 inline `|`）
+      // 也支援 **粗體** / __斜體__ / [color] rich text 標記
       if (field.description) {
         const desc = document.createElement('p');
         desc.className = 'text-sm text-slate-300 leading-relaxed whitespace-pre-line bg-slate-900/60 border border-slate-700 rounded-lg p-3';
-        desc.textContent = pickLang(field.description, {body: true});
+        appendRichText(desc, pickLang(field.description, {body: true}));
         block.appendChild(desc);
       }
 
@@ -1639,7 +1642,7 @@
       if (field && field.description) {
         const descEl = document.createElement('span');
         descEl.className = 'text-slate-400 text-xs leading-relaxed whitespace-pre-line break-words';
-        descEl.textContent = pickLang(field.description, {body: true});
+        appendRichText(descEl, pickLang(field.description, {body: true}));
         valWrap.appendChild(descEl);
       }
       const valEl = document.createElement('span');
@@ -1690,6 +1693,63 @@
 
   function cssAttrEscape(s) {
     return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  }
+
+  // 把使用者填在 sheet F 欄的長文字（info 內容 / radio description）解析成 DOM 節點，
+  // 直接 append 到 parent — 全程用 createElement + textContent，沒有 innerHTML，無 XSS 風險。
+  // 支援語法（不同類型可巢狀，相同類型不可巢狀）：
+  //   **粗體**            → <strong>
+  //   __斜體__            → <em>
+  //   [red]紅字[/red] / [amber]/[blue]/[green]/[yellow]/[slate] → 對應顏色 <span>
+  // 巢狀範例：[red]**粗紅**[/red]、**[amber]粗琥珀[/amber]**、__[blue]斜藍[/blue]__ 都 work。
+  // 同 kind 巢狀（如 [red] 內再 [red]）因 regex 非貪婪不會解析；需要時自己用不同顏色搭配。
+  // 換行靠 parent 的 CSS `whitespace-pre-line` 保留，文字節點裡 \n 自動成換行。
+  const RICH_TEXT_COLORS = {
+    red: '#f87171',
+    amber: '#fbbf24',
+    blue: '#60a5fa',
+    green: '#34d399',
+    yellow: '#facc15',
+    slate: '#94a3b8'
+  };
+  function appendRichText(parent, text) {
+    if (text == null) return;
+    let s = String(text);
+    const colorNames = Object.keys(RICH_TEXT_COLORS).join('|');
+    const colorRe = new RegExp('\\[(' + colorNames + ')\\]([\\s\\S]*?)\\[\\/\\1\\]');
+    while (s.length > 0) {
+      const candidates = [];
+      let m;
+      m = s.match(/\*\*([\s\S]+?)\*\*/);
+      if (m) candidates.push({pos: m.index, len: m[0].length, kind: 'strong', body: m[1]});
+      m = s.match(/__([\s\S]+?)__/);
+      if (m) candidates.push({pos: m.index, len: m[0].length, kind: 'em', body: m[1]});
+      m = s.match(colorRe);
+      if (m) candidates.push({pos: m.index, len: m[0].length, kind: 'color', color: m[1], body: m[2]});
+      if (candidates.length === 0) {
+        parent.appendChild(document.createTextNode(s));
+        return;
+      }
+      candidates.sort(function (a, b) { return a.pos - b.pos; });
+      const first = candidates[0];
+      if (first.pos > 0) {
+        parent.appendChild(document.createTextNode(s.slice(0, first.pos)));
+      }
+      let node;
+      if (first.kind === 'strong') {
+        node = document.createElement('strong');
+      } else if (first.kind === 'em') {
+        node = document.createElement('em');
+      } else {
+        node = document.createElement('span');
+        node.style.color = RICH_TEXT_COLORS[first.color];
+      }
+      // 遞迴解析 body，讓不同 kind 的巢狀（例如 [red]**粗紅**[/red]）能正常生效；
+      // 終止保證：body 取自 non-greedy match 的內部，必定比原 s 短，且每層至少消耗一個 token + 其內容
+      appendRichText(node, first.body);
+      parent.appendChild(node);
+      s = s.slice(first.pos + first.len);
+    }
   }
 </script>
 </body>

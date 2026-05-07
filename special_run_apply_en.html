@@ -858,7 +858,8 @@
         block.appendChild(caption);
         const content = document.createElement('p');
         content.className = 'text-slate-100 text-sm leading-relaxed whitespace-pre-line';
-        content.textContent = field.value || '';
+        // info content supports **bold** / __italic__ / [color]...[/color] markup (DOM-built, no innerHTML)
+        appendRichText(content, field.value || '');
         block.appendChild(content);
         container.appendChild(block);
         return;
@@ -918,7 +919,8 @@
       if (field.description) {
         const desc = document.createElement('p');
         desc.className = 'text-sm text-slate-300 leading-relaxed whitespace-pre-line bg-slate-900/60 border border-slate-700 rounded-lg p-3';
-        desc.textContent = pickLang(field.description, {body: true});
+        // Description also supports **bold** / __italic__ / [color] markup
+        appendRichText(desc, pickLang(field.description, {body: true}));
         block.appendChild(desc);
       }
 
@@ -1466,7 +1468,7 @@
       if (field && field.description) {
         const descEl = document.createElement('span');
         descEl.className = 'text-slate-400 text-xs leading-relaxed whitespace-pre-line break-words';
-        descEl.textContent = pickLang(field.description, {body: true});
+        appendRichText(descEl, pickLang(field.description, {body: true}));
         valWrap.appendChild(descEl);
       }
       const valEl = document.createElement('span');
@@ -1515,6 +1517,62 @@
 
   function cssAttrEscape(s) {
     return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  }
+
+  // Render long-form text from sheet F-column cells (info content / radio description) into DOM
+  // nodes — uses createElement + textContent throughout (no innerHTML), so no XSS surface.
+  // Supported syntax (different kinds can nest; same kind cannot):
+  //   **bold**            → <strong>
+  //   __italic__          → <em>
+  //   [red]text[/red] / [amber]/[blue]/[green]/[yellow]/[slate] → coloured <span>
+  // Nesting: [red]**bold red**[/red], **[amber]bold amber[/amber]**, __[blue]italic blue[/blue]__ all work.
+  // Same-kind nesting (e.g. [red] inside [red]) is not parsed due to non-greedy regex matching.
+  // Newlines are preserved by parent CSS `whitespace-pre-line`.
+  const RICH_TEXT_COLORS = {
+    red: '#f87171',
+    amber: '#fbbf24',
+    blue: '#60a5fa',
+    green: '#34d399',
+    yellow: '#facc15',
+    slate: '#94a3b8'
+  };
+  function appendRichText(parent, text) {
+    if (text == null) return;
+    let s = String(text);
+    const colorNames = Object.keys(RICH_TEXT_COLORS).join('|');
+    const colorRe = new RegExp('\\[(' + colorNames + ')\\]([\\s\\S]*?)\\[\\/\\1\\]');
+    while (s.length > 0) {
+      const candidates = [];
+      let m;
+      m = s.match(/\*\*([\s\S]+?)\*\*/);
+      if (m) candidates.push({pos: m.index, len: m[0].length, kind: 'strong', body: m[1]});
+      m = s.match(/__([\s\S]+?)__/);
+      if (m) candidates.push({pos: m.index, len: m[0].length, kind: 'em', body: m[1]});
+      m = s.match(colorRe);
+      if (m) candidates.push({pos: m.index, len: m[0].length, kind: 'color', color: m[1], body: m[2]});
+      if (candidates.length === 0) {
+        parent.appendChild(document.createTextNode(s));
+        return;
+      }
+      candidates.sort(function (a, b) { return a.pos - b.pos; });
+      const first = candidates[0];
+      if (first.pos > 0) {
+        parent.appendChild(document.createTextNode(s.slice(0, first.pos)));
+      }
+      let node;
+      if (first.kind === 'strong') {
+        node = document.createElement('strong');
+      } else if (first.kind === 'em') {
+        node = document.createElement('em');
+      } else {
+        node = document.createElement('span');
+        node.style.color = RICH_TEXT_COLORS[first.color];
+      }
+      // Recurse into the body so different-kind nesting (e.g. [red]**bold red**[/red]) works.
+      appendRichText(node, first.body);
+      parent.appendChild(node);
+      s = s.slice(first.pos + first.len);
+    }
   }
 </script>
 </body>
