@@ -1525,6 +1525,7 @@
   //   **bold**            → <strong>
   //   __italic__          → <em>
   //   [red]text[/red] / [amber]/[blue]/[green]/[yellow]/[slate] → coloured <span>
+  //   ![alt](url)          → <img> (leaf; URL must be http/https to block javascript: injection)
   // Nesting: [red]**bold red**[/red], **[amber]bold amber[/amber]**, __[blue]italic blue[/blue]__ all work.
   // Same-kind nesting (e.g. [red] inside [red]) is not parsed due to non-greedy regex matching.
   // Newlines are preserved by parent CSS `whitespace-pre-line`.
@@ -1550,6 +1551,9 @@
       if (m) candidates.push({pos: m.index, len: m[0].length, kind: 'em', body: m[1]});
       m = s.match(colorRe);
       if (m) candidates.push({pos: m.index, len: m[0].length, kind: 'color', color: m[1], body: m[2]});
+      // ![alt](url) — markdown image; alt cannot contain `]`, url cannot contain `)` or whitespace
+      m = s.match(/!\[([^\]]*)\]\(([^)\s]+)\)/);
+      if (m) candidates.push({pos: m.index, len: m[0].length, kind: 'image', alt: m[1], url: m[2]});
       if (candidates.length === 0) {
         parent.appendChild(document.createTextNode(s));
         return;
@@ -1558,6 +1562,21 @@
       const first = candidates[0];
       if (first.pos > 0) {
         parent.appendChild(document.createTextNode(s.slice(0, first.pos)));
+      }
+      // Image needs URL safety check (http/https only); fallback to literal text otherwise.
+      if (first.kind === 'image') {
+        if (!/^https?:\/\//i.test(first.url)) {
+          parent.appendChild(document.createTextNode(s.slice(first.pos, first.pos + first.len)));
+        } else {
+          const img = document.createElement('img');
+          img.src = first.url;
+          img.alt = first.alt || '';
+          img.loading = 'lazy';
+          img.className = 'block max-w-full max-h-80 my-3 mx-auto rounded-lg shadow-lg border border-slate-700/50 object-contain bg-slate-900';
+          parent.appendChild(img);
+        }
+        s = s.slice(first.pos + first.len);
+        continue;
       }
       let node;
       if (first.kind === 'strong') {
