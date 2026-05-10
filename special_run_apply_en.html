@@ -1526,6 +1526,10 @@
   //   __italic__          → <em>
   //   [red]text[/red] / [amber]/[blue]/[green]/[yellow]/[slate] → coloured <span>
   //   ![alt](url)          → <img> (leaf; URL must be http/https to block javascript: injection)
+  //                          alt may carry modifiers: `alt|sm center` / `alt|md` / `alt|right`
+  //                          size token: sm(150px) / md(280px) / lg(default, max-w-full max-h-80)
+  //                          align token: left(default) / center / right
+  //                          combine with whitespace; unknown tokens are silently ignored
   // Nesting: [red]**bold red**[/red], **[amber]bold amber[/amber]**, __[blue]italic blue[/blue]__ all work.
   // Same-kind nesting (e.g. [red] inside [red]) is not parsed due to non-greedy regex matching.
   // Newlines are preserved by parent CSS `whitespace-pre-line`.
@@ -1568,11 +1572,30 @@
         if (!/^https?:\/\//i.test(first.url)) {
           parent.appendChild(document.createTextNode(s.slice(first.pos, first.pos + first.len)));
         } else {
+          // alt may carry modifiers: `alt|sm center`, `alt|right`, `alt|md`. Split on first `|`.
+          let realAlt = first.alt || '';
+          let modifiers = '';
+          const pipeIdx = realAlt.indexOf('|');
+          if (pipeIdx >= 0) {
+            modifiers = realAlt.slice(pipeIdx + 1).trim();
+            realAlt = realAlt.slice(0, pipeIdx).trim();
+          }
+          let sizeCls = 'max-w-full max-h-80'; // default lg
+          let alignCls = ''; // default left
+          modifiers.split(/\s+/).filter(Boolean).forEach(function (tok) {
+            if (tok === 'sm') sizeCls = 'max-w-[150px]';
+            else if (tok === 'md') sizeCls = 'max-w-[280px]';
+            else if (tok === 'lg') sizeCls = 'max-w-full max-h-80';
+            else if (tok === 'center') alignCls = 'mx-auto';
+            else if (tok === 'right') alignCls = 'ml-auto';
+            else if (tok === 'left') alignCls = '';
+            // Unknown tokens are ignored to prevent Tailwind class injection
+          });
           const img = document.createElement('img');
           img.src = first.url;
-          img.alt = first.alt || '';
+          img.alt = realAlt;
           img.loading = 'lazy';
-          img.className = 'block max-w-full max-h-80 my-3 mx-auto rounded-lg shadow-lg border border-slate-700/50 object-contain bg-slate-900';
+          img.className = ('block ' + sizeCls + ' ' + alignCls + ' my-3 rounded-lg shadow-lg border border-slate-700/50 object-contain bg-slate-900').replace(/\s+/g, ' ').trim();
           parent.appendChild(img);
         }
         s = s.slice(first.pos + first.len);
