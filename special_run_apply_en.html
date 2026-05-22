@@ -1530,6 +1530,7 @@
   //                          size token: sm(150px) / md(280px) / lg(default, max-w-full max-h-80)
   //                          align token: left(default) / center / right
   //                          combine with whitespace; unknown tokens are silently ignored
+  //   [map]place[/map]     → "place 📍" — pin links to Google Maps search (matches index.html)
   // Nesting: [red]**bold red**[/red], **[amber]bold amber[/amber]**, __[blue]italic blue[/blue]__ all work.
   // Same-kind nesting (e.g. [red] inside [red]) is not parsed due to non-greedy regex matching.
   // Newlines are preserved by parent CSS `whitespace-pre-line`.
@@ -1558,6 +1559,9 @@
       // ![alt](url) — markdown image; alt cannot contain `]`, url cannot contain `)` or whitespace
       m = s.match(/!\[([^\]]*)\]\(([^)\s]+)\)/);
       if (m) candidates.push({pos: m.index, len: m[0].length, kind: 'image', alt: m[1], url: m[2]});
+      // [map]place[/map] — renders "place 📍" with the pin linking to Google Maps search
+      m = s.match(/\[map\]([\s\S]+?)\[\/map\]/);
+      if (m) candidates.push({pos: m.index, len: m[0].length, kind: 'map', body: m[1]});
       if (candidates.length === 0) {
         parent.appendChild(document.createTextNode(s));
         return;
@@ -1566,6 +1570,21 @@
       const first = candidates[0];
       if (first.pos > 0) {
         parent.appendChild(document.createTextNode(s.slice(0, first.pos)));
+      }
+      // [map] leaf: place name + 📍 link to Google Maps (matches index.html restaurant info style).
+      if (first.kind === 'map') {
+        const placeName = first.body.trim();
+        parent.appendChild(document.createTextNode(placeName + ' '));
+        const link = document.createElement('a');
+        link.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(placeName);
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = '📍';
+        link.className = 'inline-block ml-1 align-middle text-blue-400 hover:text-blue-300';
+        link.setAttribute('aria-label', 'Open in Google Maps: ' + placeName);
+        parent.appendChild(link);
+        s = s.slice(first.pos + first.len);
+        continue;
       }
       // Image needs URL safety check (http/https only); fallback to literal text otherwise.
       if (first.kind === 'image') {
