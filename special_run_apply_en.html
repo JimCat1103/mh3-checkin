@@ -1263,11 +1263,18 @@
       return;
     }
 
-    const fieldNames = editable.map(function (f) { return f.name; });
+    // fieldNames uses the full schema field order (including currently-hidden conditional fields),
+    // not just visible ones: the sheet header is created at first submission, and if a conditional
+    // field was hidden then, later values for it would be dropped for lack of a column. Sending the
+    // full list lets the backend ensureFieldColumns add every column. values still only carries
+    // visible fields (hidden conditional fields stay blank in the sheet).
+    const fieldNames = currentSchema.fields
+      .filter(function (f) { return f.type !== 'image' && f.type !== 'info'; })
+      .map(function (f) { return f.name; });
 
     // Pre-localize email rows on the client: fieldNames are canonical Chinese only, so the backend
     // can't pickLang them into English by itself. Frontend already has pickLang'd labels & options,
-    // build the display rows here and ship them with the payload.
+    // build the display rows here and ship them with the payload. Only visible fields go to the email.
     const displayFields = buildDisplayFields(editable, values);
 
     const pageBaseUrl = window.location.origin

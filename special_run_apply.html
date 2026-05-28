@@ -1393,10 +1393,16 @@
       return;
     }
 
-    const fieldNames = editable.map(function (f) { return f.name; });
+    // fieldNames 用「完整 schema 欄位順序」（含目前被條件隱藏的欄位），不只送可見的：
+    // sheet header 在首次報名就建立，若那次某條件欄位 hidden 沒進 header，之後填了值會因缺欄被丟掉。
+    // 送完整清單 → 後端 ensureFieldColumns 一次補齊所有欄。values 仍只含可見欄位（hidden → sheet 留空）。
+    const fieldNames = currentSchema.fields
+      .filter(function (f) { return f.type !== 'image' && f.type !== 'info'; })
+      .map(function (f) { return f.name; });
 
     // Email 用的 localized display rows：在前端就把 label / option value 翻好，後端直接用、不用再 pickLang
     // （fieldNames 是 canonical Chinese-only key，光靠後端 pickLang 切不出英文）
+    // 只列使用者實際可見/有填的欄位（editable），hidden 條件欄位不進確認信
     const displayFields = buildDisplayFields(editable, values);
 
     // 編輯連結用的 base URL：取目前頁面的 origin + pathname 目錄，讓 email 連回當前 deploy domain
