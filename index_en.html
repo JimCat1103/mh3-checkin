@@ -408,6 +408,29 @@
     if (e.key === 'Escape') document.getElementById('qrModal').classList.add('hidden');
   });
 
+  // Deadline semantics match the backend / apply page: expires after 23:59:59 (Asia/Taipei) on the deadline date
+  function isSpecialRunDeadlinePassed(deadline) {
+    if (!deadline) return false;
+    const cutoffMs = Date.parse(deadline + 'T23:59:59+08:00');
+    return !isNaN(cutoffMs) && Date.now() > cutoffMs;
+  }
+
+  // Fetch the SpecialConfig application deadline (cached in sessionStorage for 10 min to avoid a GAS round-trip per load)
+  function fetchSpecialRunDeadline(runNumber) {
+    const cacheKey = 'srDeadline_' + runNumber;
+    try {
+      const cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
+      if (cached && (Date.now() - cached.ts) < 10 * 60 * 1000) return Promise.resolve(cached.deadline);
+    } catch (e) { /* ignore cache errors */ }
+    return fetch(API_URL, {method: 'POST', body: JSON.stringify({action: 'getSpecialConfig', runNumber: String(runNumber)})})
+      .then(res => res.json())
+      .then(data => {
+        const deadline = (data && data.meta && data.meta.deadline) || null;
+        try { sessionStorage.setItem(cacheKey, JSON.stringify({ts: Date.now(), deadline: deadline})); } catch (e) { /* ignore */ }
+        return deadline;
+      });
+  }
+
   function renderSpecialRunNotice(rows) {
     const noticeEl = document.getElementById('specialRunNotice');
     if (!noticeEl) return;
@@ -418,8 +441,20 @@
       noticeEl.classList.add('hidden');
       return;
     }
-    document.getElementById('specialRunNoticeNumber').textContent = String(target.number);
-    noticeEl.classList.remove('hidden');
+    // Hareline only knows run date >= today; the SpecialConfig application deadline may be earlier.
+    // Stay hidden until we confirm the deadline has not passed (no apply entry on the index after the deadline).
+    fetchSpecialRunDeadline(target.number).then(deadline => {
+      if (isSpecialRunDeadlinePassed(deadline)) {
+        noticeEl.classList.add('hidden');
+        return;
+      }
+      document.getElementById('specialRunNoticeNumber').textContent = String(target.number);
+      noticeEl.classList.remove('hidden');
+    }).catch(() => {
+      // Fail-open on API errors: show the button as before; the apply page still enforces the deadline
+      document.getElementById('specialRunNoticeNumber').textContent = String(target.number);
+      noticeEl.classList.remove('hidden');
+    });
   }
 
   function renderRunInfo(data) {
