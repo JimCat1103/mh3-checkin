@@ -323,7 +323,9 @@
             hare: rows[i].hare || '尚未提供',
             coHare: rows[i].coHare || '尚未提供',
             restaurant: rows[i].restaurant || '',
-            dateStr: targetDateStr
+            dateStr: targetDateStr,
+            // 特跑（col F）：特跑採事前報名，前端據此關閉現場簽到
+            isSpecial: rows[i].isSpecial === true
           };
           break;
         }
@@ -335,7 +337,8 @@
         hare: '尚未提供',
         coHare: '尚未提供',
         restaurant: '',
-        dateStr: targetDateStr
+        dateStr: targetDateStr,
+        isSpecial: false
       };
     }
 

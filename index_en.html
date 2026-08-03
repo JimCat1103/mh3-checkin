@@ -222,6 +222,16 @@
         </div>
     </div>
 
+    <div id="specialRunSection" class="hidden text-center py-10 fade-in">
+        <div class="text-6xl mb-6 opacity-90">✨</div>
+        <h3 class="text-2xl font-bold text-amber-300 mb-2">This Week Is a Special Run</h3>
+        <p class="text-slate-400 mb-6 px-4">Special runs require advance registration — online check-in and walk-in sign-up are closed</p>
+        <div class="bg-amber-500/10 rounded-lg p-4 text-sm text-amber-200 leading-relaxed mx-2 border border-amber-500/30">
+            If you have registered, please check in with the crew on site on the event day<br>
+            <strong>On On!</strong>
+        </div>
+    </div>
+
     <div id="thankYouSection" class="hidden text-center py-10 fade-in">
         <div id="syncErrorBanner" class="hidden bg-amber-600/20 border border-amber-500 rounded-lg p-3 mb-4 text-sm text-amber-200 text-left">
             Sync failed. We will retry automatically when you open this page next time. Refresh now to retry immediately.
@@ -497,6 +507,11 @@
     }
     if (status === 'waiting') {
       showSection('waitingSection');
+    } else if (currentRunInfo.isSpecial === true) {
+      // Special run: registration was done in advance via special_run_apply,
+      // so online check-in / walk-in sign-up is closed on the event day.
+      document.getElementById('runInfoDisplay').classList.remove('hidden');
+      showSection('specialRunSection');
     } else {
       document.getElementById('runInfoDisplay').classList.remove('hidden');
       checkLocalStorage(currentRunInfo.number);
@@ -604,7 +619,7 @@
   }
 
   function showSection(id) {
-    ['waitingSection', 'thankYouSection', 'backSection', 'formSection'].forEach(sec => document.getElementById(sec).classList.add('hidden'));
+    ['waitingSection', 'specialRunSection', 'thankYouSection', 'backSection', 'formSection'].forEach(sec => document.getElementById(sec).classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
     if (id === 'formSection') {
       validateForm(false);
