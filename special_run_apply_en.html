@@ -128,7 +128,7 @@
     </div>
 
     <div id="noEventSection" class="hidden text-center py-10 fade-in">
-        <div class="text-6xl mb-6 opacity-80">📅</div>
+        <div id="noEventIcon" class="text-6xl mb-6 opacity-80">📅</div>
         <h3 id="noEventTitle" class="text-2xl font-bold text-slate-300 mb-2">No special run open for registration</h3>
         <p id="noEventMsg" class="text-slate-500 mb-6">Stay tuned for the next special run!</p>
         <a href="index_en.html"
@@ -434,6 +434,34 @@
   // If no `|`, both languages share the same value.
   const PAGE_LANG = (document.documentElement.lang || '').toLowerCase().indexOf('en') === 0 ? 'en' : 'zh';
 
+  // Closed screen: replace the fixed-artwork 📅 emoji (always JUL 17 on Apple)
+  // with a mini calendar rendered from the actual deadline. Falls back to the
+  // emoji if the date cannot be parsed.
+  function renderDeadlineCalendar(deadline) {
+    const iconEl = document.getElementById('noEventIcon');
+    if (!iconEl || !deadline) return;
+    const parts = String(deadline).trim().split(/[\/\-]/);
+    if (parts.length !== 3) return;
+    const mo = parseInt(parts[1], 10);
+    const day = parseInt(parts[2], 10);
+    if (isNaN(mo) || mo < 1 || mo > 12 || isNaN(day) || day < 1 || day > 31) return;
+    const monthLabel = PAGE_LANG === 'en'
+      ? ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][mo - 1]
+      : mo + ' 月';
+    iconEl.textContent = '';
+    const cal = document.createElement('div');
+    cal.className = 'inline-block w-20 rounded-xl overflow-hidden border border-slate-600 shadow-lg';
+    const head = document.createElement('div');
+    head.className = 'bg-red-500 text-white text-xs font-bold py-1 tracking-widest';
+    head.textContent = monthLabel;
+    const body = document.createElement('div');
+    body.className = 'bg-slate-100 text-slate-800 text-3xl font-extrabold py-2 leading-none';
+    body.textContent = String(day);
+    cal.appendChild(head);
+    cal.appendChild(body);
+    iconEl.appendChild(cal);
+  }
+
   // Bilingual 切分（兩種模式）：
   //   1) Block mode（per-run cell 等長內容用）：尋找獨立一行 `------EN------` 切兩段
   //   2) Inline mode（schema 短 label 用、A 欄欄位名 / C 欄選項 label）：上述沒命中時 fallback `中文|English`
@@ -574,6 +602,7 @@
         if (metaDeadline) {
           const cutoffMs = Date.parse(metaDeadline + 'T23:59:59+08:00');
           if (!isNaN(cutoffMs) && Date.now() > cutoffMs) {
+            renderDeadlineCalendar(metaDeadline);
             document.getElementById('noEventTitle').innerText = 'Registration closed';
             document.getElementById('noEventMsg').innerText = 'The registration window has ended.';
             document.getElementById('initLoader').classList.add('hidden');
